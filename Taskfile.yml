@@ -1,0 +1,55 @@
+version: '3'
+
+tasks:
+  # run server
+  run:
+    cmds:
+      - doppler run -- go run cmd/*.go
+
+  build:
+    cmds:
+      - docker build -f cmd/Dockerfile --platform linux/amd64 -t namhq1989/ezfeedback-api-server:latest -t namhq1989/ezfeedback-api-server:$(git rev-parse --short HEAD) .
+      - docker push namhq1989/ezfeedback-api-server:latest
+      - docker push namhq1989/ezfeedback-api-server:$(git rev-parse --short HEAD)
+
+  # mandatory tools for code generation
+  install-tools:
+    cmds:
+      - echo "installing tools"
+      - go install google.golang.org/protobuf/cmd/protoc-gen-go
+      - go install google.golang.org/grpc/cmd/protoc-gen-go-grpc
+      - go install github.com/jackc/tern/v2@latest
+      - echo "done"
+
+  # code generation
+  code-gen:
+    cmds:
+      - echo "running code generation"
+      - rm -rf internal/genproto
+      - go generate ./...
+      - echo "done"
+
+  # database migration
+  db-migrate:
+    cmds:
+      - doppler run -- sh -c "TERN_CONFIG=internal/database/migration/tern.conf TERN_MIGRATIONS=internal/database/migration tern migrate"
+
+  # database generation
+  db-gen:
+    cmds:
+      - rm -rf internal/database/gen
+      - doppler run -- go run internal/database/generator/*.go
+
+  # mock generation
+  mock-gen:
+    cmds:
+      - rm -rf internal/mock
+
+      # common
+#      - mockgen -source=pkg/common/domain/system_setting.go -destination=internal/mock/common/system_setting.go -package=mockcommon
+
+
+  # test
+  test:
+    cmds:
+      - gotestsum --junitfile-hide-empty-pkg --format testname ./pkg/...
