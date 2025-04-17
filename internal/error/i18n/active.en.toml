@@ -1,0 +1,24 @@
+# missing
+missing = "Missing"
+
+# common
+success = "Success"
+bad_request = "Bad request"
+not_found = "Not found"
+unauthorized = "Unauthorized"
+forbidden = "Forbidden"
+already_existed = "Resource already existed"
+email_already_existed = "Email already existed"
+invalid_id = "Invalid id"
+invalid_name = "Invalid name"
+invalid_email = "Invalid email"
+
+# auth
+auth_invalid_auth_token = "Invalid auth token"
+auth_invalid_refresh_token = "Invalid refresh token"
+auth_invalid_expiry = "Invalid expiry"
+auth_not_allowed = "Not allowed"
+
+# user
+user_invalid_id = "Invalid user id"
+user_not_found = "User not found"
