@@ -57,10 +57,8 @@ func main() {
 
 									if schema.Name == "public" {
 										switch table.Name {
-										case "words":
-											field = word(field, column)
-										case "word_news":
-											field = wordNews(field, column)
+										case "feedback":
+											field = feedback(field, column)
 										}
 									}
 
@@ -74,18 +72,9 @@ func main() {
 	}
 }
 
-func word(field template.TableModelField, column metadata.Column) template.TableModelField {
+func feedback(field template.TableModelField, column metadata.Column) template.TableModelField {
 	switch column.Name {
-	case "parts_of_speech":
-		field.Type = template.NewType(database.ArrayString{})
-	}
-
-	return field
-}
-
-func wordNews(field template.TableModelField, column metadata.Column) template.TableModelField {
-	switch column.Name {
-	case "categories":
+	case "tags":
 		field.Type = template.NewType(database.ArrayString{})
 	}
 
