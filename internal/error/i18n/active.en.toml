@@ -12,6 +12,7 @@ email_already_existed = "Email already existed"
 invalid_id = "Invalid id"
 invalid_name = "Invalid name"
 invalid_email = "Invalid email"
+invalid_status = "Invalid status"
 
 # auth
 auth_invalid_auth_token = "Invalid auth token"
@@ -22,3 +23,4 @@ auth_not_allowed = "Not allowed"
 # user
 user_invalid_id = "Invalid user id"
 user_not_found = "User not found"
+user_invalid_invited_by = "Invalid invited by"
