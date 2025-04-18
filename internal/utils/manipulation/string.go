@@ -7,7 +7,6 @@ import (
 	"unicode"
 
 	"golang.org/x/text/transform"
-
 	"golang.org/x/text/unicode/norm"
 )
 
@@ -127,4 +126,23 @@ func (removeDiacritic) Reset() {}
 func replaceStringWithRegex(src string, pattern string, replaceText string) string {
 	reg := regexp.MustCompile(pattern)
 	return reg.ReplaceAllString(src, replaceText)
+}
+
+func ExtractOSFromUserAgent(userAgent string) string {
+	userAgent = strings.ToLower(userAgent)
+
+	switch {
+	case strings.Contains(userAgent, "windows"):
+		return "windows"
+	case strings.Contains(userAgent, "mac os"):
+		return "macos"
+	case strings.Contains(userAgent, "ios"):
+		return "ios"
+	case strings.Contains(userAgent, "android"):
+		return "android"
+	case strings.Contains(userAgent, "linux"):
+		return "linux"
+	default:
+		return "unknown"
+	}
 }

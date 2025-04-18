@@ -13,6 +13,9 @@ invalid_id = "ID không hợp lệ"
 invalid_name = "Tên không hợp lệ"
 invalid_email = "Email không hợp lệ"
 invalid_status = "Trạng thái không hợp lệ"
+invalid_ip = "IP không hợp lệ"
+invalid_title = "Tiêu đề không hợp lệ"
+invalid_description = "Mô tả không hợp lệ"
 
 # auth
 auth_invalid_auth_token = "Token xác thực không hợp lệ"
@@ -24,3 +27,16 @@ auth_not_allowed = "Không được phép"
 user_invalid_id = "ID người dùng không hợp lệ"
 user_not_found = "Không tìm thấy người dùng"
 user_invalid_invited_by = "Người mời không hợp lệ"
+user_invalid_verification_code = "Mã xác minh bạn đã nhập không chính xác hoặc đã hết hạn. Vui lòng kiểm tra lại mã hoặc yêu cầu mã mới"
+user_invalid_device_id = "ID thiết bị không hợp lệ"
+
+# invitation
+invitation_invalid_id = "ID lời mời không hợp lệ"
+invitation_not_found = "Không tìm thấy lời mời"
+invitation_invalid_inviter_id = "ID người mời không hợp lệ"
+invitation_invalid_token = "Liên kết lời mời không hợp lệ hoặc đã hết hạn. Vui lòng yêu cầu lời mời mới"
+
+# project
+project_invalid_id = "ID dự án không hợp lệ"
+project_not_found = "Không tìm thấy dự án"
+project_invalid_role = "Vai trò không hợp lệ"

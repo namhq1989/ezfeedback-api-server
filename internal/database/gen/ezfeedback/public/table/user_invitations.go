@@ -23,7 +23,6 @@ type userInvitationsTable struct {
 	ProjectID postgres.ColumnString
 	Role      postgres.ColumnString
 	Token     postgres.ColumnString
-	Code      postgres.ColumnString
 	Status    postgres.ColumnString
 	ExpiresAt postgres.ColumnTimestampz
 	CreatedAt postgres.ColumnTimestampz
@@ -74,13 +73,12 @@ func newUserInvitationsTableImpl(schemaName, tableName, alias string) userInvita
 		ProjectIDColumn = postgres.StringColumn("project_id")
 		RoleColumn      = postgres.StringColumn("role")
 		TokenColumn     = postgres.StringColumn("token")
-		CodeColumn      = postgres.StringColumn("code")
 		StatusColumn    = postgres.StringColumn("status")
 		ExpiresAtColumn = postgres.TimestampzColumn("expires_at")
 		CreatedAtColumn = postgres.TimestampzColumn("created_at")
 		UpdatedAtColumn = postgres.TimestampzColumn("updated_at")
-		allColumns      = postgres.ColumnList{IDColumn, EmailColumn, InviterIDColumn, ProjectIDColumn, RoleColumn, TokenColumn, CodeColumn, StatusColumn, ExpiresAtColumn, CreatedAtColumn, UpdatedAtColumn}
-		mutableColumns  = postgres.ColumnList{EmailColumn, InviterIDColumn, ProjectIDColumn, RoleColumn, TokenColumn, CodeColumn, StatusColumn, ExpiresAtColumn, CreatedAtColumn, UpdatedAtColumn}
+		allColumns      = postgres.ColumnList{IDColumn, EmailColumn, InviterIDColumn, ProjectIDColumn, RoleColumn, TokenColumn, StatusColumn, ExpiresAtColumn, CreatedAtColumn, UpdatedAtColumn}
+		mutableColumns  = postgres.ColumnList{EmailColumn, InviterIDColumn, ProjectIDColumn, RoleColumn, TokenColumn, StatusColumn, ExpiresAtColumn, CreatedAtColumn, UpdatedAtColumn}
 	)
 
 	return userInvitationsTable{
@@ -93,7 +91,6 @@ func newUserInvitationsTableImpl(schemaName, tableName, alias string) userInvita
 		ProjectID: ProjectIDColumn,
 		Role:      RoleColumn,
 		Token:     TokenColumn,
-		Code:      CodeColumn,
 		Status:    StatusColumn,
 		ExpiresAt: ExpiresAtColumn,
 		CreatedAt: CreatedAtColumn,

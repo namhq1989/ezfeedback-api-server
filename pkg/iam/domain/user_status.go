@@ -2,8 +2,6 @@ package domain
 
 type UserStatus string
 
-// create type user_status as enum ('active', 'inactive', 'deleted');
-
 const (
 	UserStatusUnknown  UserStatus = ""
 	UserStatusActive   UserStatus = "active"

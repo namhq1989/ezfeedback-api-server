@@ -1,4 +1,4 @@
-package user
+package iam
 
 import (
 	"github.com/namhq1989/ezfeedback-api-server/internal/monolith"

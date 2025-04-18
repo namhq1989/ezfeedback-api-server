@@ -48,7 +48,7 @@ CREATE TABLE user_sessions (
                                user_id TEXT NOT NULL REFERENCES users(id) ON DELETE CASCADE,
                                device_id VARCHAR(255) NOT NULL,
                                refresh_token VARCHAR(255) NOT NULL UNIQUE,
-                               expiry_time TIMESTAMPTZ NOT NULL,
+                               expires_at TIMESTAMPTZ NOT NULL,
                                device_info TEXT DEFAULT '{}' NOT NULL,
                                created_at TIMESTAMPTZ DEFAULT NOW() NOT NULL,
                                updated_at TIMESTAMPTZ DEFAULT NOW() NOT NULL
@@ -57,7 +57,6 @@ CREATE TABLE user_sessions (
 CREATE INDEX idx_user_sessions_user_id ON user_sessions(user_id);
 CREATE INDEX idx_user_sessions_device_id ON user_sessions(device_id);
 CREATE INDEX idx_user_sessions_refresh_token ON user_sessions(refresh_token);
-CREATE INDEX idx_user_sessions_expiry_time ON user_sessions(expiry_time);
 
 -- =============================================
 -- Project Management
@@ -85,7 +84,6 @@ CREATE TABLE project_settings (
                                   project_id TEXT NOT NULL REFERENCES projects(id) ON DELETE CASCADE,
                                   is_feedback_public BOOLEAN NOT NULL,
                                   allow_anonymous_feedback BOOLEAN NOT NULL,
-                                  require_approval BOOLEAN NOT NULL,
                                   enable_voting BOOLEAN NOT NULL,
                                   created_at TIMESTAMPTZ DEFAULT NOW() NOT NULL,
                                   updated_at TIMESTAMPTZ DEFAULT NOW() NOT NULL,
@@ -208,7 +206,6 @@ CREATE TABLE user_invitations (
                                   project_id TEXT NOT NULL REFERENCES projects(id) ON DELETE CASCADE,
                                   role project_role NOT NULL,
                                   token VARCHAR(100) UNIQUE NOT NULL,
-                                  code VARCHAR(10) NOT NULL,
                                   status invitation_status NOT NULL,
                                   expires_at TIMESTAMPTZ NOT NULL,
                                   created_at TIMESTAMPTZ DEFAULT NOW() NOT NULL,
@@ -217,7 +214,6 @@ CREATE TABLE user_invitations (
 
 -- Essential lookup indexes
 CREATE UNIQUE INDEX idx_user_invitations_token ON user_invitations(token);
-CREATE UNIQUE INDEX idx_user_invitations_active_code ON user_invitations(code) WHERE status = 'pending';
 
 -- Composite indexes for common query patterns
 CREATE INDEX idx_user_invitations_email_status ON user_invitations(email, status);
