@@ -6,8 +6,16 @@ import (
 	apperrors "github.com/namhq1989/ezfeedback-api-server/internal/error"
 	"github.com/namhq1989/ezfeedback-api-server/internal/utils/manipulation"
 	"github.com/namhq1989/ezfeedback-api-server/internal/utils/validation"
+	"github.com/namhq1989/go-utilities/appcontext"
 	"github.com/namhq1989/go-utilities/uuid"
 )
+
+type VerificationCodeRepository interface {
+	Create(ctx *appcontext.AppContext, code VerificationCode) error
+	Find(ctx *appcontext.AppContext, ip, email, code string) (*VerificationCode, error)
+	TotalSentTodayByIp(ctx *appcontext.AppContext, ip string) (int64, error)
+	DeleteExpired(ctx *appcontext.AppContext) error
+}
 
 var (
 	otpDigits           = 6
