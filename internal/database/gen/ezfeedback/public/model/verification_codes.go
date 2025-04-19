@@ -13,7 +13,8 @@ import (
 
 type VerificationCodes struct {
 	ID        string `sql:"primary_key"`
-	UserID    string
+	Email     string
+	IP        string
 	Code      string
 	ExpiresAt time.Time
 	IsUsed    bool

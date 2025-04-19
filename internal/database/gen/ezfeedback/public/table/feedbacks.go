@@ -24,7 +24,6 @@ type feedbacksTable struct {
 	Content     postgres.ColumnString
 	Rating      postgres.ColumnInteger
 	IsAnonymous postgres.ColumnBool
-	Tags        postgres.ColumnString
 	State       postgres.ColumnString
 	Status      postgres.ColumnString
 	CreatedAt   postgres.ColumnTimestampz
@@ -76,13 +75,12 @@ func newFeedbacksTableImpl(schemaName, tableName, alias string) feedbacksTable {
 		ContentColumn     = postgres.StringColumn("content")
 		RatingColumn      = postgres.IntegerColumn("rating")
 		IsAnonymousColumn = postgres.BoolColumn("is_anonymous")
-		TagsColumn        = postgres.StringColumn("tags")
 		StateColumn       = postgres.StringColumn("state")
 		StatusColumn      = postgres.StringColumn("status")
 		CreatedAtColumn   = postgres.TimestampzColumn("created_at")
 		UpdatedAtColumn   = postgres.TimestampzColumn("updated_at")
-		allColumns        = postgres.ColumnList{IDColumn, ProjectIDColumn, UserIDColumn, CategoryIDColumn, ContentColumn, RatingColumn, IsAnonymousColumn, TagsColumn, StateColumn, StatusColumn, CreatedAtColumn, UpdatedAtColumn}
-		mutableColumns    = postgres.ColumnList{ProjectIDColumn, UserIDColumn, CategoryIDColumn, ContentColumn, RatingColumn, IsAnonymousColumn, TagsColumn, StateColumn, StatusColumn, CreatedAtColumn, UpdatedAtColumn}
+		allColumns        = postgres.ColumnList{IDColumn, ProjectIDColumn, UserIDColumn, CategoryIDColumn, ContentColumn, RatingColumn, IsAnonymousColumn, StateColumn, StatusColumn, CreatedAtColumn, UpdatedAtColumn}
+		mutableColumns    = postgres.ColumnList{ProjectIDColumn, UserIDColumn, CategoryIDColumn, ContentColumn, RatingColumn, IsAnonymousColumn, StateColumn, StatusColumn, CreatedAtColumn, UpdatedAtColumn}
 	)
 
 	return feedbacksTable{
@@ -96,7 +94,6 @@ func newFeedbacksTableImpl(schemaName, tableName, alias string) feedbacksTable {
 		Content:     ContentColumn,
 		Rating:      RatingColumn,
 		IsAnonymous: IsAnonymousColumn,
-		Tags:        TagsColumn,
 		State:       StateColumn,
 		Status:      StatusColumn,
 		CreatedAt:   CreatedAtColumn,

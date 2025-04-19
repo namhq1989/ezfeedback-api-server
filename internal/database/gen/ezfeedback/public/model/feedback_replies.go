@@ -17,7 +17,6 @@ type FeedbackReplies struct {
 	UserID     string
 	Content    string
 	IsEdited   bool
-	Status     Status
 	CreatedAt  time.Time
 	UpdatedAt  time.Time
 }

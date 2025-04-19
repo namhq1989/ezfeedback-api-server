@@ -11,7 +11,6 @@ package table
 // this method only once at the beginning of the program.
 func UseSchema(schema string) {
 	FeedbackReplies = FeedbackReplies.FromSchema(schema)
-	FeedbackTags = FeedbackTags.FromSchema(schema)
 	FeedbackVotes = FeedbackVotes.FromSchema(schema)
 	Feedbacks = Feedbacks.FromSchema(schema)
 	ProjectCategories = ProjectCategories.FromSchema(schema)

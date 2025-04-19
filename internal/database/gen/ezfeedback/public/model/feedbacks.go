@@ -19,7 +19,6 @@ type Feedbacks struct {
 	Content     string
 	Rating      int32
 	IsAnonymous bool
-	Tags        string
 	State       FeedbackState
 	Status      Status
 	CreatedAt   time.Time
