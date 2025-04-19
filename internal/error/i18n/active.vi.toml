@@ -40,3 +40,11 @@ invitation_invalid_token = "Liên kết lời mời không hợp lệ hoặc đ�
 project_invalid_id = "ID dự án không hợp lệ"
 project_not_found = "Không tìm thấy dự án"
 project_invalid_role = "Vai trò không hợp lệ"
+project_invalid_category = "Danh mục không hợp lệ"
+
+# feedback
+feedback_invalid_id = "ID phản hồi không hợp lệ"
+feedback_not_found = "Không tìm thấy phản hồi"
+feedback_invalid_content = "Nội dung không hợp lệ"
+feedback_invalid_rating = "Đánh giá không hợp lệ"
+feedback_invalid_state = "Trạng thái không hợp lệ"

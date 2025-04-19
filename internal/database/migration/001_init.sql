@@ -129,34 +129,15 @@ CREATE INDEX idx_project_categories_name ON project_categories(name);
 CREATE INDEX idx_project_categories_slug ON project_categories(slug);
 CREATE INDEX idx_project_categories_status ON project_categories(status);
 
--- Create feedback tags table (project-specific tags)
-CREATE TABLE feedback_tags (
-                               id TEXT PRIMARY KEY,
-                               project_id TEXT NOT NULL REFERENCES projects(id) ON DELETE CASCADE,
-                               name VARCHAR(100) NOT NULL,
-                               slug VARCHAR(100) NOT NULL,
-                               status status NOT NULL,
-                               created_at TIMESTAMPTZ DEFAULT NOW() NOT NULL,
-                               updated_at TIMESTAMPTZ DEFAULT NOW() NOT NULL,
-                               UNIQUE(project_id, name),
-                               UNIQUE(project_id, slug)
-);
-
-CREATE INDEX idx_feedback_tags_project_id ON feedback_tags(project_id);
-CREATE INDEX idx_feedback_tags_name ON feedback_tags(name);
-CREATE INDEX idx_feedback_tags_slug ON feedback_tags(slug);
-CREATE INDEX idx_feedback_tags_status ON feedback_tags(status);
-
 -- Create feedbacks table
 CREATE TABLE feedbacks (
                            id TEXT PRIMARY KEY,
                            project_id TEXT NOT NULL REFERENCES projects(id) ON DELETE CASCADE,
                            user_id TEXT REFERENCES users(id) ON DELETE SET NULL DEFAULT NULL,
-                           category_id TEXT REFERENCES project_categories(id) ON DELETE SET NULL DEFAULT NULL,
+                           category_id TEXT NOT NULL REFERENCES project_categories(id) ON DELETE SET NULL,
                            content TEXT NOT NULL,
-                           rating INTEGER DEFAULT NULL CHECK (rating IS NULL OR (rating >= 1 AND rating <= 5)),
+                           rating INTEGER NOT NULL CHECK (rating IS NULL OR (rating >= 1 AND rating <= 5)),
                            is_anonymous BOOLEAN NOT NULL,
-                           tags TEXT[] DEFAULT '{}' NOT NULL,
                            state feedback_state NOT NULL,
                            status status NOT NULL,
                            created_at TIMESTAMPTZ DEFAULT NOW() NOT NULL,
@@ -168,7 +149,6 @@ CREATE INDEX idx_feedbacks_category_id ON feedbacks(category_id);
 CREATE INDEX idx_feedbacks_user_id ON feedbacks(user_id);
 CREATE INDEX idx_feedbacks_status ON feedbacks(status);
 CREATE INDEX idx_feedbacks_state ON feedbacks(state);
-CREATE INDEX idx_feedbacks_tags ON feedbacks USING GIN (tags);
 
 -- Create feedback replies table
 CREATE TABLE feedback_replies (
@@ -177,14 +157,12 @@ CREATE TABLE feedback_replies (
                                   user_id TEXT NOT NULL REFERENCES users(id) ON DELETE CASCADE,
                                   content TEXT NOT NULL,
                                   is_edited BOOLEAN NOT NULL,
-                                  status status NOT NULL,
                                   created_at TIMESTAMPTZ DEFAULT NOW() NOT NULL,
                                   updated_at TIMESTAMPTZ DEFAULT NOW() NOT NULL
 );
 
 CREATE INDEX idx_feedback_replies_feedback_id ON feedback_replies(feedback_id);
 CREATE INDEX idx_feedback_replies_user_id ON feedback_replies(user_id);
-CREATE INDEX idx_feedback_replies_status ON feedback_replies(status);
 
 -- Create feedback votes table
 CREATE TABLE feedback_votes (

@@ -21,7 +21,6 @@ type projectSettingsTable struct {
 	ProjectID              postgres.ColumnString
 	IsFeedbackPublic       postgres.ColumnBool
 	AllowAnonymousFeedback postgres.ColumnBool
-	RequireApproval        postgres.ColumnBool
 	EnableVoting           postgres.ColumnBool
 	CreatedAt              postgres.ColumnTimestampz
 	UpdatedAt              postgres.ColumnTimestampz
@@ -69,12 +68,11 @@ func newProjectSettingsTableImpl(schemaName, tableName, alias string) projectSet
 		ProjectIDColumn              = postgres.StringColumn("project_id")
 		IsFeedbackPublicColumn       = postgres.BoolColumn("is_feedback_public")
 		AllowAnonymousFeedbackColumn = postgres.BoolColumn("allow_anonymous_feedback")
-		RequireApprovalColumn        = postgres.BoolColumn("require_approval")
 		EnableVotingColumn           = postgres.BoolColumn("enable_voting")
 		CreatedAtColumn              = postgres.TimestampzColumn("created_at")
 		UpdatedAtColumn              = postgres.TimestampzColumn("updated_at")
-		allColumns                   = postgres.ColumnList{IDColumn, ProjectIDColumn, IsFeedbackPublicColumn, AllowAnonymousFeedbackColumn, RequireApprovalColumn, EnableVotingColumn, CreatedAtColumn, UpdatedAtColumn}
-		mutableColumns               = postgres.ColumnList{ProjectIDColumn, IsFeedbackPublicColumn, AllowAnonymousFeedbackColumn, RequireApprovalColumn, EnableVotingColumn, CreatedAtColumn, UpdatedAtColumn}
+		allColumns                   = postgres.ColumnList{IDColumn, ProjectIDColumn, IsFeedbackPublicColumn, AllowAnonymousFeedbackColumn, EnableVotingColumn, CreatedAtColumn, UpdatedAtColumn}
+		mutableColumns               = postgres.ColumnList{ProjectIDColumn, IsFeedbackPublicColumn, AllowAnonymousFeedbackColumn, EnableVotingColumn, CreatedAtColumn, UpdatedAtColumn}
 	)
 
 	return projectSettingsTable{
@@ -85,7 +83,6 @@ func newProjectSettingsTableImpl(schemaName, tableName, alias string) projectSet
 		ProjectID:              ProjectIDColumn,
 		IsFeedbackPublic:       IsFeedbackPublicColumn,
 		AllowAnonymousFeedback: AllowAnonymousFeedbackColumn,
-		RequireApproval:        RequireApprovalColumn,
 		EnableVoting:           EnableVotingColumn,
 		CreatedAt:              CreatedAtColumn,
 		UpdatedAt:              UpdatedAtColumn,

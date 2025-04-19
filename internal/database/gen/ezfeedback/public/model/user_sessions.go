@@ -16,7 +16,7 @@ type UserSessions struct {
 	UserID       string
 	DeviceID     string
 	RefreshToken string
-	ExpiryTime   time.Time
+	ExpiresAt    time.Time
 	DeviceInfo   string
 	CreatedAt    time.Time
 	UpdatedAt    time.Time

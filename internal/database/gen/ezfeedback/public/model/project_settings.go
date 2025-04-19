@@ -16,7 +16,6 @@ type ProjectSettings struct {
 	ProjectID              string
 	IsFeedbackPublic       bool
 	AllowAnonymousFeedback bool
-	RequireApproval        bool
 	EnableVoting           bool
 	CreatedAt              time.Time
 	UpdatedAt              time.Time

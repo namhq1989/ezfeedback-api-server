@@ -10,7 +10,7 @@ import (
 )
 
 const (
-	slugSuffixLength = 6
+	projectSlugSuffixLength = 6
 )
 
 type Project struct {
@@ -65,7 +65,7 @@ func (p *Project) SetTitle(title string) error {
 	}
 
 	p.Title = title
-	p.Slug = fmt.Sprintf("%s-%s", manipulation.Slugify(title), manipulation.RandomAlphaNumeric(slugSuffixLength))
+	p.Slug = fmt.Sprintf("%s-%s", manipulation.Slugify(title), manipulation.RandomAlphaNumeric(projectSlugSuffixLength))
 	p.SetUpdatedAt()
 	return nil
 }

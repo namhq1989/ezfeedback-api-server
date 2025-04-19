@@ -21,7 +21,7 @@ type userSessionsTable struct {
 	UserID       postgres.ColumnString
 	DeviceID     postgres.ColumnString
 	RefreshToken postgres.ColumnString
-	ExpiryTime   postgres.ColumnTimestampz
+	ExpiresAt    postgres.ColumnTimestampz
 	DeviceInfo   postgres.ColumnString
 	CreatedAt    postgres.ColumnTimestampz
 	UpdatedAt    postgres.ColumnTimestampz
@@ -69,12 +69,12 @@ func newUserSessionsTableImpl(schemaName, tableName, alias string) userSessionsT
 		UserIDColumn       = postgres.StringColumn("user_id")
 		DeviceIDColumn     = postgres.StringColumn("device_id")
 		RefreshTokenColumn = postgres.StringColumn("refresh_token")
-		ExpiryTimeColumn   = postgres.TimestampzColumn("expiry_time")
+		ExpiresAtColumn    = postgres.TimestampzColumn("expires_at")
 		DeviceInfoColumn   = postgres.StringColumn("device_info")
 		CreatedAtColumn    = postgres.TimestampzColumn("created_at")
 		UpdatedAtColumn    = postgres.TimestampzColumn("updated_at")
-		allColumns         = postgres.ColumnList{IDColumn, UserIDColumn, DeviceIDColumn, RefreshTokenColumn, ExpiryTimeColumn, DeviceInfoColumn, CreatedAtColumn, UpdatedAtColumn}
-		mutableColumns     = postgres.ColumnList{UserIDColumn, DeviceIDColumn, RefreshTokenColumn, ExpiryTimeColumn, DeviceInfoColumn, CreatedAtColumn, UpdatedAtColumn}
+		allColumns         = postgres.ColumnList{IDColumn, UserIDColumn, DeviceIDColumn, RefreshTokenColumn, ExpiresAtColumn, DeviceInfoColumn, CreatedAtColumn, UpdatedAtColumn}
+		mutableColumns     = postgres.ColumnList{UserIDColumn, DeviceIDColumn, RefreshTokenColumn, ExpiresAtColumn, DeviceInfoColumn, CreatedAtColumn, UpdatedAtColumn}
 	)
 
 	return userSessionsTable{
@@ -85,7 +85,7 @@ func newUserSessionsTableImpl(schemaName, tableName, alias string) userSessionsT
 		UserID:       UserIDColumn,
 		DeviceID:     DeviceIDColumn,
 		RefreshToken: RefreshTokenColumn,
-		ExpiryTime:   ExpiryTimeColumn,
+		ExpiresAt:    ExpiresAtColumn,
 		DeviceInfo:   DeviceInfoColumn,
 		CreatedAt:    CreatedAtColumn,
 		UpdatedAt:    UpdatedAtColumn,

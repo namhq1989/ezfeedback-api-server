@@ -40,3 +40,11 @@ invitation_invalid_token = "The invitation link is invalid or has expired. Pleas
 project_invalid_id = "Invalid project id"
 project_not_found = "Project not found"
 project_invalid_role = "Invalid role"
+project_invalid_category = "Invalid category"
+
+# feedback
+feedback_invalid_id = "Invalid feedback id"
+feedback_not_found = "Feedback not found"
+feedback_invalid_content = "Invalid content"
+feedback_invalid_rating = "Invalid rating"
+feedback_invalid_state = "Invalid state"

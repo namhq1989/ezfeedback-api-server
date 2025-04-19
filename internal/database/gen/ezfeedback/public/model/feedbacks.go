@@ -15,9 +15,9 @@ type Feedbacks struct {
 	ID          string `sql:"primary_key"`
 	ProjectID   string
 	UserID      *string
-	CategoryID  *string
+	CategoryID  string
 	Content     string
-	Rating      *int32
+	Rating      int32
 	IsAnonymous bool
 	Tags        string
 	State       FeedbackState
