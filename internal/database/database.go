@@ -28,7 +28,7 @@ type Database struct {
 func NewDatabaseClient(conn string) *Database {
 	db, err := otelsql.Open("pgx", conn,
 		otelsql.WithAttributes(semconv.DBSystemPostgreSQL),
-		otelsql.WithDBName("super_cashback"),
+		otelsql.WithDBName("ezfeedback"),
 	)
 	if err != nil {
 		panic(err)
