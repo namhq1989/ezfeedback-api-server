@@ -14,7 +14,6 @@ type FeedbackReply struct {
 	UserID     string
 	Content    string
 	IsEdited   bool
-	Status     Status
 	CreatedAt  time.Time
 	UpdatedAt  time.Time
 }
@@ -23,7 +22,6 @@ func NewFeedbackReply(feedbackID, userID, content string) (*FeedbackReply, error
 	var now = manipulation.NowUTC()
 	var r = &FeedbackReply{
 		ID:        uuid.New(),
-		Status:    StatusActive,
 		IsEdited:  false,
 		CreatedAt: now,
 		UpdatedAt: now,

@@ -31,15 +31,16 @@ CREATE INDEX idx_users_invited_by ON users(invited_by);
 -- Create verification codes table
 CREATE TABLE verification_codes (
                                     id TEXT PRIMARY KEY,
-                                    user_id TEXT NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+                                    email TEXT NOT NULL,
+                                    ip TEXT NOT NULL,
                                     code VARCHAR(10) NOT NULL,
                                     expires_at TIMESTAMPTZ NOT NULL,
                                     is_used BOOLEAN NOT NULL,
                                     created_at TIMESTAMPTZ DEFAULT NOW() NOT NULL
 );
 
-CREATE INDEX idx_verification_codes_user_id ON verification_codes(user_id);
-CREATE INDEX idx_verification_codes_code ON verification_codes(code);
+CREATE INDEX idx_verification_codes_email ON verification_codes(email);
+CREATE INDEX idx_verification_codes_ip_created_at ON verification_codes(ip, created_at);
 CREATE INDEX idx_verification_codes_expires_at ON verification_codes(expires_at);
 
 -- Create user sessions table

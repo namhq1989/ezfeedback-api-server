@@ -18,7 +18,8 @@ type verificationCodesTable struct {
 
 	// Columns
 	ID        postgres.ColumnString
-	UserID    postgres.ColumnString
+	Email     postgres.ColumnString
+	IP        postgres.ColumnString
 	Code      postgres.ColumnString
 	ExpiresAt postgres.ColumnTimestampz
 	IsUsed    postgres.ColumnBool
@@ -64,13 +65,14 @@ func newVerificationCodesTable(schemaName, tableName, alias string) *Verificatio
 func newVerificationCodesTableImpl(schemaName, tableName, alias string) verificationCodesTable {
 	var (
 		IDColumn        = postgres.StringColumn("id")
-		UserIDColumn    = postgres.StringColumn("user_id")
+		EmailColumn     = postgres.StringColumn("email")
+		IPColumn        = postgres.StringColumn("ip")
 		CodeColumn      = postgres.StringColumn("code")
 		ExpiresAtColumn = postgres.TimestampzColumn("expires_at")
 		IsUsedColumn    = postgres.BoolColumn("is_used")
 		CreatedAtColumn = postgres.TimestampzColumn("created_at")
-		allColumns      = postgres.ColumnList{IDColumn, UserIDColumn, CodeColumn, ExpiresAtColumn, IsUsedColumn, CreatedAtColumn}
-		mutableColumns  = postgres.ColumnList{UserIDColumn, CodeColumn, ExpiresAtColumn, IsUsedColumn, CreatedAtColumn}
+		allColumns      = postgres.ColumnList{IDColumn, EmailColumn, IPColumn, CodeColumn, ExpiresAtColumn, IsUsedColumn, CreatedAtColumn}
+		mutableColumns  = postgres.ColumnList{EmailColumn, IPColumn, CodeColumn, ExpiresAtColumn, IsUsedColumn, CreatedAtColumn}
 	)
 
 	return verificationCodesTable{
@@ -78,7 +80,8 @@ func newVerificationCodesTableImpl(schemaName, tableName, alias string) verifica
 
 		//Columns
 		ID:        IDColumn,
-		UserID:    UserIDColumn,
+		Email:     EmailColumn,
+		IP:        IPColumn,
 		Code:      CodeColumn,
 		ExpiresAt: ExpiresAtColumn,
 		IsUsed:    IsUsedColumn,

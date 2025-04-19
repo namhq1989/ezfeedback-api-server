@@ -22,7 +22,6 @@ type feedbackRepliesTable struct {
 	UserID     postgres.ColumnString
 	Content    postgres.ColumnString
 	IsEdited   postgres.ColumnBool
-	Status     postgres.ColumnString
 	CreatedAt  postgres.ColumnTimestampz
 	UpdatedAt  postgres.ColumnTimestampz
 
@@ -70,11 +69,10 @@ func newFeedbackRepliesTableImpl(schemaName, tableName, alias string) feedbackRe
 		UserIDColumn     = postgres.StringColumn("user_id")
 		ContentColumn    = postgres.StringColumn("content")
 		IsEditedColumn   = postgres.BoolColumn("is_edited")
-		StatusColumn     = postgres.StringColumn("status")
 		CreatedAtColumn  = postgres.TimestampzColumn("created_at")
 		UpdatedAtColumn  = postgres.TimestampzColumn("updated_at")
-		allColumns       = postgres.ColumnList{IDColumn, FeedbackIDColumn, UserIDColumn, ContentColumn, IsEditedColumn, StatusColumn, CreatedAtColumn, UpdatedAtColumn}
-		mutableColumns   = postgres.ColumnList{FeedbackIDColumn, UserIDColumn, ContentColumn, IsEditedColumn, StatusColumn, CreatedAtColumn, UpdatedAtColumn}
+		allColumns       = postgres.ColumnList{IDColumn, FeedbackIDColumn, UserIDColumn, ContentColumn, IsEditedColumn, CreatedAtColumn, UpdatedAtColumn}
+		mutableColumns   = postgres.ColumnList{FeedbackIDColumn, UserIDColumn, ContentColumn, IsEditedColumn, CreatedAtColumn, UpdatedAtColumn}
 	)
 
 	return feedbackRepliesTable{
@@ -86,7 +84,6 @@ func newFeedbackRepliesTableImpl(schemaName, tableName, alias string) feedbackRe
 		UserID:     UserIDColumn,
 		Content:    ContentColumn,
 		IsEdited:   IsEditedColumn,
-		Status:     StatusColumn,
 		CreatedAt:  CreatedAtColumn,
 		UpdatedAt:  UpdatedAtColumn,
 
