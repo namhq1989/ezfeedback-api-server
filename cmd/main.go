@@ -7,6 +7,7 @@ import (
 
 	"github.com/labstack/echo/v4"
 	"github.com/labstack/echo/v4/middleware"
+	"github.com/namhq1989/ezfeedback-api-server/docs"
 	"github.com/namhq1989/ezfeedback-api-server/internal/caching"
 	"github.com/namhq1989/ezfeedback-api-server/internal/config"
 	"github.com/namhq1989/ezfeedback-api-server/internal/database"
@@ -18,8 +19,23 @@ import (
 	"github.com/namhq1989/ezfeedback-api-server/internal/utils/staticfiles"
 	"github.com/namhq1989/ezfeedback-api-server/internal/utils/waiter"
 	"github.com/namhq1989/ezfeedback-api-server/pkg/common"
+	"github.com/namhq1989/ezfeedback-api-server/pkg/iam"
 	"github.com/namhq1989/go-utilities/logger"
+	echoSwagger "github.com/swaggo/echo-swagger"
 )
+
+// @title       EzFeedback - App api
+// @version     1.0
+// @description Apis for EzFeedback app
+// @termsOfService https://easyfeedback.com
+// @contact.name   Nam
+// @contact.url    https://easyfeedback.com
+// @contact.email  namhq.1989@gmail.com
+// @basePath       /
+
+// @securityDefinitions.apikey ApiKeyAuth
+// @in                         header
+// @name                       Authorization
 
 func main() {
 	var err error
@@ -89,9 +105,16 @@ func main() {
 	// waiter
 	a.waiter = waiter.New(waiter.CatchSignals())
 
+	// swagger
+	if !cfg.IsEnvRelease {
+		docs.SwaggerInfo.Host = cfg.SwaggerURL
+		a.rest.GET("/swagger/*", echoSwagger.WrapHandler)
+	}
+
 	// modules
 	a.modules = []monolith.Module{
 		&common.Module{},
+		&iam.Module{},
 	}
 
 	// start

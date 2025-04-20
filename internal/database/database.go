@@ -17,7 +17,7 @@ import (
 )
 
 type Operations interface {
-	GetDB() *sql.DB
+	GetPgDb() *sql.DB
 	IsNoRowsError(err error) bool
 }
 
@@ -25,7 +25,13 @@ type Database struct {
 	pg *sql.DB
 }
 
-func NewDatabaseClient(conn string) *Database {
+func NewDatabaseClient(pgConn string) *Database {
+	return &Database{
+		pg: initPostgres(pgConn),
+	}
+}
+
+func initPostgres(conn string) *sql.DB {
 	db, err := otelsql.Open("pgx", conn,
 		otelsql.WithAttributes(semconv.DBSystemPostgreSQL),
 		otelsql.WithDBName("ezfeedback"),
@@ -48,12 +54,10 @@ func NewDatabaseClient(conn string) *Database {
 
 	fmt.Printf("⚡️ [postgresql]: connected \n")
 
-	return &Database{
-		pg: db,
-	}
+	return db
 }
 
-func (d Database) GetDB() *sql.DB {
+func (d Database) GetPgDb() *sql.DB {
 	return d.pg
 }
 

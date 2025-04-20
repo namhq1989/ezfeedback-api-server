@@ -6,6 +6,7 @@ import (
 	"github.com/namhq1989/ezfeedback-api-server/internal/config"
 	"github.com/namhq1989/ezfeedback-api-server/internal/database"
 	appjwt "github.com/namhq1989/ezfeedback-api-server/internal/jwt"
+	"github.com/namhq1989/ezfeedback-api-server/internal/mailer"
 	"github.com/namhq1989/ezfeedback-api-server/internal/monitoring"
 	"github.com/namhq1989/ezfeedback-api-server/internal/queue"
 	"github.com/namhq1989/ezfeedback-api-server/internal/utils/waiter"
@@ -19,6 +20,7 @@ type Monolith interface {
 	Caching() *caching.Caching
 	JWT() *appjwt.JWT
 	Queue() *queue.Queue
+	Mailer() *mailer.Mailer
 	Monitoring() *monitoring.Monitoring
 	Rest() *echo.Echo
 	RPC() *grpc.Server

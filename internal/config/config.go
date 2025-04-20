@@ -12,6 +12,7 @@ type (
 		AppName      string
 		Environment  string
 		IsEnvRelease bool
+		SwaggerURL   string
 
 		// Authentication
 		AccessTokenSecret string
@@ -61,6 +62,7 @@ func Init() Server {
 
 		AppName:     getEnvStr("APP_NAME"),
 		Environment: getEnvStr("ENVIRONMENT"),
+		SwaggerURL:  getEnvStr("SWAGGER_URL"),
 
 		AccessTokenSecret: getEnvStr("ACCESS_TOKEN_SECRET"),
 		AccessTokenTTL:    getEnvInt("ACCESS_TOKEN_TTL"),

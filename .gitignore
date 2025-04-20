@@ -27,3 +27,5 @@ go.work.sum
 .idea
 .vscode
 files/tts/*
+
+docs/*

@@ -19,14 +19,12 @@ CREATE TABLE users (
                        email VARCHAR(255) UNIQUE NOT NULL,
                        name VARCHAR(255) DEFAULT '' NOT NULL,
                        status user_status NOT NULL,
-                       invited_by TEXT REFERENCES users(id) ON DELETE SET NULL DEFAULT NULL,
                        created_at TIMESTAMPTZ DEFAULT NOW() NOT NULL,
                        updated_at TIMESTAMPTZ DEFAULT NOW() NOT NULL
 );
 
 CREATE INDEX idx_users_email ON users(email);
 CREATE INDEX idx_users_status ON users(status);
-CREATE INDEX idx_users_invited_by ON users(invited_by);
 
 -- Create verification codes table
 CREATE TABLE verification_codes (
@@ -184,15 +182,11 @@ CREATE TABLE user_invitations (
                                   inviter_id TEXT NOT NULL REFERENCES users(id) ON DELETE CASCADE,
                                   project_id TEXT NOT NULL REFERENCES projects(id) ON DELETE CASCADE,
                                   role project_role NOT NULL,
-                                  token VARCHAR(100) UNIQUE NOT NULL,
                                   status invitation_status NOT NULL,
                                   expires_at TIMESTAMPTZ NOT NULL,
                                   created_at TIMESTAMPTZ DEFAULT NOW() NOT NULL,
                                   updated_at TIMESTAMPTZ DEFAULT NOW() NOT NULL
 );
-
--- Essential lookup indexes
-CREATE UNIQUE INDEX idx_user_invitations_token ON user_invitations(token);
 
 -- Composite indexes for common query patterns
 CREATE INDEX idx_user_invitations_email_status ON user_invitations(email, status);

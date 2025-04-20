@@ -13,6 +13,7 @@ import (
 	"github.com/namhq1989/ezfeedback-api-server/internal/config"
 	"github.com/namhq1989/ezfeedback-api-server/internal/database"
 	appjwt "github.com/namhq1989/ezfeedback-api-server/internal/jwt"
+	"github.com/namhq1989/ezfeedback-api-server/internal/mailer"
 	"github.com/namhq1989/ezfeedback-api-server/internal/monitoring"
 	"github.com/namhq1989/ezfeedback-api-server/internal/monolith"
 	"github.com/namhq1989/ezfeedback-api-server/internal/queue"
@@ -28,6 +29,7 @@ type app struct {
 	caching    *caching.Caching
 	jwt        *appjwt.JWT
 	queue      *queue.Queue
+	mailer     *mailer.Mailer
 	monitoring *monitoring.Monitoring
 	rest       *echo.Echo
 	rpc        *grpc.Server
@@ -69,6 +71,10 @@ func (a *app) JWT() *appjwt.JWT {
 
 func (a *app) Queue() *queue.Queue {
 	return a.queue
+}
+
+func (a *app) Mailer() *mailer.Mailer {
+	return a.mailer
 }
 
 func (a *app) startupModules() error {

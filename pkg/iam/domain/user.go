@@ -6,20 +6,27 @@ import (
 	apperrors "github.com/namhq1989/ezfeedback-api-server/internal/error"
 	"github.com/namhq1989/ezfeedback-api-server/internal/utils/manipulation"
 	"github.com/namhq1989/ezfeedback-api-server/internal/utils/validation"
+	"github.com/namhq1989/go-utilities/appcontext"
 	"github.com/namhq1989/go-utilities/uuid"
 )
+
+type UserRepository interface {
+	Create(ctx *appcontext.AppContext, user User) error
+	Update(ctx *appcontext.AppContext, user User) error
+	FindByID(ctx *appcontext.AppContext, userID string) (*User, error)
+	FindByEmail(ctx *appcontext.AppContext, email string) (*User, error)
+}
 
 type User struct {
 	ID        string
 	Email     string
 	Name      string
 	Status    UserStatus
-	InvitedBy *string
 	CreatedAt time.Time
 	UpdatedAt time.Time
 }
 
-func NewUser(email, name, invitedBy string) (*User, error) {
+func NewUser(email, name string) (*User, error) {
 	var u = &User{
 		ID:        uuid.New(),
 		Status:    UserStatusActive,
@@ -31,9 +38,6 @@ func NewUser(email, name, invitedBy string) (*User, error) {
 		return nil, err
 	}
 	if err := u.SetName(name); err != nil {
-		return nil, err
-	}
-	if err := u.SetInvitedBy(&invitedBy); err != nil {
 		return nil, err
 	}
 
@@ -56,16 +60,6 @@ func (u *User) SetName(name string) error {
 		u.Name = u.Email
 	}
 
-	u.SetUpdatedAt()
-	return nil
-}
-
-func (u *User) SetInvitedBy(invitedBy *string) error {
-	if invitedBy != nil && !uuid.IsValidID(*invitedBy) {
-		return apperrors.User.InvalidInvitedBy
-	}
-
-	u.InvitedBy = invitedBy
 	u.SetUpdatedAt()
 	return nil
 }
