@@ -46,8 +46,8 @@ tasks:
     cmds:
       - rm -rf internal/mock
 
-      # common
-#      - mockgen -source=pkg/common/domain/system_setting.go -destination=internal/mock/common/system_setting.go -package=mockcommon
+      # iam
+      - mockgen -source=pkg/iam/domain/verification_code.go -destination=internal/mock/iam/verification_code.go -package=mockiam
 
 
   # test

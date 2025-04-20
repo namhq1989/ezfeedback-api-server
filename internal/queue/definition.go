@@ -1,7 +1,7 @@
 package queue
 
 var TypeNames = struct {
-	Sample string
+	DeleteExpiredVerificationCodes string
 }{
-	Sample: "common.sample",
+	DeleteExpiredVerificationCodes: "iam.deleteExpiredVerificationCodes",
 }
