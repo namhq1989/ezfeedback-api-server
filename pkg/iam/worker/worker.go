@@ -11,8 +11,10 @@ import (
 )
 
 type (
-	Handlers interface{}
-	Cronjob  interface {
+	Handlers interface {
+		SendSignInVerificationCodeEmail(ctx *appcontext.AppContext, payload domain.QueueSendVerificationCodeEmailPayload) error
+	}
+	Cronjob interface {
 		DeleteExpiredVerificationCodes(ctx *appcontext.AppContext, _ domain.QueueDeleteExpiredVerificationCodesPayload) error
 	}
 
@@ -21,7 +23,9 @@ type (
 		Cronjob
 	}
 
-	workerHandlers  struct{}
+	workerHandlers struct {
+		SendSignInVerificationCodeEmailHandler
+	}
 	cronjobHandlers struct {
 		DeleteExpiredVerificationCodesHandler
 	}
@@ -37,10 +41,13 @@ var _ Instance = (*Worker)(nil)
 func New(
 	queue queue.Operations,
 	verificationCodeRepository domain.VerificationCodeRepository,
+	mailerRepository domain.MailerRepository,
 ) Worker {
 	return Worker{
-		queue:          queue,
-		workerHandlers: workerHandlers{},
+		queue: queue,
+		workerHandlers: workerHandlers{
+			SendSignInVerificationCodeEmailHandler: NewSendSignInVerificationCodeEmailHandler(mailerRepository),
+		},
 		cronjobHandlers: cronjobHandlers{
 			DeleteExpiredVerificationCodesHandler: NewDeleteExpiredVerificationCodesHandler(verificationCodeRepository),
 		},
@@ -51,6 +58,11 @@ func (w Worker) Start() {
 	w.addCronjob()
 
 	server := w.queue.GetServer()
+
+	// immediately
+	server.HandleFunc(w.queue.GenerateTypename(queue.TypeNames.SendVerificationCodeEmail), func(bgCtx context.Context, t *asynq.Task) error {
+		return queue.ProcessTask[domain.QueueSendVerificationCodeEmailPayload](bgCtx, t, queue.ParsePayload[domain.QueueSendVerificationCodeEmailPayload], w.SendSignInVerificationCodeEmail)
+	})
 
 	// cronjob
 	server.HandleFunc(w.queue.GenerateTypename(queue.TypeNames.DeleteExpiredVerificationCodes), func(bgCtx context.Context, t *asynq.Task) error {

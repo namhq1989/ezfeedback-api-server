@@ -21,6 +21,7 @@ func (Module) Startup(ctx *appcontext.AppContext, mono monolith.Monolith) error 
 		verificationCodeRepository = infrastructure.NewVerificationCodeRepository(mono.Database())
 		queueRepository            = infrastructure.NewQueueRepository(mono.Queue())
 		jwtRepository              = infrastructure.NewJwtRepository(mono.JWT())
+		mailerRepository           = infrastructure.NewMailerRepository(mono.Mailer())
 
 		app = application.New(
 			userRepository,
@@ -39,6 +40,7 @@ func (Module) Startup(ctx *appcontext.AppContext, mono monolith.Monolith) error 
 	w := worker.New(
 		mono.Queue(),
 		verificationCodeRepository,
+		mailerRepository,
 	)
 	w.Start()
 
