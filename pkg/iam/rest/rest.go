@@ -3,7 +3,7 @@ package rest
 import (
 	"github.com/labstack/echo/v4"
 	appjwt "github.com/namhq1989/ezfeedback-api-server/internal/jwt"
-	"github.com/namhq1989/ezfeedback-api-server/pkg/common/application"
+	"github.com/namhq1989/ezfeedback-api-server/pkg/iam/application"
 	"github.com/namhq1989/go-utilities/appcontext"
 )
 
@@ -22,7 +22,7 @@ func RegisterServer(_ *appcontext.AppContext, app application.Instance, e *echo.
 		isEnvRelease: isEnvRelease,
 	}
 
-	s.registerCommonRoutes()
+	s.registerIamRoutes()
 
 	return nil
 }

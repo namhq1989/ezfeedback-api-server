@@ -1,7 +1,7 @@
 package query
 
 import (
-	"github.com/namhq1989/ezfeedback-api-server/pkg/common/dto"
+	"github.com/namhq1989/ezfeedback-api-server/pkg/iam/dto"
 	"github.com/namhq1989/go-utilities/appcontext"
 )
 

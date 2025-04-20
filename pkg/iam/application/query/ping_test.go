@@ -4,8 +4,8 @@ import (
 	"context"
 	"testing"
 
-	"github.com/namhq1989/ezfeedback-api-server/pkg/common/application/query"
-	"github.com/namhq1989/ezfeedback-api-server/pkg/common/dto"
+	"github.com/namhq1989/ezfeedback-api-server/pkg/iam/application/query"
+	"github.com/namhq1989/ezfeedback-api-server/pkg/iam/dto"
 	"github.com/namhq1989/go-utilities/appcontext"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/suite"

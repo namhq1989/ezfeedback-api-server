@@ -2,9 +2,9 @@ package iam
 
 import (
 	"github.com/namhq1989/ezfeedback-api-server/internal/monolith"
-	"github.com/namhq1989/ezfeedback-api-server/pkg/common/application"
-	"github.com/namhq1989/ezfeedback-api-server/pkg/common/rest"
+	"github.com/namhq1989/ezfeedback-api-server/pkg/iam/application"
 	"github.com/namhq1989/ezfeedback-api-server/pkg/iam/infrastructure"
+	"github.com/namhq1989/ezfeedback-api-server/pkg/iam/rest"
 	"github.com/namhq1989/ezfeedback-api-server/pkg/iam/worker"
 	"github.com/namhq1989/go-utilities/appcontext"
 )
@@ -18,8 +18,12 @@ func (Module) Name() string {
 func (Module) Startup(ctx *appcontext.AppContext, mono monolith.Monolith) error {
 	var (
 		verificationCodeRepository = infrastructure.NewVerificationCodeRepository(mono.Database())
+		queueRepository            = infrastructure.NewQueueRepository(mono.Queue())
 
-		app = application.New()
+		app = application.New(
+			verificationCodeRepository,
+			queueRepository,
+		)
 	)
 
 	// rest server

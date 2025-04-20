@@ -26,7 +26,7 @@ func NewVerificationCodeRepository(db *database.Database) VerificationCodeReposi
 }
 
 func (r VerificationCodeRepository) getDB() *sql.DB {
-	return r.db.GetDB()
+	return r.db.GetPgDb()
 }
 
 func (VerificationCodeRepository) getTable() *table.VerificationCodesTable {

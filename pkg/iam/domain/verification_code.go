@@ -18,8 +18,9 @@ type VerificationCodeRepository interface {
 }
 
 var (
-	otpDigits           = 6
-	verificationCodeTTL = 15 * time.Minute
+	TotalVerificationCodeSentByIpPerDay int64 = 10
+	otpDigits                                 = 6
+	verificationCodeTTL                       = 15 * time.Minute
 )
 
 type VerificationCode struct {
@@ -88,4 +89,8 @@ func (c *VerificationCode) IsValidCode(code string) bool {
 
 func (c *VerificationCode) IsExpired() bool {
 	return c.ExpiresAt.Before(manipulation.NowUTC())
+}
+
+func IsDailyIpOtpLimitExceeded(sent int64) bool {
+	return sent >= TotalVerificationCodeSentByIpPerDay
 }

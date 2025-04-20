@@ -29,6 +29,7 @@ user_not_found = "User not found"
 user_invalid_invited_by = "Invalid invited by"
 user_invalid_verification_code = "The verification code you entered is incorrect or has expired. Please check your code or request a new one"
 user_invalid_device_id = "Invalid device id"
+user_daily_ip_otp_limit_exceeded = "You have exceeded the maximum number of verification code requests allowed for today. Please try again tomorrow"
 
 # invitation
 invitation_invalid_id = "Invalid invitation id"
