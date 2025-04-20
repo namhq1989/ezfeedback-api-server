@@ -47,9 +47,15 @@ tasks:
       - rm -rf internal/mock
 
       # iam
+      - mockgen -source=pkg/iam/domain/user.go -destination=internal/mock/iam/user.go -package=mockiam
       - mockgen -source=pkg/iam/domain/verification_code.go -destination=internal/mock/iam/verification_code.go -package=mockiam
       - mockgen -source=pkg/iam/domain/queue.go -destination=internal/mock/iam/queue.go -package=mockiam
+      - mockgen -source=pkg/iam/domain/jwt.go -destination=internal/mock/iam/jwt.go -package=mockiam
 
+  # swagger generation
+  swagger-gen:
+    swag init --parseDependencyLevel 1 -g cmd/main.go \
+    -o ./docs
 
   # test
   test:

@@ -97,3 +97,17 @@ func (mr *MockVerificationCodeRepositoryMockRecorder) TotalSentTodayByIp(ctx, ip
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "TotalSentTodayByIp", reflect.TypeOf((*MockVerificationCodeRepository)(nil).TotalSentTodayByIp), ctx, ip)
 }
+
+// Update mocks base method.
+func (m *MockVerificationCodeRepository) Update(ctx *appcontext.AppContext, code domain.VerificationCode) error {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "Update", ctx, code)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// Update indicates an expected call of Update.
+func (mr *MockVerificationCodeRepositoryMockRecorder) Update(ctx, code any) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Update", reflect.TypeOf((*MockVerificationCodeRepository)(nil).Update), ctx, code)
+}

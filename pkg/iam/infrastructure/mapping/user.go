@@ -13,7 +13,6 @@ func (UserMapper) FromModelToDomain(user model.Users) (*domain.User, error) {
 		Email:     user.Email,
 		Name:      user.Name,
 		Status:    domain.ToUserStatus(user.Status.String()),
-		InvitedBy: user.InvitedBy,
 		CreatedAt: user.CreatedAt,
 		UpdatedAt: user.UpdatedAt,
 	}
@@ -27,7 +26,6 @@ func (UserMapper) FromDomainToModel(user domain.User) (*model.Users, error) {
 		Email:     user.Email,
 		Name:      user.Name,
 		Status:    model.UserStatus(user.Status.String()),
-		InvitedBy: user.InvitedBy,
 		CreatedAt: user.CreatedAt,
 		UpdatedAt: user.UpdatedAt,
 	}

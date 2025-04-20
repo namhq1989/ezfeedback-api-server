@@ -17,12 +17,16 @@ func (Module) Name() string {
 
 func (Module) Startup(ctx *appcontext.AppContext, mono monolith.Monolith) error {
 	var (
+		userRepository             = infrastructure.NewUserRepository(mono.Database())
 		verificationCodeRepository = infrastructure.NewVerificationCodeRepository(mono.Database())
 		queueRepository            = infrastructure.NewQueueRepository(mono.Queue())
+		jwtRepository              = infrastructure.NewJwtRepository(mono.JWT())
 
 		app = application.New(
+			userRepository,
 			verificationCodeRepository,
 			queueRepository,
+			jwtRepository,
 		)
 	)
 

@@ -12,6 +12,7 @@ import (
 
 type VerificationCodeRepository interface {
 	Create(ctx *appcontext.AppContext, code VerificationCode) error
+	Update(ctx *appcontext.AppContext, code VerificationCode) error
 	Find(ctx *appcontext.AppContext, ip, email, code string) (*VerificationCode, error)
 	TotalSentTodayByIp(ctx *appcontext.AppContext, ip string) (int64, error)
 	DeleteExpired(ctx *appcontext.AppContext) error

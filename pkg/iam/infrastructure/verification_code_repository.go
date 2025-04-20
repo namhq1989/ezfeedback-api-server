@@ -49,6 +49,30 @@ func (r VerificationCodeRepository) Create(ctx *appcontext.AppContext, code doma
 	return err
 }
 
+func (r VerificationCodeRepository) Update(ctx *appcontext.AppContext, code domain.VerificationCode) error {
+	mapper := mapping.VerificationCodeMapper{}
+	doc, err := mapper.FromDomainToModel(code)
+	if err != nil {
+		return err
+	}
+
+	stmt := r.getTable().UPDATE(
+		r.getTable().AllColumns,
+	).
+		MODEL(doc).
+		WHERE(
+			r.getTable().ID.EQ(postgres.String(doc.ID)),
+		)
+
+	_, err = stmt.ExecContext(ctx.Context(), r.getDB())
+	if err != nil {
+		if isDuplicated, duplicateErr := r.db.IsDuplicatedError(err); isDuplicated {
+			err = duplicateErr
+		}
+	}
+	return err
+}
+
 func (r VerificationCodeRepository) Find(ctx *appcontext.AppContext, ip, email, code string) (*domain.VerificationCode, error) {
 	var c = r.getTable()
 

@@ -19,14 +19,13 @@ type UserInvitation struct {
 	InviterID string
 	ProjectID string
 	Role      ProjectRole
-	Token     string
 	Status    UserInvitationStatus
 	ExpiresAt time.Time
 	CreatedAt time.Time
 	UpdatedAt time.Time
 }
 
-func NewUserInvitation(email, inviterID, projectID, role, token string) (*UserInvitation, error) {
+func NewUserInvitation(email, inviterID, projectID, role string) (*UserInvitation, error) {
 	var (
 		now = manipulation.NowUTC()
 	)
@@ -49,9 +48,6 @@ func NewUserInvitation(email, inviterID, projectID, role, token string) (*UserIn
 		return nil, err
 	}
 	if err := i.SetRole(role); err != nil {
-		return nil, err
-	}
-	if err := i.SetToken(token); err != nil {
 		return nil, err
 	}
 
@@ -99,12 +95,6 @@ func (i *UserInvitation) SetRole(role string) error {
 	return nil
 }
 
-func (i *UserInvitation) SetToken(token string) error {
-	i.Token = token
-	i.SetUpdatedAt()
-	return nil
-}
-
 func (i *UserInvitation) SetStatus(status string) error {
 	dStatus := ToUserInvitationStatus(status)
 	if !dStatus.IsValid() {
@@ -118,10 +108,6 @@ func (i *UserInvitation) SetStatus(status string) error {
 
 func (i *UserInvitation) SetUpdatedAt() {
 	i.UpdatedAt = manipulation.NowUTC()
-}
-
-func (i *UserInvitation) IsValidToken(token string) bool {
-	return i.Token == token
 }
 
 func (i *UserInvitation) IsExpired() bool {
