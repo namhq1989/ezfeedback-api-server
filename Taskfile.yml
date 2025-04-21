@@ -52,6 +52,8 @@ tasks:
       - mockgen -source=pkg/iam/domain/queue.go -destination=internal/mock/iam/queue.go -package=mockiam
       - mockgen -source=pkg/iam/domain/jwt.go -destination=internal/mock/iam/jwt.go -package=mockiam
       - mockgen -source=pkg/iam/domain/mailer.go -destination=internal/mock/iam/mailer.go -package=mockiam
+      - mockgen -source=pkg/iam/domain/caching.go -destination=internal/mock/iam/caching.go -package=mockiam
+      - mockgen -source=pkg/iam/domain/service.go -destination=internal/mock/iam/service.go -package=mockiam
 
   # swagger generation
   swagger-gen:

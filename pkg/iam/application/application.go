@@ -15,6 +15,8 @@ type (
 	}
 	Queries interface {
 		Ping(ctx *appcontext.AppContext, _ dto.PingRequest) (*dto.PingResponse, error)
+
+		GetMe(ctx *appcontext.AppContext, performerID string, _ dto.GetMeRequest) (*dto.GetMeResponse, error)
 	}
 	Instance interface {
 		Commands
@@ -27,6 +29,8 @@ type (
 	}
 	queryHandlers struct {
 		query.PingHandler
+
+		query.GetMeHandler
 	}
 	Application struct {
 		commandHandlers
@@ -41,6 +45,7 @@ func New(
 	verificationCodeRepository domain.VerificationCodeRepository,
 	queueRepository domain.QueueRepository,
 	jwtRepository domain.JwtRepository,
+	service domain.Service,
 ) *Application {
 	return &Application{
 		commandHandlers: commandHandlers{
@@ -56,6 +61,8 @@ func New(
 		},
 		queryHandlers: queryHandlers{
 			PingHandler: query.NewPingHandler(),
+
+			GetMeHandler: query.NewGetMeHandler(service),
 		},
 	}
 }

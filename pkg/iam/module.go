@@ -5,6 +5,7 @@ import (
 	"github.com/namhq1989/ezfeedback-api-server/pkg/iam/application"
 	"github.com/namhq1989/ezfeedback-api-server/pkg/iam/infrastructure"
 	"github.com/namhq1989/ezfeedback-api-server/pkg/iam/rest"
+	"github.com/namhq1989/ezfeedback-api-server/pkg/iam/shared"
 	"github.com/namhq1989/ezfeedback-api-server/pkg/iam/worker"
 	"github.com/namhq1989/go-utilities/appcontext"
 )
@@ -22,12 +23,19 @@ func (Module) Startup(ctx *appcontext.AppContext, mono monolith.Monolith) error 
 		queueRepository            = infrastructure.NewQueueRepository(mono.Queue())
 		jwtRepository              = infrastructure.NewJwtRepository(mono.JWT())
 		mailerRepository           = infrastructure.NewMailerRepository(mono.Mailer())
+		cachingRepository          = infrastructure.NewCachingRepository(mono.Caching(), mono.Config().IsEnvRelease)
+
+		service = shared.NewService(
+			userRepository,
+			cachingRepository,
+		)
 
 		app = application.New(
 			userRepository,
 			verificationCodeRepository,
 			queueRepository,
 			jwtRepository,
+			service,
 		)
 	)
 

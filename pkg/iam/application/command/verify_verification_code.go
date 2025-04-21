@@ -28,7 +28,7 @@ func NewVerifyVerificationCodeHandler(
 // VerifyVerificationCode godoc
 // @tags     IAM
 // @summary  Verify verification code
-// @id       user-verify-verification-code
+// @id       iam-verify-verification-code
 // @accept   json
 // @produce  json
 // @param    payload body    dto.VerifyVerificationCodeRequest true "Body"
