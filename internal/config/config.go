@@ -30,11 +30,6 @@ type (
 		QueuePassword    string
 		QueueConcurrency int
 
-		// AWS
-		AWSAccessKey string
-		AWSSecretKey string
-		AWSRegion    string
-
 		// R2
 		R2AccessKey string
 		R2SecretKey string
@@ -49,6 +44,11 @@ type (
 		// Sentry
 		SentryDSN         string
 		SentryMachineName string
+
+		// Mailer
+		MailerFromEmail string
+		MailerService   string
+		BrevoApiKey     string
 
 		// Endpoint
 		CDNEndpoint string
@@ -76,10 +76,6 @@ func Init() Server {
 		QueuePassword:    getEnvStr("QUEUE_PASSWORD"),
 		QueueConcurrency: getEnvInt("QUEUE_CONCURRENCY"),
 
-		AWSAccessKey: getEnvStr("AWS_ACCESS_KEY"),
-		AWSSecretKey: getEnvStr("AWS_SECRET_KEY"),
-		AWSRegion:    getEnvStr("AWS_REGION"),
-
 		R2AccessKey: getEnvStr("R2_ACCESS_KEY"),
 		R2SecretKey: getEnvStr("R2_SECRET_KEY"),
 		R2Bucket:    getEnvStr("R2_BUCKET"),
@@ -91,6 +87,10 @@ func Init() Server {
 
 		SentryDSN:         getEnvStr("SENTRY_DSN"),
 		SentryMachineName: getEnvStr("SENTRY_MACHINE_NAME"),
+
+		MailerFromEmail: getEnvStr("MAILER_FROM_EMAIL"),
+		MailerService:   getEnvStr("MAILER_SERVICE"),
+		BrevoApiKey:     getEnvStr("BREVO_API_KEY"),
 
 		CDNEndpoint: getEnvStr("CDN_ENDPOINT"),
 	}
@@ -117,12 +117,16 @@ func Init() Server {
 		panic(errors.New("missing QUEUE_REDIS_URL"))
 	}
 
-	if cfg.AWSAccessKey == "" {
-		panic(errors.New("missing AWS_ACCESS_KEY"))
-	}
-
 	if cfg.R2AccessKey == "" {
 		panic(errors.New("missing R2_ACCESS_KEY"))
+	}
+
+	if cfg.MailerService == "" {
+		panic(errors.New("missing MAILER_SERVICE"))
+	}
+
+	if cfg.BrevoApiKey == "" {
+		panic(errors.New("missing BREVO_API_KEY"))
 	}
 
 	if cfg.CDNEndpoint == "" {

@@ -33,7 +33,7 @@ func NewVerifyVerificationCodeHandler(
 // @produce  json
 // @param    payload body    dto.VerifyVerificationCodeRequest true "Body"
 // @success  200     {object} dto.VerifyVerificationCodeResponse
-// @router   /api/user/verify-verification-code [post]
+// @router   /api/iam/verify-verification-code [post]
 func (h VerifyVerificationCodeHandler) VerifyVerificationCode(ctx *appcontext.AppContext, ip string, req dto.VerifyVerificationCodeRequest) (*dto.VerifyVerificationCodeResponse, error) {
 	ctx.Logger().Info("new verify verification code request", appcontext.Fields{"ip": ip, "email": req.Email, "code": req.Code})
 

@@ -13,6 +13,7 @@ import (
 	"github.com/namhq1989/ezfeedback-api-server/internal/database"
 	apperrors "github.com/namhq1989/ezfeedback-api-server/internal/error"
 	appjwt "github.com/namhq1989/ezfeedback-api-server/internal/jwt"
+	"github.com/namhq1989/ezfeedback-api-server/internal/mailer"
 	"github.com/namhq1989/ezfeedback-api-server/internal/monitoring"
 	"github.com/namhq1989/ezfeedback-api-server/internal/monolith"
 	"github.com/namhq1989/ezfeedback-api-server/internal/queue"
@@ -101,6 +102,9 @@ func main() {
 		return subtle.ConstantTimeCompare([]byte(username), []byte(cfg.QueueUsername)) == 1 &&
 			subtle.ConstantTimeCompare([]byte(password), []byte(cfg.QueuePassword)) == 1, nil
 	}))
+
+	// mailer
+	a.mailer = mailer.NewMailerClient(cfg.MailerService, "", cfg.BrevoApiKey, cfg.MailerFromEmail)
 
 	// waiter
 	a.waiter = waiter.New(waiter.CatchSignals())

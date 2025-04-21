@@ -21,7 +21,6 @@ type usersTable struct {
 	Email     postgres.ColumnString
 	Name      postgres.ColumnString
 	Status    postgres.ColumnString
-	InvitedBy postgres.ColumnString
 	CreatedAt postgres.ColumnTimestampz
 	UpdatedAt postgres.ColumnTimestampz
 
@@ -68,11 +67,10 @@ func newUsersTableImpl(schemaName, tableName, alias string) usersTable {
 		EmailColumn     = postgres.StringColumn("email")
 		NameColumn      = postgres.StringColumn("name")
 		StatusColumn    = postgres.StringColumn("status")
-		InvitedByColumn = postgres.StringColumn("invited_by")
 		CreatedAtColumn = postgres.TimestampzColumn("created_at")
 		UpdatedAtColumn = postgres.TimestampzColumn("updated_at")
-		allColumns      = postgres.ColumnList{IDColumn, EmailColumn, NameColumn, StatusColumn, InvitedByColumn, CreatedAtColumn, UpdatedAtColumn}
-		mutableColumns  = postgres.ColumnList{EmailColumn, NameColumn, StatusColumn, InvitedByColumn, CreatedAtColumn, UpdatedAtColumn}
+		allColumns      = postgres.ColumnList{IDColumn, EmailColumn, NameColumn, StatusColumn, CreatedAtColumn, UpdatedAtColumn}
+		mutableColumns  = postgres.ColumnList{EmailColumn, NameColumn, StatusColumn, CreatedAtColumn, UpdatedAtColumn}
 	)
 
 	return usersTable{
@@ -83,7 +81,6 @@ func newUsersTableImpl(schemaName, tableName, alias string) usersTable {
 		Email:     EmailColumn,
 		Name:      NameColumn,
 		Status:    StatusColumn,
-		InvitedBy: InvitedByColumn,
 		CreatedAt: CreatedAtColumn,
 		UpdatedAt: UpdatedAtColumn,
 
