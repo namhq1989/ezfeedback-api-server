@@ -6,8 +6,15 @@ import (
 
 	apperrors "github.com/namhq1989/ezfeedback-api-server/internal/error"
 	"github.com/namhq1989/ezfeedback-api-server/internal/utils/manipulation"
+	"github.com/namhq1989/go-utilities/appcontext"
 	"github.com/namhq1989/go-utilities/uuid"
 )
+
+type ProjectRepository interface {
+	Create(ctx *appcontext.AppContext, project Project) error
+	Update(ctx *appcontext.AppContext, project Project) error
+	FindByID(ctx *appcontext.AppContext, projectID string) (*Project, error)
+}
 
 const (
 	projectSlugSuffixLength = 6

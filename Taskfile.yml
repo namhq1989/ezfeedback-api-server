@@ -55,6 +55,13 @@ tasks:
       - mockgen -source=pkg/iam/domain/caching.go -destination=internal/mock/iam/caching.go -package=mockiam
       - mockgen -source=pkg/iam/domain/service.go -destination=internal/mock/iam/service.go -package=mockiam
 
+      # project
+      - mockgen -source=pkg/project/domain/project.go -destination=internal/mock/project/project.go -package=mockproject
+      - mockgen -source=pkg/project/domain/project_setting.go -destination=internal/mock/project/project_setting.go -package=mockproject
+      - mockgen -source=pkg/project/domain/caching.go -destination=internal/mock/project/caching.go -package=mockproject
+      - mockgen -source=pkg/project/domain/billing.go -destination=internal/mock/project/billing.go -package=mockproject
+      - mockgen -source=pkg/project/domain/service.go -destination=internal/mock/project/service.go -package=mockproject
+
   # swagger generation
   swagger-gen:
     swag init --parseDependencyLevel 1 -g cmd/main.go \

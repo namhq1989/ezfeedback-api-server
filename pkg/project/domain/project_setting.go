@@ -5,8 +5,15 @@ import (
 
 	apperrors "github.com/namhq1989/ezfeedback-api-server/internal/error"
 	"github.com/namhq1989/ezfeedback-api-server/internal/utils/manipulation"
+	"github.com/namhq1989/go-utilities/appcontext"
 	"github.com/namhq1989/go-utilities/uuid"
 )
+
+type ProjectSettingRepository interface {
+	Create(ctx *appcontext.AppContext, setting ProjectSetting) error
+	Update(ctx *appcontext.AppContext, setting ProjectSetting) error
+	FindByProjectID(ctx *appcontext.AppContext, projectID string) (*ProjectSetting, error)
+}
 
 type ProjectSetting struct {
 	ID                     string
@@ -18,18 +25,25 @@ type ProjectSetting struct {
 	UpdatedAt              time.Time
 }
 
-func NewProjectSetting(projectID string) *ProjectSetting {
+func NewProjectSetting(projectID string, isFeedbackPublic bool, allowAnonymousFeedback bool, enableVoting bool) (*ProjectSetting, error) {
+	var (
+		now = manipulation.NowUTC()
+	)
+
 	var s = &ProjectSetting{
-		IsFeedbackPublic:       false,
-		AllowAnonymousFeedback: true,
-		EnableVoting:           true,
+		ID:                     uuid.New(),
+		IsFeedbackPublic:       isFeedbackPublic,
+		AllowAnonymousFeedback: allowAnonymousFeedback,
+		EnableVoting:           enableVoting,
+		CreatedAt:              now,
+		UpdatedAt:              now,
 	}
 
 	if err := s.SetProjectID(projectID); err != nil {
-		return nil
+		return nil, err
 	}
 
-	return s
+	return s, nil
 }
 
 func (s *ProjectSetting) SetProjectID(projectID string) error {

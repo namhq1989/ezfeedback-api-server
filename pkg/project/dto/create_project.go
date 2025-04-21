@@ -1,0 +1,13 @@
+package dto
+
+type CreateProjectRequest struct {
+	Title                  string `json:"title" validate:"required" message:"invalid_title"`
+	Description            string `json:"description"`
+	IsFeedbackPublic       bool   `json:"isFeedbackPublic"`
+	AllowAnonymousFeedback bool   `json:"allowAnonymousFeedback"`
+	EnableVoting           bool   `json:"enableVoting"`
+}
+
+type CreateProjectResponse struct {
+	ID string `json:"id"`
+}

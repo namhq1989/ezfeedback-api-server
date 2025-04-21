@@ -27,6 +27,26 @@ func (s server) registerIamRoutes() {
 		return validation.ValidateHTTPPayload[dto.PingRequest](next)
 	})
 
+	g.POST("/generate-token", func(c echo.Context) error {
+		if s.isEnvRelease {
+			return httprespond.R404(c, nil, nil)
+		}
+
+		var (
+			ctx = c.Get("ctx").(*appcontext.AppContext)
+			req = c.Get("req").(dto.GenerateTokenRequest)
+		)
+
+		resp, err := s.app.GenerateToken(ctx, req)
+		if err != nil {
+			return httprespond.R400(c, err, nil)
+		}
+
+		return httprespond.R200(c, resp)
+	}, func(next echo.HandlerFunc) echo.HandlerFunc {
+		return validation.ValidateHTTPPayload[dto.GenerateTokenRequest](next)
+	})
+
 	g.POST("/request-verification-code", func(c echo.Context) error {
 		var (
 			ctx = c.Get("ctx").(*appcontext.AppContext)

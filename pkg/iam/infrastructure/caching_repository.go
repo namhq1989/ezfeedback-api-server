@@ -22,7 +22,7 @@ func NewCachingRepository(caching *caching.Caching, isEnvRelease bool) CachingRe
 		return CachingRepository{
 			caching:             caching,
 			domain:              "iam",
-			userByIDCachingTime: 10 * time.Minute,
+			userByIDCachingTime: 12 * time.Hour,
 		}
 	} else {
 		cachingTime := 1 * time.Minute
