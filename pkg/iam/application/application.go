@@ -12,6 +12,8 @@ type (
 	Commands interface {
 		RequestVerificationCode(ctx *appcontext.AppContext, ip string, req dto.RequestVerificationCodeRequest) (*dto.RequestVerificationCodeResponse, error)
 		VerifyVerificationCode(ctx *appcontext.AppContext, ip string, req dto.VerifyVerificationCodeRequest) (*dto.VerifyVerificationCodeResponse, error)
+
+		UpdateMe(ctx *appcontext.AppContext, performerID string, req dto.UpdateMeRequest) (*dto.UpdateMeResponse, error)
 	}
 	Queries interface {
 		Ping(ctx *appcontext.AppContext, _ dto.PingRequest) (*dto.PingResponse, error)
@@ -26,6 +28,8 @@ type (
 	commandHandlers struct {
 		command.RequestVerificationCodeHandler
 		command.VerifyVerificationCodeHandler
+
+		command.UpdateMeHandler
 	}
 	queryHandlers struct {
 		query.PingHandler
@@ -45,6 +49,7 @@ func New(
 	verificationCodeRepository domain.VerificationCodeRepository,
 	queueRepository domain.QueueRepository,
 	jwtRepository domain.JwtRepository,
+	cachingRepository domain.CachingRepository,
 	service domain.Service,
 ) *Application {
 	return &Application{
@@ -57,6 +62,12 @@ func New(
 			RequestVerificationCodeHandler: command.NewRequestVerificationCodeHandler(
 				verificationCodeRepository,
 				queueRepository,
+			),
+
+			UpdateMeHandler: command.NewUpdateMeHandler(
+				userRepository,
+				cachingRepository,
+				service,
 			),
 		},
 		queryHandlers: queryHandlers{

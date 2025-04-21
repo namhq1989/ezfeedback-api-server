@@ -35,6 +35,7 @@ func (Module) Startup(ctx *appcontext.AppContext, mono monolith.Monolith) error 
 			verificationCodeRepository,
 			queueRepository,
 			jwtRepository,
+			cachingRepository,
 			service,
 		)
 	)

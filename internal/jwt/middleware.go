@@ -8,7 +8,7 @@ import (
 	"github.com/namhq1989/go-utilities/appcontext"
 )
 
-func (j JWT) RequireLoggedIn(next echo.HandlerFunc) echo.HandlerFunc {
+func (j JWT) RequireSignedIn(next echo.HandlerFunc) echo.HandlerFunc {
 	return func(c echo.Context) error {
 		var (
 			ctx   = c.Get("ctx").(*appcontext.AppContext)
@@ -26,7 +26,7 @@ func (j JWT) RequireLoggedIn(next echo.HandlerFunc) echo.HandlerFunc {
 		}
 
 		ctx.SetUserID(claims.UserID)
-		ctx.SetTimezone("Asia/Ho_Chi_Minh") // default to VN, should be based on user's timezone
+		// ctx.SetTimezone("Asia/Ho_Chi_Minh") // default to VN, should be based on user's timezone
 		return next(c)
 	}
 }

@@ -9,7 +9,7 @@ import (
 )
 
 type Operations interface {
-	RequireLoggedIn(next echo.HandlerFunc) echo.HandlerFunc
+	RequireSignedIn(next echo.HandlerFunc) echo.HandlerFunc
 
 	GenerateAccessToken(ctx *appcontext.AppContext, userID string) (string, error)
 	ParseAccessToken(ctx *appcontext.AppContext, token string) (*Claims, error)

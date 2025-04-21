@@ -86,7 +86,7 @@ func (h VerifyVerificationCodeHandler) VerifyVerificationCode(ctx *appcontext.Ap
 	}
 
 	ctx.Logger().Text("user not found, create new user")
-	user, err = domain.NewUser(req.Email, req.Email)
+	user, err = domain.NewUser(req.Email)
 	if err != nil {
 		ctx.Logger().Error("failed to create new user", err, appcontext.Fields{})
 		return nil, err
