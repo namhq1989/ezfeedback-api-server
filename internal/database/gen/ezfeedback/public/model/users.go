@@ -16,7 +16,6 @@ type Users struct {
 	Email     string
 	Name      string
 	Status    UserStatus
-	InvitedBy *string
 	CreatedAt time.Time
 	UpdatedAt time.Time
 }

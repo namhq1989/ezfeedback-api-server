@@ -17,7 +17,6 @@ type UserInvitations struct {
 	InviterID string
 	ProjectID string
 	Role      ProjectRole
-	Token     string
 	Status    InvitationStatus
 	ExpiresAt time.Time
 	CreatedAt time.Time
