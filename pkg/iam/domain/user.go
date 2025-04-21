@@ -26,7 +26,7 @@ type User struct {
 	UpdatedAt time.Time
 }
 
-func NewUser(email, name string) (*User, error) {
+func NewUser(email string) (*User, error) {
 	var u = &User{
 		ID:        uuid.New(),
 		Status:    UserStatusActive,
@@ -37,7 +37,7 @@ func NewUser(email, name string) (*User, error) {
 	if err := u.SetEmail(email); err != nil {
 		return nil, err
 	}
-	if err := u.SetName(name); err != nil {
+	if err := u.SetName(email); err != nil {
 		return nil, err
 	}
 
@@ -55,6 +55,10 @@ func (u *User) SetEmail(email string) error {
 }
 
 func (u *User) SetName(name string) error {
+	if name == "" || len(name) < 3 || len(name) > 255 {
+		return apperrors.Common.InvalidName
+	}
+
 	u.Name = name
 	if u.Name == "" {
 		u.Name = u.Email
