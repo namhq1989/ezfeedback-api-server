@@ -13,6 +13,7 @@ import (
 type ProjectCategoryRepository interface {
 	Create(ctx *appcontext.AppContext, category ProjectCategory) error
 	Update(ctx *appcontext.AppContext, category ProjectCategory) error
+	FindByID(ctx *appcontext.AppContext, categoryID string) (*ProjectCategory, error)
 	FindByProjectID(ctx *appcontext.AppContext, projectID string) ([]ProjectCategory, error)
 	CountTotalByProjectID(ctx *appcontext.AppContext, projectID string) (int64, error)
 }

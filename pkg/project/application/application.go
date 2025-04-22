@@ -15,6 +15,7 @@ type (
 		ChangeProjectStatus(ctx *appcontext.AppContext, performerID, projectID string, req dto.ChangeProjectStatusRequest) (*dto.ChangeProjectStatusResponse, error)
 
 		CreateProjectCategory(ctx *appcontext.AppContext, performerID, projectID string, req dto.CreateProjectCategoryRequest) (*dto.CreateProjectCategoryResponse, error)
+		UpdateProjectCategory(ctx *appcontext.AppContext, performerID, projectID, categoryID string, req dto.UpdateProjectCategoryRequest) (*dto.UpdateProjectCategoryResponse, error)
 	}
 	Queries interface {
 		Ping(ctx *appcontext.AppContext, _ dto.PingRequest) (*dto.PingResponse, error)
@@ -32,6 +33,7 @@ type (
 		command.ChangeProjectStatusHandler
 
 		command.CreateProjectCategoryHandler
+		command.UpdateProjectCategoryHandler
 	}
 	queryHandlers struct {
 		query.PingHandler
@@ -64,6 +66,11 @@ func New(
 			),
 
 			CreateProjectCategoryHandler: command.NewCreateProjectCategoryHandler(
+				projectRepository,
+				projectCategoryRepository,
+				cachingRepository,
+			),
+			UpdateProjectCategoryHandler: command.NewUpdateProjectCategoryHandler(
 				projectRepository,
 				projectCategoryRepository,
 				cachingRepository,

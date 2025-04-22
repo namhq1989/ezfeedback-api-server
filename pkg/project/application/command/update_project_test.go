@@ -19,19 +19,19 @@ import (
 
 type updateProjectTestSuite struct {
 	suite.Suite
-	handler                command.UpdateProjectHandler
-	mockCtrl               *gomock.Controller
-	mockProjectRepository  *mockproject.MockProjectRepository
-	mockProjectSettingRepo *mockproject.MockProjectSettingRepository
-	mockCachingRepository  *mockproject.MockCachingRepository
+	handler                      command.UpdateProjectHandler
+	mockCtrl                     *gomock.Controller
+	mockProjectRepository        *mockproject.MockProjectRepository
+	mockProjectSettingRepository *mockproject.MockProjectSettingRepository
+	mockCachingRepository        *mockproject.MockCachingRepository
 }
 
 func (s *updateProjectTestSuite) SetupSuite() {
 	s.mockCtrl = gomock.NewController(s.T())
 	s.mockProjectRepository = mockproject.NewMockProjectRepository(s.mockCtrl)
-	s.mockProjectSettingRepo = mockproject.NewMockProjectSettingRepository(s.mockCtrl)
+	s.mockProjectSettingRepository = mockproject.NewMockProjectSettingRepository(s.mockCtrl)
 	s.mockCachingRepository = mockproject.NewMockCachingRepository(s.mockCtrl)
-	s.handler = command.NewUpdateProjectHandler(s.mockProjectRepository, s.mockProjectSettingRepo, s.mockCachingRepository)
+	s.handler = command.NewUpdateProjectHandler(s.mockProjectRepository, s.mockProjectSettingRepository, s.mockCachingRepository)
 }
 
 func (s *updateProjectTestSuite) TearDownTest() {
@@ -56,11 +56,11 @@ func (s *updateProjectTestSuite) Test_1_Success() {
 		Update(gomock.Any(), gomock.Any()).
 		Return(nil)
 
-	s.mockProjectSettingRepo.EXPECT().
+	s.mockProjectSettingRepository.EXPECT().
 		FindByProjectID(gomock.Any(), gomock.Any()).
 		Return(&domain.ProjectSetting{ID: uuid.New()}, nil)
 
-	s.mockProjectSettingRepo.EXPECT().
+	s.mockProjectSettingRepository.EXPECT().
 		Update(gomock.Any(), gomock.Any()).
 		Return(nil)
 
@@ -100,6 +100,7 @@ func (s *updateProjectTestSuite) Test_2_Fail_InvalidProjectID() {
 	})
 	assert.Nil(s.T(), resp)
 	assert.NotNil(s.T(), err)
+	assert.Equal(s.T(), apperrors.Project.InvalidProjectID, err)
 }
 
 func (s *updateProjectTestSuite) Test_2_Fail_InvalidTitle() {
@@ -115,6 +116,7 @@ func (s *updateProjectTestSuite) Test_2_Fail_InvalidTitle() {
 	ctx := appcontext.NewRest(context.Background())
 	resp, err := s.handler.UpdateProject(ctx, performerID, projectID, dto.UpdateProjectRequest{Title: ""})
 	assert.Nil(s.T(), resp)
+	assert.NotNil(s.T(), err)
 	assert.Equal(s.T(), apperrors.Common.InvalidTitle, err)
 }
 
@@ -139,6 +141,7 @@ func (s *updateProjectTestSuite) Test_2_Fail_InvalidDescription() {
 		Description: longDesc,
 	})
 	assert.Nil(s.T(), resp)
+	assert.NotNil(s.T(), err)
 	assert.Equal(s.T(), apperrors.Common.InvalidDescription, err)
 }
 

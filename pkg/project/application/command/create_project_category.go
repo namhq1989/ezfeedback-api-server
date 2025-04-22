@@ -38,7 +38,7 @@ func NewCreateProjectCategoryHandler(
 // @router   /api/project/{id}/category [post]
 func (h CreateProjectCategoryHandler) CreateProjectCategory(ctx *appcontext.AppContext, performerID, projectID string, req dto.CreateProjectCategoryRequest) (*dto.CreateProjectCategoryResponse, error) {
 	ctx.Logger().Info("new create project category request", appcontext.Fields{
-		"performerID": performerID, "name": req.Name,
+		"performerID": performerID, "projectID": projectID, "name": req.Name,
 	})
 
 	ctx.Logger().Text("find project in db")
