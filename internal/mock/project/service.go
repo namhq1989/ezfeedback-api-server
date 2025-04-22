@@ -21,6 +21,7 @@ import (
 type MockService struct {
 	ctrl     *gomock.Controller
 	recorder *MockServiceMockRecorder
+	isgomock struct{}
 }
 
 // MockServiceMockRecorder is the mock recorder for MockService.
@@ -55,17 +56,32 @@ func (mr *MockServiceMockRecorder) GetProjectByID(ctx, id any) *gomock.Call {
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetProjectByID", reflect.TypeOf((*MockService)(nil).GetProjectByID), ctx, id)
 }
 
-// GetProjectSettingByID mocks base method.
-func (m *MockService) GetProjectSettingByID(ctx *appcontext.AppContext, projectID string) (*domain.ProjectSetting, error) {
+// GetProjectCategoriesByProjectID mocks base method.
+func (m *MockService) GetProjectCategoriesByProjectID(ctx *appcontext.AppContext, projectID string, status domain.Status) ([]domain.ProjectCategory, error) {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "GetProjectSettingByID", ctx, projectID)
+	ret := m.ctrl.Call(m, "GetProjectCategoriesByProjectID", ctx, projectID, status)
+	ret0, _ := ret[0].([]domain.ProjectCategory)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// GetProjectCategoriesByProjectID indicates an expected call of GetProjectCategoriesByProjectID.
+func (mr *MockServiceMockRecorder) GetProjectCategoriesByProjectID(ctx, projectID, status any) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetProjectCategoriesByProjectID", reflect.TypeOf((*MockService)(nil).GetProjectCategoriesByProjectID), ctx, projectID, status)
+}
+
+// GetProjectSettingByProjectID mocks base method.
+func (m *MockService) GetProjectSettingByProjectID(ctx *appcontext.AppContext, projectID string) (*domain.ProjectSetting, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "GetProjectSettingByProjectID", ctx, projectID)
 	ret0, _ := ret[0].(*domain.ProjectSetting)
 	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
 
-// GetProjectSettingByID indicates an expected call of GetProjectSettingByID.
-func (mr *MockServiceMockRecorder) GetProjectSettingByID(ctx, projectID any) *gomock.Call {
+// GetProjectSettingByProjectID indicates an expected call of GetProjectSettingByProjectID.
+func (mr *MockServiceMockRecorder) GetProjectSettingByProjectID(ctx, projectID any) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetProjectSettingByID", reflect.TypeOf((*MockService)(nil).GetProjectSettingByID), ctx, projectID)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetProjectSettingByProjectID", reflect.TypeOf((*MockService)(nil).GetProjectSettingByProjectID), ctx, projectID)
 }

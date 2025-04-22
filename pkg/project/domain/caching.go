@@ -10,4 +10,12 @@ type CachingRepository interface {
 	GetProjectSettingByProjectID(ctx *appcontext.AppContext, id string) (*ProjectSetting, error)
 	SetProjectSettingByProjectID(ctx *appcontext.AppContext, id string, setting ProjectSetting) error
 	DeleteProjectSettingByProjectID(ctx *appcontext.AppContext, id string) error
+
+	GetProjectCategoriesByProjectID(ctx *appcontext.AppContext, id string) ([]ProjectCategory, error)
+	SetProjectCategoriesByProjectID(ctx *appcontext.AppContext, id string, categories []ProjectCategory) error
+	DeleteProjectCategoriesByProjectID(ctx *appcontext.AppContext, id string) error
+
+	GetApiGetProjectsByUserID(ctx *appcontext.AppContext, userID string) (*string, error)
+	SetApiGetProjectsByUserID(ctx *appcontext.AppContext, userID string, data string) error
+	DeleteApiGetProjectsByUserID(ctx *appcontext.AppContext, userID string) error
 }

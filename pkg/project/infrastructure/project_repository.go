@@ -79,13 +79,13 @@ func (r ProjectRepository) FindByID(ctx *appcontext.AppContext, projectID string
 		return nil, apperrors.Project.InvalidProjectID
 	}
 
-	var u = r.getTable()
+	var p = r.getTable()
 
 	stmt := postgres.SELECT(
-		u.AllColumns,
+		p.AllColumns,
 	).
-		FROM(u).
-		WHERE(u.ID.EQ(postgres.String(projectID)))
+		FROM(p).
+		WHERE(p.ID.EQ(postgres.String(projectID)))
 
 	var doc model.Projects
 	if err := stmt.QueryContext(ctx.Context(), r.getDB(), &doc); err != nil {
@@ -99,5 +99,43 @@ func (r ProjectRepository) FindByID(ctx *appcontext.AppContext, projectID string
 		mapper    = mapping.ProjectMapper{}
 		result, _ = mapper.FromModelToDomain(doc)
 	)
+	return result, nil
+}
+
+func (r ProjectRepository) FindByUserID(ctx *appcontext.AppContext, userID string) ([]domain.Project, error) {
+	if !uuid.IsValidID(userID) {
+		return nil, apperrors.User.InvalidUserID
+	}
+
+	var p = r.getTable()
+
+	stmt := postgres.SELECT(
+		p.AllColumns,
+	).
+		FROM(p).
+		WHERE(p.UserID.EQ(postgres.String(userID))).
+		ORDER_BY(p.CreatedAt.DESC())
+
+	var (
+		docs   = make([]model.Projects, 0)
+		result = make([]domain.Project, 0)
+	)
+	if err := stmt.QueryContext(ctx.Context(), r.getDB(), &docs); err != nil {
+		if r.db.IsNoRowsError(err) {
+			return nil, nil
+		}
+		return nil, err
+	}
+
+	var (
+		mapper = mapping.ProjectMapper{}
+	)
+	for _, doc := range docs {
+		project, err := mapper.FromModelToDomain(doc)
+		if err != nil {
+			return nil, err
+		}
+		result = append(result, *project)
+	}
 	return result, nil
 }

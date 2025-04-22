@@ -15,6 +15,8 @@ type (
 	}
 	Queries interface {
 		Ping(ctx *appcontext.AppContext, _ dto.PingRequest) (*dto.PingResponse, error)
+
+		GetProjects(ctx *appcontext.AppContext, performerID string, _ dto.GetProjectsRequest) (*dto.GetProjectsResponse, error)
 	}
 	Instance interface {
 		Commands
@@ -27,6 +29,8 @@ type (
 	}
 	queryHandlers struct {
 		query.PingHandler
+
+		query.GetProjectsHandler
 	}
 	Application struct {
 		commandHandlers
@@ -41,6 +45,7 @@ func New(
 	projectSettingRepository domain.ProjectSettingRepository,
 	cachingRepository domain.CachingRepository,
 	billingHub domain.BillingHub,
+	service domain.Service,
 ) *Application {
 	return &Application{
 		commandHandlers: commandHandlers{
@@ -49,6 +54,8 @@ func New(
 		},
 		queryHandlers: queryHandlers{
 			PingHandler: query.NewPingHandler(),
+
+			GetProjectsHandler: query.NewGetProjectsHandler(projectRepository, cachingRepository, service),
 		},
 	}
 }

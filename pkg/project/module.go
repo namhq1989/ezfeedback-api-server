@@ -6,6 +6,7 @@ import (
 	"github.com/namhq1989/ezfeedback-api-server/pkg/project/application"
 	"github.com/namhq1989/ezfeedback-api-server/pkg/project/infrastructure"
 	"github.com/namhq1989/ezfeedback-api-server/pkg/project/rest"
+	"github.com/namhq1989/ezfeedback-api-server/pkg/project/shared"
 	"github.com/namhq1989/go-utilities/appcontext"
 )
 
@@ -22,16 +23,25 @@ func (Module) Startup(ctx *appcontext.AppContext, mono monolith.Monolith) error 
 	}
 
 	var (
-		projectRepository            = infrastructure.NewProjectRepository(mono.Database())
-		projectSettingCodeRepository = infrastructure.NewProjectSettingRepository(mono.Database())
-		cachingRepository            = infrastructure.NewCachingRepository(mono.Caching(), mono.Config().IsEnvRelease)
-		billingHub                   = infrastructure.NewBillingHub(billingGRPCClient)
+		projectRepository         = infrastructure.NewProjectRepository(mono.Database())
+		projectSettingRepository  = infrastructure.NewProjectSettingRepository(mono.Database())
+		projectCategoryRepository = infrastructure.NewProjectCategoryRepository(mono.Database())
+		cachingRepository         = infrastructure.NewCachingRepository(mono.Caching(), mono.Config().IsEnvRelease)
+		billingHub                = infrastructure.NewBillingHub(billingGRPCClient)
+
+		service = shared.NewService(
+			projectRepository,
+			projectSettingRepository,
+			projectCategoryRepository,
+			cachingRepository,
+		)
 
 		app = application.New(
 			projectRepository,
-			projectSettingCodeRepository,
+			projectSettingRepository,
 			cachingRepository,
 			billingHub,
+			service,
 		)
 	)
 

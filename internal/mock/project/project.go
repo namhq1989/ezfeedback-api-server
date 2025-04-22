@@ -21,6 +21,7 @@ import (
 type MockProjectRepository struct {
 	ctrl     *gomock.Controller
 	recorder *MockProjectRepositoryMockRecorder
+	isgomock struct{}
 }
 
 // MockProjectRepositoryMockRecorder is the mock recorder for MockProjectRepository.
@@ -67,6 +68,21 @@ func (m *MockProjectRepository) FindByID(ctx *appcontext.AppContext, projectID s
 func (mr *MockProjectRepositoryMockRecorder) FindByID(ctx, projectID any) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "FindByID", reflect.TypeOf((*MockProjectRepository)(nil).FindByID), ctx, projectID)
+}
+
+// FindByUserID mocks base method.
+func (m *MockProjectRepository) FindByUserID(ctx *appcontext.AppContext, userID string) ([]domain.Project, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "FindByUserID", ctx, userID)
+	ret0, _ := ret[0].([]domain.Project)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// FindByUserID indicates an expected call of FindByUserID.
+func (mr *MockProjectRepositoryMockRecorder) FindByUserID(ctx, userID any) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "FindByUserID", reflect.TypeOf((*MockProjectRepository)(nil).FindByUserID), ctx, userID)
 }
 
 // Update mocks base method.

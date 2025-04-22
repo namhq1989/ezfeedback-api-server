@@ -14,29 +14,29 @@ import (
 	"github.com/namhq1989/go-utilities/uuid"
 )
 
-type ProjectSettingRepository struct {
+type ProjectCategoryRepository struct {
 	db *database.Database
 }
 
-func NewProjectSettingRepository(db *database.Database) ProjectSettingRepository {
-	r := ProjectSettingRepository{
+func NewProjectCategoryRepository(db *database.Database) ProjectCategoryRepository {
+	r := ProjectCategoryRepository{
 		db: db,
 	}
 
 	return r
 }
 
-func (r ProjectSettingRepository) getDB() *sql.DB {
+func (r ProjectCategoryRepository) getDB() *sql.DB {
 	return r.db.GetPgDb()
 }
 
-func (ProjectSettingRepository) getTable() *table.ProjectSettingsTable {
-	return table.ProjectSettings
+func (ProjectCategoryRepository) getTable() *table.ProjectCategoriesTable {
+	return table.ProjectCategories
 }
 
-func (r ProjectSettingRepository) Create(ctx *appcontext.AppContext, setting domain.ProjectSetting) error {
-	mapper := mapping.ProjectSettingMapper{}
-	doc, err := mapper.FromDomainToModel(setting)
+func (r ProjectCategoryRepository) Create(ctx *appcontext.AppContext, category domain.ProjectCategory) error {
+	mapper := mapping.ProjectCategoryMapper{}
+	doc, err := mapper.FromDomainToModel(category)
 	if err != nil {
 		return err
 	}
@@ -50,9 +50,9 @@ func (r ProjectSettingRepository) Create(ctx *appcontext.AppContext, setting dom
 	return err
 }
 
-func (r ProjectSettingRepository) Update(ctx *appcontext.AppContext, setting domain.ProjectSetting) error {
-	mapper := mapping.ProjectSettingMapper{}
-	doc, err := mapper.FromDomainToModel(setting)
+func (r ProjectCategoryRepository) Update(ctx *appcontext.AppContext, category domain.ProjectCategory) error {
+	mapper := mapping.ProjectCategoryMapper{}
+	doc, err := mapper.FromDomainToModel(category)
 	if err != nil {
 		return err
 	}
@@ -74,21 +74,25 @@ func (r ProjectSettingRepository) Update(ctx *appcontext.AppContext, setting dom
 	return err
 }
 
-func (r ProjectSettingRepository) FindByProjectID(ctx *appcontext.AppContext, projectID string) (*domain.ProjectSetting, error) {
+func (r ProjectCategoryRepository) FindByProjectID(ctx *appcontext.AppContext, projectID string) ([]domain.ProjectCategory, error) {
 	if !uuid.IsValidID(projectID) {
 		return nil, apperrors.Project.InvalidProjectID
 	}
 
-	var s = r.getTable()
+	var c = r.getTable()
 
 	stmt := postgres.SELECT(
-		s.AllColumns,
+		c.AllColumns,
 	).
-		FROM(s).
-		WHERE(s.ProjectID.EQ(postgres.String(projectID)))
+		FROM(c).
+		WHERE(c.ProjectID.EQ(postgres.String(projectID))).
+		ORDER_BY(c.CreatedAt.DESC())
 
-	var doc model.ProjectSettings
-	if err := stmt.QueryContext(ctx.Context(), r.getDB(), &doc); err != nil {
+	var (
+		docs   = make([]model.ProjectCategories, 0)
+		result = make([]domain.ProjectCategory, 0)
+	)
+	if err := stmt.QueryContext(ctx.Context(), r.getDB(), &docs); err != nil {
 		if r.db.IsNoRowsError(err) {
 			return nil, nil
 		}
@@ -96,8 +100,14 @@ func (r ProjectSettingRepository) FindByProjectID(ctx *appcontext.AppContext, pr
 	}
 
 	var (
-		mapper    = mapping.ProjectSettingMapper{}
-		result, _ = mapper.FromModelToDomain(doc)
+		mapper = mapping.ProjectCategoryMapper{}
 	)
+	for _, doc := range docs {
+		category, err := mapper.FromModelToDomain(doc)
+		if err != nil {
+			return nil, err
+		}
+		result = append(result, *category)
+	}
 	return result, nil
 }

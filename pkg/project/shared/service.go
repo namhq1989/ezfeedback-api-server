@@ -5,19 +5,22 @@ import (
 )
 
 type Service struct {
-	projectRepository        domain.ProjectRepository
-	projectSettingRepository domain.ProjectSettingRepository
-	cachingRepository        domain.CachingRepository
+	projectRepository         domain.ProjectRepository
+	projectSettingRepository  domain.ProjectSettingRepository
+	projectCategoryRepository domain.ProjectCategoryRepository
+	cachingRepository         domain.CachingRepository
 }
 
 func NewService(
 	projectRepository domain.ProjectRepository,
 	projectSettingRepository domain.ProjectSettingRepository,
+	projectCategoryRepository domain.ProjectCategoryRepository,
 	cachingRepository domain.CachingRepository,
 ) Service {
 	return Service{
-		projectRepository:        projectRepository,
-		projectSettingRepository: projectSettingRepository,
-		cachingRepository:        cachingRepository,
+		projectRepository:         projectRepository,
+		projectSettingRepository:  projectSettingRepository,
+		projectCategoryRepository: projectCategoryRepository,
+		cachingRepository:         cachingRepository,
 	}
 }

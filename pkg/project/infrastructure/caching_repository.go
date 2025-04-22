@@ -13,27 +13,36 @@ import (
 type CachingRepository struct {
 	caching caching.Operations
 
-	domain                               string
-	projectByIDCachingTime               time.Duration
-	projectSettingByProjectIDCachingTime time.Duration
+	domain                                  string
+	projectByIDCachingTime                  time.Duration
+	projectSettingByProjectIDCachingTime    time.Duration
+	projectCategoriesByProjectIDCachingTime time.Duration
+
+	apiGetProjectsByUserIDCachingTime time.Duration
 }
 
 func NewCachingRepository(caching *caching.Caching, isEnvRelease bool) CachingRepository {
 	if isEnvRelease {
 		return CachingRepository{
-			caching:                              caching,
-			domain:                               "project",
-			projectByIDCachingTime:               12 * time.Hour,
-			projectSettingByProjectIDCachingTime: 12 * time.Hour,
+			caching:                                 caching,
+			domain:                                  "project",
+			projectByIDCachingTime:                  12 * time.Hour,
+			projectSettingByProjectIDCachingTime:    12 * time.Hour,
+			projectCategoriesByProjectIDCachingTime: 12 * time.Hour,
+
+			apiGetProjectsByUserIDCachingTime: 12 * time.Hour,
 		}
 	} else {
 		cachingTime := 1 * time.Minute
 
 		return CachingRepository{
-			caching:                              caching,
-			domain:                               "project",
-			projectByIDCachingTime:               cachingTime,
-			projectSettingByProjectIDCachingTime: cachingTime,
+			caching:                                 caching,
+			domain:                                  "project",
+			projectByIDCachingTime:                  cachingTime,
+			projectSettingByProjectIDCachingTime:    cachingTime,
+			projectCategoriesByProjectIDCachingTime: cachingTime,
+
+			apiGetProjectsByUserIDCachingTime: cachingTime,
 		}
 	}
 }
@@ -108,4 +117,74 @@ func (r CachingRepository) DeleteProjectSettingByProjectID(ctx *appcontext.AppCo
 
 func (r CachingRepository) generateProjectSettingByProjectIDKey(id string) string {
 	return r.caching.GenerateKey(r.domain, fmt.Sprintf("project:%s:setting", id))
+}
+
+//
+// GET PROJECT CATEGORIES BY PROJECT ID
+//
+
+func (r CachingRepository) GetProjectCategoriesByProjectID(ctx *appcontext.AppContext, id string) ([]domain.ProjectCategory, error) {
+	key := r.generateProjectCategoriesByProjectIDKey(id)
+
+	dataStr, err := r.caching.Get(ctx, key)
+	if err != nil {
+		return nil, err
+	}
+
+	var result []domain.ProjectCategory
+	if err = json.Unmarshal([]byte(dataStr), &result); err != nil {
+		return nil, nil
+	}
+
+	return result, nil
+}
+
+func (r CachingRepository) SetProjectCategoriesByProjectID(ctx *appcontext.AppContext, id string, categories []domain.ProjectCategory) error {
+	key := r.generateProjectCategoriesByProjectIDKey(id)
+	r.caching.SetTTL(ctx, key, categories, r.projectCategoriesByProjectIDCachingTime)
+	return nil
+}
+
+func (r CachingRepository) DeleteProjectCategoriesByProjectID(ctx *appcontext.AppContext, id string) error {
+	key := r.generateProjectCategoriesByProjectIDKey(id)
+	_, err := r.caching.Del(ctx, key)
+	return err
+}
+
+func (r CachingRepository) generateProjectCategoriesByProjectIDKey(id string) string {
+	return r.caching.GenerateKey(r.domain, fmt.Sprintf("project:%s:categories", id))
+}
+
+//
+// API GET PROJECTS BY USER ID
+//
+
+func (r CachingRepository) GetApiGetProjectsByUserID(ctx *appcontext.AppContext, userID string) (*string, error) {
+	key := r.generateApiGetProjectsByUserID(userID)
+
+	dataStr, err := r.caching.Get(ctx, key)
+	if err != nil {
+		return nil, err
+	}
+	if dataStr == "" {
+		return nil, nil
+	}
+
+	return &dataStr, nil
+}
+
+func (r CachingRepository) SetApiGetProjectsByUserID(ctx *appcontext.AppContext, userID string, data string) error {
+	key := r.generateApiGetProjectsByUserID(userID)
+	r.caching.SetTTL(ctx, key, data, r.apiGetProjectsByUserIDCachingTime)
+	return nil
+}
+
+func (r CachingRepository) DeleteApiGetProjectsByUserID(ctx *appcontext.AppContext, userID string) error {
+	key := r.generateApiGetProjectsByUserID(userID)
+	_, err := r.caching.Del(ctx, key)
+	return err
+}
+
+func (r CachingRepository) generateApiGetProjectsByUserID(userID string) string {
+	return r.caching.GenerateKey(r.domain, fmt.Sprintf("api:getProjectsByUserId:%s", userID))
 }

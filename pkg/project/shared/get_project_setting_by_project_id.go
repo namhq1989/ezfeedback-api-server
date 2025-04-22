@@ -6,8 +6,8 @@ import (
 	"github.com/namhq1989/go-utilities/appcontext"
 )
 
-func (s Service) GetProjectSettingByID(ctx *appcontext.AppContext, projectID string) (*domain.ProjectSetting, error) {
-	ctx.Logger().Info("[service] get project setting by id", appcontext.Fields{"projectID": projectID})
+func (s Service) GetProjectSettingByProjectID(ctx *appcontext.AppContext, projectID string) (*domain.ProjectSetting, error) {
+	ctx.Logger().Info("[service] get project setting by project id", appcontext.Fields{"projectID": projectID})
 
 	ctx.Logger().Text("find project setting in caching")
 	setting, err := s.cachingRepository.GetProjectSettingByProjectID(ctx, projectID)

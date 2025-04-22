@@ -27,6 +27,23 @@ func (s server) registerProjectRoutes() {
 		return validation.ValidateHTTPPayload[dto.PingRequest](next)
 	})
 
+	g.GET("", func(c echo.Context) error {
+		var (
+			ctx         = c.Get("ctx").(*appcontext.AppContext)
+			req         = c.Get("req").(dto.GetProjectsRequest)
+			performerID = ctx.GetUserID()
+		)
+
+		resp, err := s.app.GetProjects(ctx, performerID, req)
+		if err != nil {
+			return httprespond.R400(c, err, nil)
+		}
+
+		return httprespond.R200(c, resp)
+	}, s.jwt.RequireSignedIn, func(next echo.HandlerFunc) echo.HandlerFunc {
+		return validation.ValidateHTTPPayload[dto.GetProjectsRequest](next)
+	})
+
 	g.POST("", func(c echo.Context) error {
 		var (
 			ctx         = c.Get("ctx").(*appcontext.AppContext)

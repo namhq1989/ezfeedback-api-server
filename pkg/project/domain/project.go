@@ -14,6 +14,7 @@ type ProjectRepository interface {
 	Create(ctx *appcontext.AppContext, project Project) error
 	Update(ctx *appcontext.AppContext, project Project) error
 	FindByID(ctx *appcontext.AppContext, projectID string) (*Project, error)
+	FindByUserID(ctx *appcontext.AppContext, userID string) ([]Project, error)
 }
 
 const (
