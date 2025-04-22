@@ -19,8 +19,10 @@ import (
 	"github.com/namhq1989/ezfeedback-api-server/internal/queue"
 	"github.com/namhq1989/ezfeedback-api-server/internal/utils/staticfiles"
 	"github.com/namhq1989/ezfeedback-api-server/internal/utils/waiter"
+	"github.com/namhq1989/ezfeedback-api-server/pkg/billing"
 	"github.com/namhq1989/ezfeedback-api-server/pkg/common"
 	"github.com/namhq1989/ezfeedback-api-server/pkg/iam"
+	"github.com/namhq1989/ezfeedback-api-server/pkg/project"
 	"github.com/namhq1989/go-utilities/logger"
 	echoSwagger "github.com/swaggo/echo-swagger"
 )
@@ -119,6 +121,8 @@ func main() {
 	a.modules = []monolith.Module{
 		&common.Module{},
 		&iam.Module{},
+		&billing.Module{},
+		&project.Module{},
 	}
 
 	// start

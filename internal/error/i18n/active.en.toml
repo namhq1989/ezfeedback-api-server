@@ -49,3 +49,7 @@ feedback_not_found = "Feedback not found"
 feedback_invalid_content = "Invalid content"
 feedback_invalid_rating = "Invalid rating"
 feedback_invalid_state = "Invalid state"
+
+# billing
+billing_project_limit_exceeded = "Your account has reached the maximum number of projects allowed. Please upgrade your plan to create more projects"
+billing_feedback_limit_exceeded = "Thank you for your interest. The team is currently processing existing feedback and has temporarily paused new submissions. Please check back later"

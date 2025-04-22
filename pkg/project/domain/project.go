@@ -6,8 +6,16 @@ import (
 
 	apperrors "github.com/namhq1989/ezfeedback-api-server/internal/error"
 	"github.com/namhq1989/ezfeedback-api-server/internal/utils/manipulation"
+	"github.com/namhq1989/go-utilities/appcontext"
 	"github.com/namhq1989/go-utilities/uuid"
 )
+
+type ProjectRepository interface {
+	Create(ctx *appcontext.AppContext, project Project) error
+	Update(ctx *appcontext.AppContext, project Project) error
+	FindByID(ctx *appcontext.AppContext, projectID string) (*Project, error)
+	FindByUserID(ctx *appcontext.AppContext, userID string) ([]Project, error)
+}
 
 const (
 	projectSlugSuffixLength = 6
@@ -80,6 +88,21 @@ func (p *Project) SetDescription(description string) error {
 	return nil
 }
 
+func (p *Project) SetStatus(status string) error {
+	var dStatus = ToStatus(status)
+	if !dStatus.IsValid() {
+		return apperrors.Common.InvalidStatus
+	}
+
+	p.Status = dStatus
+	p.SetUpdatedAt()
+	return nil
+}
+
 func (p *Project) SetUpdatedAt() {
 	p.UpdatedAt = manipulation.NowUTC()
+}
+
+func (p *Project) IsOwner(userID string) bool {
+	return p.UserID == userID
 }

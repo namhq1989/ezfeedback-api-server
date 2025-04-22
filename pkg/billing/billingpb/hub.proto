@@ -1,0 +1,34 @@
+syntax = "proto3";
+
+package billingpb;
+
+service BillingService {
+  rpc CanCreateProject(CanCreateProjectRequest) returns (CanCreateProjectResponse) {}
+  rpc CanAcceptFeedback(CanAcceptFeedbackRequest) returns (CanAcceptFeedbackResponse) {}
+}
+
+//
+// CAN CREATE PROJECT
+//
+
+message CanCreateProjectRequest {
+  string traceId = 1;
+  string userId = 2;
+}
+
+message CanCreateProjectResponse {
+  bool allowed = 1;
+}
+
+//
+// CAN ACCEPT FEEDBACK
+//
+
+message CanAcceptFeedbackRequest {
+  string traceId = 1;
+  string userId = 2;
+}
+
+message CanAcceptFeedbackResponse {
+  bool allowed = 1;
+}

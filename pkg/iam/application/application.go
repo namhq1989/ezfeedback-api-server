@@ -10,6 +10,8 @@ import (
 
 type (
 	Commands interface {
+		GenerateToken(ctx *appcontext.AppContext, req dto.GenerateTokenRequest) (*dto.GenerateTokenResponse, error)
+
 		RequestVerificationCode(ctx *appcontext.AppContext, ip string, req dto.RequestVerificationCodeRequest) (*dto.RequestVerificationCodeResponse, error)
 		VerifyVerificationCode(ctx *appcontext.AppContext, ip string, req dto.VerifyVerificationCodeRequest) (*dto.VerifyVerificationCodeResponse, error)
 
@@ -26,6 +28,8 @@ type (
 	}
 
 	commandHandlers struct {
+		command.GenerateTokenHandler
+
 		command.RequestVerificationCodeHandler
 		command.VerifyVerificationCodeHandler
 
@@ -54,6 +58,10 @@ func New(
 ) *Application {
 	return &Application{
 		commandHandlers: commandHandlers{
+			GenerateTokenHandler: command.NewGenerateTokenHandler(
+				jwtRepository,
+			),
+
 			VerifyVerificationCodeHandler: command.NewVerifyVerificationCodeHandler(
 				userRepository,
 				verificationCodeRepository,
