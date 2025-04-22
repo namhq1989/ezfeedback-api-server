@@ -14,9 +14,11 @@ type ProjectCategoryRepository interface {
 	Create(ctx *appcontext.AppContext, category ProjectCategory) error
 	Update(ctx *appcontext.AppContext, category ProjectCategory) error
 	FindByProjectID(ctx *appcontext.AppContext, projectID string) ([]ProjectCategory, error)
+	CountTotalByProjectID(ctx *appcontext.AppContext, projectID string) (int64, error)
 }
 
 const (
+	maxCategoryPerProject           = 10
 	projectCategorySlugSuffixLength = 4
 )
 
@@ -49,7 +51,7 @@ func NewProjectCategory(projectID, name string) (*ProjectCategory, error) {
 		return nil, err
 	}
 
-	return nil, nil
+	return c, nil
 }
 
 func (c *ProjectCategory) SetProjectID(projectID string) error {
@@ -85,4 +87,8 @@ func (c *ProjectCategory) SetStatus(status string) error {
 
 func (c *ProjectCategory) SetUpdatedAt() {
 	c.UpdatedAt = manipulation.NowUTC()
+}
+
+func IsReachedMaxCategoryPerProject(total int64) bool {
+	return total >= maxCategoryPerProject
 }

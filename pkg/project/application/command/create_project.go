@@ -10,17 +10,20 @@ import (
 type CreateProjectHandler struct {
 	projectRepository        domain.ProjectRepository
 	projectSettingRepository domain.ProjectSettingRepository
+	cachingRepository        domain.CachingRepository
 	billingHub               domain.BillingHub
 }
 
 func NewCreateProjectHandler(
 	projectRepository domain.ProjectRepository,
 	projectSettingRepository domain.ProjectSettingRepository,
+	cachingRepository domain.CachingRepository,
 	billingHub domain.BillingHub,
 ) CreateProjectHandler {
 	return CreateProjectHandler{
 		projectRepository:        projectRepository,
 		projectSettingRepository: projectSettingRepository,
+		cachingRepository:        cachingRepository,
 		billingHub:               billingHub,
 	}
 }
@@ -75,6 +78,11 @@ func (h CreateProjectHandler) CreateProject(ctx *appcontext.AppContext, performe
 	if err = h.projectSettingRepository.Create(ctx, *setting); err != nil {
 		ctx.Logger().Error("failed to persist setting in db", err, appcontext.Fields{})
 		return nil, err
+	}
+
+	ctx.Logger().Text("delete caching data")
+	if err = h.cachingRepository.DeleteApiGetProjectsByUserID(ctx, performerID); err != nil {
+		ctx.Logger().Error("failed to delete caching data", err, appcontext.Fields{})
 	}
 
 	ctx.Logger().Text("done create project request")

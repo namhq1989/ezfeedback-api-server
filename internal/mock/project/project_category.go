@@ -41,6 +41,21 @@ func (m *MockProjectCategoryRepository) EXPECT() *MockProjectCategoryRepositoryM
 	return m.recorder
 }
 
+// CountTotalByProjectID mocks base method.
+func (m *MockProjectCategoryRepository) CountTotalByProjectID(ctx *appcontext.AppContext, projectID string) (int64, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "CountTotalByProjectID", ctx, projectID)
+	ret0, _ := ret[0].(int64)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// CountTotalByProjectID indicates an expected call of CountTotalByProjectID.
+func (mr *MockProjectCategoryRepositoryMockRecorder) CountTotalByProjectID(ctx, projectID any) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "CountTotalByProjectID", reflect.TypeOf((*MockProjectCategoryRepository)(nil).CountTotalByProjectID), ctx, projectID)
+}
+
 // Create mocks base method.
 func (m *MockProjectCategoryRepository) Create(ctx *appcontext.AppContext, category domain.ProjectCategory) error {
 	m.ctrl.T.Helper()
