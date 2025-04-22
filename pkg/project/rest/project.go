@@ -133,4 +133,23 @@ func (s server) registerProjectRoutes() {
 	}, s.jwt.RequireSignedIn, func(next echo.HandlerFunc) echo.HandlerFunc {
 		return validation.ValidateHTTPPayload[dto.UpdateProjectCategoryRequest](next)
 	})
+
+	g.PATCH("/:projectId/category/:categoryId/status", func(c echo.Context) error {
+		var (
+			ctx         = c.Get("ctx").(*appcontext.AppContext)
+			req         = c.Get("req").(dto.ChangeProjectCategoryStatusRequest)
+			performerID = ctx.GetUserID()
+			projectID   = c.Param("projectId")
+			categoryID  = c.Param("categoryId")
+		)
+
+		resp, err := s.app.ChangeProjectCategoryStatus(ctx, performerID, projectID, categoryID, req)
+		if err != nil {
+			return httprespond.R400(c, err, nil)
+		}
+
+		return httprespond.R200(c, resp)
+	}, s.jwt.RequireSignedIn, func(next echo.HandlerFunc) echo.HandlerFunc {
+		return validation.ValidateHTTPPayload[dto.ChangeProjectCategoryStatusRequest](next)
+	})
 }
