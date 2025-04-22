@@ -43,4 +43,22 @@ func (s server) registerProjectRoutes() {
 	}, s.jwt.RequireSignedIn, func(next echo.HandlerFunc) echo.HandlerFunc {
 		return validation.ValidateHTTPPayload[dto.CreateProjectRequest](next)
 	})
+
+	g.PUT("/:id", func(c echo.Context) error {
+		var (
+			ctx         = c.Get("ctx").(*appcontext.AppContext)
+			req         = c.Get("req").(dto.UpdateProjectRequest)
+			performerID = ctx.GetUserID()
+			projectID   = c.Param("id")
+		)
+
+		resp, err := s.app.UpdateProject(ctx, performerID, projectID, req)
+		if err != nil {
+			return httprespond.R400(c, err, nil)
+		}
+
+		return httprespond.R200(c, resp)
+	}, s.jwt.RequireSignedIn, func(next echo.HandlerFunc) echo.HandlerFunc {
+		return validation.ValidateHTTPPayload[dto.UpdateProjectRequest](next)
+	})
 }

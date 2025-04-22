@@ -11,6 +11,7 @@ import (
 type (
 	Commands interface {
 		CreateProject(ctx *appcontext.AppContext, performerID string, req dto.CreateProjectRequest) (*dto.CreateProjectResponse, error)
+		UpdateProject(ctx *appcontext.AppContext, performerID, projectID string, req dto.UpdateProjectRequest) (*dto.UpdateProjectResponse, error)
 	}
 	Queries interface {
 		Ping(ctx *appcontext.AppContext, _ dto.PingRequest) (*dto.PingResponse, error)
@@ -22,6 +23,7 @@ type (
 
 	commandHandlers struct {
 		command.CreateProjectHandler
+		command.UpdateProjectHandler
 	}
 	queryHandlers struct {
 		query.PingHandler
@@ -37,11 +39,13 @@ var _ Instance = (*Application)(nil)
 func New(
 	projectRepository domain.ProjectRepository,
 	projectSettingRepository domain.ProjectSettingRepository,
+	cachingRepository domain.CachingRepository,
 	billingHub domain.BillingHub,
 ) *Application {
 	return &Application{
 		commandHandlers: commandHandlers{
 			CreateProjectHandler: command.NewCreateProjectHandler(projectRepository, projectSettingRepository, billingHub),
+			UpdateProjectHandler: command.NewUpdateProjectHandler(projectRepository, projectSettingRepository, cachingRepository),
 		},
 		queryHandlers: queryHandlers{
 			PingHandler: query.NewPingHandler(),

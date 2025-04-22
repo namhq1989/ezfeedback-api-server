@@ -24,11 +24,13 @@ func (Module) Startup(ctx *appcontext.AppContext, mono monolith.Monolith) error 
 	var (
 		projectRepository            = infrastructure.NewProjectRepository(mono.Database())
 		projectSettingCodeRepository = infrastructure.NewProjectSettingRepository(mono.Database())
+		cachingRepository            = infrastructure.NewCachingRepository(mono.Caching(), mono.Config().IsEnvRelease)
 		billingHub                   = infrastructure.NewBillingHub(billingGRPCClient)
 
 		app = application.New(
 			projectRepository,
 			projectSettingCodeRepository,
+			cachingRepository,
 			billingHub,
 		)
 	)
