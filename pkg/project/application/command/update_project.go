@@ -53,6 +53,10 @@ func (h UpdateProjectHandler) UpdateProject(ctx *appcontext.AppContext, performe
 		ctx.Logger().ErrorText("project not found")
 		return nil, apperrors.Project.ProjectNotFound
 	}
+	if !project.IsOwner(performerID) {
+		ctx.Logger().ErrorText("user is not project owner")
+		return nil, apperrors.Common.NotFound
+	}
 
 	ctx.Logger().Text("update project data")
 	if err = project.SetTitle(req.Title); err != nil {
@@ -87,12 +91,14 @@ func (h UpdateProjectHandler) UpdateProject(ctx *appcontext.AppContext, performe
 		return nil, err
 	}
 
-	ctx.Logger().Text("delete caching data")
-	if err = h.cachingRepository.DeleteProjectByID(ctx, projectID); err != nil {
-		ctx.Logger().Error("failed to delete caching data", err, appcontext.Fields{})
+	ctx.Logger().Text("update caching data")
+	if err = h.cachingRepository.SetProjectByID(ctx, project.ID, *project); err != nil {
+		ctx.Logger().Error("failed to update caching data", err, appcontext.Fields{})
 	}
-
-	if err = h.cachingRepository.DeleteProjectSettingByProjectID(ctx, projectID); err != nil {
+	if err = h.cachingRepository.SetProjectSettingByProjectID(ctx, projectID, *setting); err != nil {
+		ctx.Logger().Error("failed to update caching data", err, appcontext.Fields{})
+	}
+	if err = h.cachingRepository.DeleteApiGetProjectsByUserID(ctx, performerID); err != nil {
 		ctx.Logger().Error("failed to delete caching data", err, appcontext.Fields{})
 	}
 

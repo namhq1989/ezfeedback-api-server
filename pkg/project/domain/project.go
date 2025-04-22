@@ -88,6 +88,21 @@ func (p *Project) SetDescription(description string) error {
 	return nil
 }
 
+func (p *Project) SetStatus(status string) error {
+	var dStatus = ToStatus(status)
+	if !dStatus.IsValid() {
+		return apperrors.Common.InvalidStatus
+	}
+
+	p.Status = dStatus
+	p.SetUpdatedAt()
+	return nil
+}
+
 func (p *Project) SetUpdatedAt() {
 	p.UpdatedAt = manipulation.NowUTC()
+}
+
+func (p *Project) IsOwner(userID string) bool {
+	return p.UserID == userID
 }

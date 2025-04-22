@@ -10,6 +10,7 @@ type Project struct {
 	Title       string                    `json:"title"`
 	Slug        string                    `json:"slug"`
 	Description string                    `json:"description"`
+	Status      string                    `json:"status"`
 	Categories  []ProjectCategory         `json:"categories"`
 	Setting     ProjectSetting            `json:"setting"`
 	Stats       ProjectStats              `json:"stats"`
@@ -32,6 +33,7 @@ func (Project) FromDomain(project domain.Project, setting domain.ProjectSetting,
 		Title:       project.Title,
 		Slug:        project.Slug,
 		Description: project.Description,
+		Status:      project.Status.String(),
 		Categories:  cats,
 		Setting:     ProjectSetting{}.FromDomain(setting),
 		Stats: ProjectStats{

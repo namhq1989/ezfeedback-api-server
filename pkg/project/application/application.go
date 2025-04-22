@@ -12,6 +12,7 @@ type (
 	Commands interface {
 		CreateProject(ctx *appcontext.AppContext, performerID string, req dto.CreateProjectRequest) (*dto.CreateProjectResponse, error)
 		UpdateProject(ctx *appcontext.AppContext, performerID, projectID string, req dto.UpdateProjectRequest) (*dto.UpdateProjectResponse, error)
+		ChangeProjectStatus(ctx *appcontext.AppContext, performerID, projectID string, req dto.ChangeProjectStatusRequest) (*dto.ChangeProjectStatusResponse, error)
 	}
 	Queries interface {
 		Ping(ctx *appcontext.AppContext, _ dto.PingRequest) (*dto.PingResponse, error)
@@ -26,6 +27,7 @@ type (
 	commandHandlers struct {
 		command.CreateProjectHandler
 		command.UpdateProjectHandler
+		command.ChangeProjectStatusHandler
 	}
 	queryHandlers struct {
 		query.PingHandler
@@ -51,6 +53,10 @@ func New(
 		commandHandlers: commandHandlers{
 			CreateProjectHandler: command.NewCreateProjectHandler(projectRepository, projectSettingRepository, billingHub),
 			UpdateProjectHandler: command.NewUpdateProjectHandler(projectRepository, projectSettingRepository, cachingRepository),
+			ChangeProjectStatusHandler: command.NewChangeProjectStatusHandler(
+				projectRepository,
+				cachingRepository,
+			),
 		},
 		queryHandlers: queryHandlers{
 			PingHandler: query.NewPingHandler(),

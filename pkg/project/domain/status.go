@@ -24,6 +24,11 @@ func (s Status) IsInactive() bool {
 	return s == StatusInactive
 }
 
+func (s Status) IsEqual(status string) bool {
+	dStatus := ToStatus(status)
+	return s == dStatus
+}
+
 func ToStatus(s string) Status {
 	switch s {
 	case StatusActive.String():

@@ -18,8 +18,16 @@ func (c Caching) Set(ctx *appcontext.AppContext, key string, value interface{}) 
 }
 
 func (c Caching) SetTTL(ctx *appcontext.AppContext, key string, value interface{}, expiration time.Duration) {
-	b, _ := json.Marshal(value)
-	c.redis.Set(ctx.Context(), key, b, expiration)
+	var dataToStore []byte
+
+	// handle string
+	if strVal, ok := value.(string); ok {
+		dataToStore = []byte(strVal)
+	} else {
+		dataToStore, _ = json.Marshal(value)
+	}
+
+	c.redis.Set(ctx.Context(), key, dataToStore, expiration)
 }
 
 func (c Caching) Get(ctx *appcontext.AppContext, key string) (string, error) {

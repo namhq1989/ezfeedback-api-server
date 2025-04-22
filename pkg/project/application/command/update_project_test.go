@@ -43,9 +43,14 @@ func (s *updateProjectTestSuite) TearDownTest() {
 //
 
 func (s *updateProjectTestSuite) Test_1_Success() {
+	var (
+		projectID   = uuid.New()
+		performerID = uuid.New()
+	)
+
 	s.mockProjectRepository.EXPECT().
 		FindByID(gomock.Any(), gomock.Any()).
-		Return(&domain.Project{ID: uuid.New()}, nil)
+		Return(&domain.Project{ID: projectID, UserID: performerID}, nil)
 
 	s.mockProjectRepository.EXPECT().
 		Update(gomock.Any(), gomock.Any()).
@@ -60,15 +65,19 @@ func (s *updateProjectTestSuite) Test_1_Success() {
 		Return(nil)
 
 	s.mockCachingRepository.EXPECT().
-		DeleteProjectByID(gomock.Any(), gomock.Any()).
+		SetProjectByID(gomock.Any(), gomock.Any(), gomock.Any()).
 		Return(nil)
 
 	s.mockCachingRepository.EXPECT().
-		DeleteProjectSettingByProjectID(gomock.Any(), gomock.Any()).
+		SetProjectSettingByProjectID(gomock.Any(), gomock.Any(), gomock.Any()).
+		Return(nil)
+
+	s.mockCachingRepository.EXPECT().
+		DeleteApiGetProjectsByUserID(gomock.Any(), gomock.Any()).
 		Return(nil)
 
 	ctx := appcontext.NewRest(context.Background())
-	resp, err := s.handler.UpdateProject(ctx, uuid.New(), uuid.New(), dto.UpdateProjectRequest{
+	resp, err := s.handler.UpdateProject(ctx, performerID, projectID, dto.UpdateProjectRequest{
 		Title:                  "Updated title",
 		Description:            "Updated description",
 		IsFeedbackPublic:       true,
@@ -94,20 +103,30 @@ func (s *updateProjectTestSuite) Test_2_Fail_InvalidProjectID() {
 }
 
 func (s *updateProjectTestSuite) Test_2_Fail_InvalidTitle() {
+	var (
+		projectID   = uuid.New()
+		performerID = uuid.New()
+	)
+
 	s.mockProjectRepository.EXPECT().
 		FindByID(gomock.Any(), gomock.Any()).
-		Return(&domain.Project{ID: uuid.New()}, nil)
+		Return(&domain.Project{ID: projectID, UserID: performerID}, nil)
 
 	ctx := appcontext.NewRest(context.Background())
-	resp, err := s.handler.UpdateProject(ctx, uuid.New(), uuid.New(), dto.UpdateProjectRequest{Title: ""})
+	resp, err := s.handler.UpdateProject(ctx, performerID, projectID, dto.UpdateProjectRequest{Title: ""})
 	assert.Nil(s.T(), resp)
 	assert.Equal(s.T(), apperrors.Common.InvalidTitle, err)
 }
 
 func (s *updateProjectTestSuite) Test_2_Fail_InvalidDescription() {
+	var (
+		projectID   = uuid.New()
+		performerID = uuid.New()
+	)
+
 	s.mockProjectRepository.EXPECT().
 		FindByID(gomock.Any(), gomock.Any()).
-		Return(&domain.Project{ID: uuid.New()}, nil)
+		Return(&domain.Project{ID: projectID, UserID: performerID}, nil)
 
 	longDesc := ""
 	for i := 0; i < 2100; i++ {
@@ -115,7 +134,7 @@ func (s *updateProjectTestSuite) Test_2_Fail_InvalidDescription() {
 	}
 
 	ctx := appcontext.NewRest(context.Background())
-	resp, err := s.handler.UpdateProject(ctx, uuid.New(), uuid.New(), dto.UpdateProjectRequest{
+	resp, err := s.handler.UpdateProject(ctx, performerID, projectID, dto.UpdateProjectRequest{
 		Title:       "Test",
 		Description: longDesc,
 	})
