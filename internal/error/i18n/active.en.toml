@@ -42,6 +42,7 @@ project_invalid_id = "Invalid project id"
 project_not_found = "Project not found"
 project_invalid_role = "Invalid role"
 project_invalid_category = "Invalid category"
+project_category_limit_exceeded = "Your project has reached the maximum number of categories allowed"
 
 # feedback
 feedback_invalid_id = "Invalid feedback id"

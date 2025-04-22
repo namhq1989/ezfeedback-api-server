@@ -17,19 +17,21 @@ import (
 
 type createProjectTestSuite struct {
 	suite.Suite
-	handler                command.CreateProjectHandler
-	mockCtrl               *gomock.Controller
-	mockProjectRepository  *mockproject.MockProjectRepository
-	mockProjectSettingRepo *mockproject.MockProjectSettingRepository
-	mockBillingHub         *mockproject.MockBillingHub
+	handler                      command.CreateProjectHandler
+	mockCtrl                     *gomock.Controller
+	mockProjectRepository        *mockproject.MockProjectRepository
+	mockProjectSettingRepository *mockproject.MockProjectSettingRepository
+	mockCachingRepository        *mockproject.MockCachingRepository
+	mockBillingHub               *mockproject.MockBillingHub
 }
 
 func (s *createProjectTestSuite) SetupSuite() {
 	s.mockCtrl = gomock.NewController(s.T())
 	s.mockProjectRepository = mockproject.NewMockProjectRepository(s.mockCtrl)
-	s.mockProjectSettingRepo = mockproject.NewMockProjectSettingRepository(s.mockCtrl)
+	s.mockProjectSettingRepository = mockproject.NewMockProjectSettingRepository(s.mockCtrl)
+	s.mockCachingRepository = mockproject.NewMockCachingRepository(s.mockCtrl)
 	s.mockBillingHub = mockproject.NewMockBillingHub(s.mockCtrl)
-	s.handler = command.NewCreateProjectHandler(s.mockProjectRepository, s.mockProjectSettingRepo, s.mockBillingHub)
+	s.handler = command.NewCreateProjectHandler(s.mockProjectRepository, s.mockProjectSettingRepository, s.mockCachingRepository, s.mockBillingHub)
 }
 
 func (s *createProjectTestSuite) TearDownTest() {
@@ -49,8 +51,12 @@ func (s *createProjectTestSuite) Test_1_Success() {
 		Create(gomock.Any(), gomock.Any()).
 		Return(nil)
 
-	s.mockProjectSettingRepo.EXPECT().
+	s.mockProjectSettingRepository.EXPECT().
 		Create(gomock.Any(), gomock.Any()).
+		Return(nil)
+
+	s.mockCachingRepository.EXPECT().
+		DeleteApiGetProjectsByUserID(gomock.Any(), gomock.Any()).
 		Return(nil)
 
 	ctx := appcontext.NewRest(context.Background())

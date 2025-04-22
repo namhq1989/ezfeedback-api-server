@@ -62,7 +62,7 @@ func (r ProjectCategoryRepository) Update(ctx *appcontext.AppContext, category d
 	).
 		MODEL(doc).
 		WHERE(
-			r.getTable().ProjectID.EQ(postgres.String(doc.ID)),
+			r.getTable().ID.EQ(postgres.String(doc.ID)),
 		)
 
 	_, err = stmt.ExecContext(ctx.Context(), r.getDB())
@@ -72,6 +72,34 @@ func (r ProjectCategoryRepository) Update(ctx *appcontext.AppContext, category d
 		}
 	}
 	return err
+}
+
+func (r ProjectCategoryRepository) FindByID(ctx *appcontext.AppContext, categoryID string) (*domain.ProjectCategory, error) {
+	if !uuid.IsValidID(categoryID) {
+		return nil, apperrors.Project.InvalidCategory
+	}
+
+	var c = r.getTable()
+
+	stmt := postgres.SELECT(
+		c.AllColumns,
+	).
+		FROM(c).
+		WHERE(c.ID.EQ(postgres.String(categoryID)))
+
+	var doc model.ProjectCategories
+	if err := stmt.QueryContext(ctx.Context(), r.getDB(), &doc); err != nil {
+		if r.db.IsNoRowsError(err) {
+			return nil, nil
+		}
+		return nil, err
+	}
+
+	var (
+		mapper    = mapping.ProjectCategoryMapper{}
+		result, _ = mapper.FromModelToDomain(doc)
+	)
+	return result, nil
 }
 
 func (r ProjectCategoryRepository) FindByProjectID(ctx *appcontext.AppContext, projectID string) ([]domain.ProjectCategory, error) {
@@ -110,4 +138,26 @@ func (r ProjectCategoryRepository) FindByProjectID(ctx *appcontext.AppContext, p
 		result = append(result, *category)
 	}
 	return result, nil
+}
+
+func (r ProjectCategoryRepository) CountTotalByProjectID(ctx *appcontext.AppContext, projectID string) (int64, error) {
+	if !uuid.IsValidID(projectID) {
+		return 0, apperrors.Project.InvalidProjectID
+	}
+
+	var (
+		c = r.getTable()
+	)
+
+	stmt := postgres.SELECT(
+		postgres.COUNT(c.ID).AS("count_result.total"),
+	).
+		FROM(c).
+		WHERE(
+			c.ProjectID.EQ(postgres.String(projectID)),
+		)
+
+	var result = database.CountResult{}
+	err := stmt.QueryContext(ctx.Context(), r.getDB(), &result)
+	return result.Total, err
 }

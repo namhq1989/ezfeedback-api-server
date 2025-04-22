@@ -21,7 +21,6 @@ func NewGenerateTokenHandler(jwtRepository domain.JwtRepository) GenerateTokenHa
 // @tags     IAM
 // @summary  [Dev only] Generate platform token
 // @id       iam-generate-token
-// @security ApiKeyAuth
 // @accept   json
 // @produce  json
 // @param    payload body    dto.GenerateTokenRequest true "Body"

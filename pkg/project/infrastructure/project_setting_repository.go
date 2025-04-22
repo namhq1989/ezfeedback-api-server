@@ -62,7 +62,7 @@ func (r ProjectSettingRepository) Update(ctx *appcontext.AppContext, setting dom
 	).
 		MODEL(doc).
 		WHERE(
-			r.getTable().ProjectID.EQ(postgres.String(doc.ID)),
+			r.getTable().ID.EQ(postgres.String(doc.ID)),
 		)
 
 	_, err = stmt.ExecContext(ctx.Context(), r.getDB())
