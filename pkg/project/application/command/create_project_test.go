@@ -61,11 +61,10 @@ func (s *createProjectTestSuite) Test_1_Success() {
 
 	ctx := appcontext.NewRest(context.Background())
 	resp, err := s.handler.CreateProject(ctx, uuid.New(), dto.CreateProjectRequest{
-		Title:                  "Test Project",
-		Description:            "A project",
-		IsFeedbackPublic:       true,
-		AllowAnonymousFeedback: true,
-		EnableVoting:           true,
+		Title:        "Test Project",
+		Description:  "A project",
+		Domain:       "test.com",
+		PrimaryColor: "#FF0000",
 	})
 	assert.Nil(s.T(), err)
 	assert.NotNil(s.T(), resp)
@@ -133,6 +132,40 @@ func (s *createProjectTestSuite) Test_2_Fail_NewProjectInvalidDescription() {
 	})
 	assert.Nil(s.T(), resp)
 	assert.Equal(s.T(), apperrors.Common.InvalidDescription, err)
+}
+
+func (s *createProjectTestSuite) Test_2_Fail_NewProjectInvalidDomain() {
+	s.mockBillingHub.EXPECT().
+		CanCreateProject(gomock.Any(), gomock.Any()).
+		Return(true, nil)
+	s.mockProjectRepository.EXPECT().
+		Create(gomock.Any(), gomock.Any()).
+		Return(nil)
+
+	ctx := appcontext.NewRest(context.Background())
+	resp, err := s.handler.CreateProject(ctx, uuid.New(), dto.CreateProjectRequest{
+		Title:  "Test",
+		Domain: "invalid-domain",
+	})
+	assert.Nil(s.T(), resp)
+	assert.Equal(s.T(), apperrors.Project.InvalidDomain, err)
+}
+
+func (s *createProjectTestSuite) Test_2_Fail_NewProjectInvalidPrimaryColor() {
+	s.mockBillingHub.EXPECT().
+		CanCreateProject(gomock.Any(), gomock.Any()).
+		Return(true, nil)
+	s.mockProjectRepository.EXPECT().
+		Create(gomock.Any(), gomock.Any()).
+		Return(nil)
+
+	ctx := appcontext.NewRest(context.Background())
+	resp, err := s.handler.CreateProject(ctx, uuid.New(), dto.CreateProjectRequest{
+		Title:        "Test",
+		PrimaryColor: "invalid-color",
+	})
+	assert.Nil(s.T(), resp)
+	assert.Equal(s.T(), apperrors.Project.InvalidPrimaryColor, err)
 }
 
 //

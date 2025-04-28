@@ -41,8 +41,7 @@ func NewCreateProjectHandler(
 func (h CreateProjectHandler) CreateProject(ctx *appcontext.AppContext, performerID string, req dto.CreateProjectRequest) (*dto.CreateProjectResponse, error) {
 	ctx.Logger().Info("new create project request", appcontext.Fields{
 		"performerID": performerID, "title": req.Title, "description": req.Description,
-		"isFeedbackPublic": req.IsFeedbackPublic, "allowAnonymousFeedback": req.AllowAnonymousFeedback,
-		"enableVoting": req.EnableVoting,
+		"domain": req.Domain, "primaryColor": req.PrimaryColor,
 	})
 
 	ctx.Logger().Text("check user usage limit")
@@ -69,7 +68,7 @@ func (h CreateProjectHandler) CreateProject(ctx *appcontext.AppContext, performe
 	}
 
 	ctx.Logger().Text("create setting model")
-	setting, err := domain.NewProjectSetting(project.ID, req.IsFeedbackPublic, req.AllowAnonymousFeedback, req.EnableVoting)
+	setting, err := domain.NewProjectSetting(project.ID, req.Domain, req.PrimaryColor)
 	if err != nil {
 		ctx.Logger().Error("failed to create setting model", err, appcontext.Fields{})
 		return nil, err

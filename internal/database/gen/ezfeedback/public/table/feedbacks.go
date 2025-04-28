@@ -19,13 +19,14 @@ type feedbacksTable struct {
 	// Columns
 	ID          postgres.ColumnString
 	ProjectID   postgres.ColumnString
+	CampaignID  postgres.ColumnString
 	UserID      postgres.ColumnString
+	Email       postgres.ColumnString
 	CategoryID  postgres.ColumnString
 	Content     postgres.ColumnString
 	Rating      postgres.ColumnInteger
 	IsAnonymous postgres.ColumnBool
 	State       postgres.ColumnString
-	Status      postgres.ColumnString
 	CreatedAt   postgres.ColumnTimestampz
 	UpdatedAt   postgres.ColumnTimestampz
 
@@ -70,17 +71,18 @@ func newFeedbacksTableImpl(schemaName, tableName, alias string) feedbacksTable {
 	var (
 		IDColumn          = postgres.StringColumn("id")
 		ProjectIDColumn   = postgres.StringColumn("project_id")
+		CampaignIDColumn  = postgres.StringColumn("campaign_id")
 		UserIDColumn      = postgres.StringColumn("user_id")
+		EmailColumn       = postgres.StringColumn("email")
 		CategoryIDColumn  = postgres.StringColumn("category_id")
 		ContentColumn     = postgres.StringColumn("content")
 		RatingColumn      = postgres.IntegerColumn("rating")
 		IsAnonymousColumn = postgres.BoolColumn("is_anonymous")
 		StateColumn       = postgres.StringColumn("state")
-		StatusColumn      = postgres.StringColumn("status")
 		CreatedAtColumn   = postgres.TimestampzColumn("created_at")
 		UpdatedAtColumn   = postgres.TimestampzColumn("updated_at")
-		allColumns        = postgres.ColumnList{IDColumn, ProjectIDColumn, UserIDColumn, CategoryIDColumn, ContentColumn, RatingColumn, IsAnonymousColumn, StateColumn, StatusColumn, CreatedAtColumn, UpdatedAtColumn}
-		mutableColumns    = postgres.ColumnList{ProjectIDColumn, UserIDColumn, CategoryIDColumn, ContentColumn, RatingColumn, IsAnonymousColumn, StateColumn, StatusColumn, CreatedAtColumn, UpdatedAtColumn}
+		allColumns        = postgres.ColumnList{IDColumn, ProjectIDColumn, CampaignIDColumn, UserIDColumn, EmailColumn, CategoryIDColumn, ContentColumn, RatingColumn, IsAnonymousColumn, StateColumn, CreatedAtColumn, UpdatedAtColumn}
+		mutableColumns    = postgres.ColumnList{ProjectIDColumn, CampaignIDColumn, UserIDColumn, EmailColumn, CategoryIDColumn, ContentColumn, RatingColumn, IsAnonymousColumn, StateColumn, CreatedAtColumn, UpdatedAtColumn}
 	)
 
 	return feedbacksTable{
@@ -89,13 +91,14 @@ func newFeedbacksTableImpl(schemaName, tableName, alias string) feedbacksTable {
 		//Columns
 		ID:          IDColumn,
 		ProjectID:   ProjectIDColumn,
+		CampaignID:  CampaignIDColumn,
 		UserID:      UserIDColumn,
+		Email:       EmailColumn,
 		CategoryID:  CategoryIDColumn,
 		Content:     ContentColumn,
 		Rating:      RatingColumn,
 		IsAnonymous: IsAnonymousColumn,
 		State:       StateColumn,
-		Status:      StatusColumn,
 		CreatedAt:   CreatedAtColumn,
 		UpdatedAt:   UpdatedAtColumn,
 

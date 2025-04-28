@@ -9,6 +9,8 @@ CREATE TYPE feedback_state AS ENUM ('new', 'in_review', 'planned', 'in_progress'
 
 CREATE TYPE invitation_status AS ENUM ('pending', 'accepted', 'expired', 'declined');
 
+CREATE TYPE campaign_type AS ENUM ('feedback', 'nps', 'csat');
+
 -- =============================================
 -- User Authentication and Management
 -- =============================================
@@ -37,8 +39,8 @@ CREATE TABLE verification_codes (
                                     created_at TIMESTAMPTZ DEFAULT NOW() NOT NULL
 );
 
-CREATE INDEX idx_verification_codes_email ON verification_codes(email);
 CREATE INDEX idx_verification_codes_ip_created_at ON verification_codes(ip, created_at);
+CREATE INDEX idx_verification_codes_ip_email_code ON verification_codes(ip, email, code);
 CREATE INDEX idx_verification_codes_expires_at ON verification_codes(expires_at);
 
 -- Create user sessions table
@@ -54,8 +56,7 @@ CREATE TABLE user_sessions (
 );
 
 CREATE INDEX idx_user_sessions_user_id ON user_sessions(user_id);
-CREATE INDEX idx_user_sessions_device_id ON user_sessions(device_id);
-CREATE INDEX idx_user_sessions_refresh_token ON user_sessions(refresh_token);
+CREATE INDEX idx_user_sessions_device_id_refresh_token ON user_sessions(device_id, refresh_token);
 
 -- =============================================
 -- Project Management
@@ -75,22 +76,20 @@ CREATE TABLE projects (
 
 CREATE INDEX idx_projects_user_id ON projects(user_id);
 CREATE INDEX idx_projects_slug ON projects(slug);
-CREATE INDEX idx_projects_status ON projects(status);
 
 -- Create project settings table
 CREATE TABLE project_settings (
                                   id TEXT PRIMARY KEY,
                                   project_id TEXT NOT NULL REFERENCES projects(id) ON DELETE CASCADE,
-                                  is_feedback_public BOOLEAN NOT NULL,
-                                  allow_anonymous_feedback BOOLEAN NOT NULL,
-                                  enable_voting BOOLEAN NOT NULL,
+                                  domain VARCHAR(255) DEFAULT '' NOT NULL,
+                                  primary_color VARCHAR(7) DEFAULT '' NOT NULL,
                                   created_at TIMESTAMPTZ DEFAULT NOW() NOT NULL,
                                   updated_at TIMESTAMPTZ DEFAULT NOW() NOT NULL,
                                   UNIQUE(project_id)
 );
 
 CREATE INDEX idx_project_settings_project_id ON project_settings(project_id);
-CREATE INDEX idx_project_settings_is_feedback_public ON project_settings(is_feedback_public);
+CREATE INDEX idx_project_settings_project_domain ON project_settings(project_id, domain);
 
 -- Create project collaborators table
 CREATE TABLE project_collaborators (
@@ -106,10 +105,6 @@ CREATE TABLE project_collaborators (
 CREATE INDEX idx_project_collaborators_project_id ON project_collaborators(project_id);
 CREATE INDEX idx_project_collaborators_user_id ON project_collaborators(user_id);
 
--- =============================================
--- Feedback Management
--- =============================================
-
 -- Create project categories table
 CREATE TABLE project_categories (
                                     id TEXT PRIMARY KEY,
@@ -124,30 +119,53 @@ CREATE TABLE project_categories (
 );
 
 CREATE INDEX idx_project_categories_project_id ON project_categories(project_id);
-CREATE INDEX idx_project_categories_name ON project_categories(name);
-CREATE INDEX idx_project_categories_slug ON project_categories(slug);
-CREATE INDEX idx_project_categories_status ON project_categories(status);
+
+-- Create project campaigns table
+CREATE TABLE project_campaigns (
+                                   id TEXT PRIMARY KEY,
+                                   project_id TEXT NOT NULL REFERENCES projects(id) ON DELETE CASCADE,
+                                   name VARCHAR(255) NOT NULL,
+                                   description TEXT DEFAULT '' NOT NULL,
+                                   campaign_type campaign_type NOT NULL,
+                                   status status NOT NULL,
+                                   setting_widget_position VARCHAR(30) NOT NULL,
+                                   created_at TIMESTAMPTZ DEFAULT NOW() NOT NULL,
+                                   updated_at TIMESTAMPTZ DEFAULT NOW() NOT NULL
+);
+
+CREATE INDEX idx_project_campaigns_project_campaign_type ON project_campaigns(project_id, campaign_type);
+
+-- Create project campaign categories table
+CREATE TABLE project_campaign_categories (
+                                  id TEXT PRIMARY KEY,
+                                  campaign_id TEXT NOT NULL REFERENCES project_campaigns(id) ON DELETE CASCADE,
+                                  category_id TEXT NOT NULL REFERENCES project_categories(id) ON DELETE CASCADE,
+                                  created_at TIMESTAMPTZ DEFAULT NOW() NOT NULL
+);
+
+CREATE INDEX idx_project_campaign_categories_campaign_id ON project_campaign_categories(campaign_id);
 
 -- Create feedbacks table
 CREATE TABLE feedbacks (
                            id TEXT PRIMARY KEY,
                            project_id TEXT NOT NULL REFERENCES projects(id) ON DELETE CASCADE,
+                           campaign_id TEXT NOT NULL REFERENCES project_campaigns(id) ON DELETE CASCADE,
                            user_id TEXT REFERENCES users(id) ON DELETE SET NULL DEFAULT NULL,
-                           category_id TEXT NOT NULL REFERENCES project_categories(id) ON DELETE SET NULL,
+                           email VARCHAR(255),
+                           category_id TEXT NOT NULL,
                            content TEXT NOT NULL,
-                           rating INTEGER NOT NULL CHECK (rating IS NULL OR (rating >= 1 AND rating <= 5)),
+                           rating INTEGER NOT NULL CHECK (rating IS NULL OR (rating >= 1 AND rating <= 10)),
                            is_anonymous BOOLEAN NOT NULL,
                            state feedback_state NOT NULL,
-                           status status NOT NULL,
                            created_at TIMESTAMPTZ DEFAULT NOW() NOT NULL,
                            updated_at TIMESTAMPTZ DEFAULT NOW() NOT NULL
 );
 
 CREATE INDEX idx_feedbacks_project_id ON feedbacks(project_id);
-CREATE INDEX idx_feedbacks_category_id ON feedbacks(category_id);
 CREATE INDEX idx_feedbacks_user_id ON feedbacks(user_id);
-CREATE INDEX idx_feedbacks_status ON feedbacks(status);
-CREATE INDEX idx_feedbacks_state ON feedbacks(state);
+CREATE INDEX idx_feedbacks_campaign_id ON feedbacks(campaign_id);
+
+CREATE INDEX idx_feedbacks_query_patterns ON feedbacks(project_id, campaign_id, category_id, rating, created_at DESC);
 
 -- Create feedback replies table
 CREATE TABLE feedback_replies (

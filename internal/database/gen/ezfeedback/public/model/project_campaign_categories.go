@@ -11,11 +11,9 @@ import (
 	"time"
 )
 
-type ProjectSettings struct {
-	ID           string `sql:"primary_key"`
-	ProjectID    string
-	Domain       string
-	PrimaryColor string
-	CreatedAt    time.Time
-	UpdatedAt    time.Time
+type ProjectCampaignCategories struct {
+	ID         string `sql:"primary_key"`
+	CampaignID string
+	CategoryID string
+	CreatedAt  time.Time
 }

@@ -14,13 +14,14 @@ import (
 type Feedbacks struct {
 	ID          string `sql:"primary_key"`
 	ProjectID   string
+	CampaignID  string
 	UserID      *string
+	Email       *string
 	CategoryID  string
 	Content     string
 	Rating      int32
 	IsAnonymous bool
 	State       FeedbackState
-	Status      Status
 	CreatedAt   time.Time
 	UpdatedAt   time.Time
 }

@@ -78,11 +78,10 @@ func (s *updateProjectTestSuite) Test_1_Success() {
 
 	ctx := appcontext.NewRest(context.Background())
 	resp, err := s.handler.UpdateProject(ctx, performerID, projectID, dto.UpdateProjectRequest{
-		Title:                  "Updated title",
-		Description:            "Updated description",
-		IsFeedbackPublic:       true,
-		AllowAnonymousFeedback: false,
-		EnableVoting:           true,
+		Title:        "Updated title",
+		Description:  "Updated description",
+		Domain:       "updated.com",
+		PrimaryColor: "#FF0000",
 	})
 	assert.Nil(s.T(), err)
 	assert.NotNil(s.T(), resp)
@@ -143,6 +142,60 @@ func (s *updateProjectTestSuite) Test_2_Fail_InvalidDescription() {
 	assert.Nil(s.T(), resp)
 	assert.NotNil(s.T(), err)
 	assert.Equal(s.T(), apperrors.Common.InvalidDescription, err)
+}
+
+func (s *updateProjectTestSuite) Test_2_Fail_InvalidDomain() {
+	var (
+		projectID   = uuid.New()
+		performerID = uuid.New()
+	)
+
+	s.mockProjectRepository.EXPECT().
+		FindByID(gomock.Any(), gomock.Any()).
+		Return(&domain.Project{ID: projectID, UserID: performerID}, nil)
+	s.mockProjectRepository.EXPECT().
+		Update(gomock.Any(), gomock.Any()).
+		Return(nil)
+	s.mockProjectSettingRepository.EXPECT().
+		FindByProjectID(gomock.Any(), gomock.Any()).
+		Return(&domain.ProjectSetting{ID: uuid.New()}, nil)
+
+	ctx := appcontext.NewRest(context.Background())
+	resp, err := s.handler.UpdateProject(ctx, performerID, projectID, dto.UpdateProjectRequest{
+		Title:       "Updated title",
+		Description: "Updated description",
+		Domain:      "invalid-domain",
+	})
+	assert.Nil(s.T(), resp)
+	assert.NotNil(s.T(), err)
+	assert.Equal(s.T(), apperrors.Project.InvalidDomain, err)
+}
+
+func (s *updateProjectTestSuite) Test_2_Fail_InvalidPrimaryColor() {
+	var (
+		projectID   = uuid.New()
+		performerID = uuid.New()
+	)
+
+	s.mockProjectRepository.EXPECT().
+		FindByID(gomock.Any(), gomock.Any()).
+		Return(&domain.Project{ID: projectID, UserID: performerID}, nil)
+	s.mockProjectRepository.EXPECT().
+		Update(gomock.Any(), gomock.Any()).
+		Return(nil)
+	s.mockProjectSettingRepository.EXPECT().
+		FindByProjectID(gomock.Any(), gomock.Any()).
+		Return(&domain.ProjectSetting{ID: uuid.New()}, nil)
+
+	ctx := appcontext.NewRest(context.Background())
+	resp, err := s.handler.UpdateProject(ctx, performerID, projectID, dto.UpdateProjectRequest{
+		Title:        "Updated title",
+		Description:  "Updated description",
+		PrimaryColor: "invalid-color",
+	})
+	assert.Nil(s.T(), resp)
+	assert.NotNil(s.T(), err)
+	assert.Equal(s.T(), apperrors.Project.InvalidPrimaryColor, err)
 }
 
 //

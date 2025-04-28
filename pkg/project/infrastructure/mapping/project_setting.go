@@ -9,13 +9,12 @@ type ProjectSettingMapper struct{}
 
 func (ProjectSettingMapper) FromModelToDomain(projectSetting model.ProjectSettings) (*domain.ProjectSetting, error) {
 	var result = &domain.ProjectSetting{
-		ID:                     projectSetting.ID,
-		ProjectID:              projectSetting.ProjectID,
-		IsFeedbackPublic:       projectSetting.IsFeedbackPublic,
-		AllowAnonymousFeedback: projectSetting.AllowAnonymousFeedback,
-		EnableVoting:           projectSetting.EnableVoting,
-		CreatedAt:              projectSetting.CreatedAt,
-		UpdatedAt:              projectSetting.UpdatedAt,
+		ID:           projectSetting.ID,
+		ProjectID:    projectSetting.ProjectID,
+		Domain:       projectSetting.Domain,
+		PrimaryColor: projectSetting.PrimaryColor,
+		CreatedAt:    projectSetting.CreatedAt,
+		UpdatedAt:    projectSetting.UpdatedAt,
 	}
 
 	return result, nil
@@ -23,13 +22,12 @@ func (ProjectSettingMapper) FromModelToDomain(projectSetting model.ProjectSettin
 
 func (ProjectSettingMapper) FromDomainToModel(projectSetting domain.ProjectSetting) (*model.ProjectSettings, error) {
 	var result = &model.ProjectSettings{
-		ID:                     projectSetting.ID,
-		ProjectID:              projectSetting.ProjectID,
-		IsFeedbackPublic:       projectSetting.IsFeedbackPublic,
-		AllowAnonymousFeedback: projectSetting.AllowAnonymousFeedback,
-		EnableVoting:           projectSetting.EnableVoting,
-		CreatedAt:              projectSetting.CreatedAt,
-		UpdatedAt:              projectSetting.UpdatedAt,
+		ID:           projectSetting.ID,
+		ProjectID:    projectSetting.ProjectID,
+		Domain:       projectSetting.Domain,
+		PrimaryColor: projectSetting.PrimaryColor,
+		CreatedAt:    projectSetting.CreatedAt,
+		UpdatedAt:    projectSetting.UpdatedAt,
 	}
 
 	return result, nil

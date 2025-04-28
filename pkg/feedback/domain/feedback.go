@@ -5,31 +5,32 @@ import (
 
 	apperrors "github.com/namhq1989/ezfeedback-api-server/internal/error"
 	"github.com/namhq1989/ezfeedback-api-server/internal/utils/manipulation"
+	"github.com/namhq1989/ezfeedback-api-server/internal/utils/validation"
 	"github.com/namhq1989/go-utilities/uuid"
 )
 
 type Feedback struct {
 	ID          string
 	ProjectID   string
+	CampaignID  string
 	UserID      *string
+	Email       *string
 	CategoryID  string
 	Content     string
 	Rating      int32
 	IsAnonymous bool
 	State       FeedbackState
-	Status      Status
 	CreatedAt   time.Time
 	UpdatedAt   time.Time
 }
 
-func NewFeedback(projectID string, userID *string, categoryID, content string, rating int32) (*Feedback, error) {
+func NewFeedback(projectID, campaignID string, userID, email *string, categoryID, content string, rating int32) (*Feedback, error) {
 	var (
 		now = manipulation.NowUTC()
 	)
 	var f = &Feedback{
 		ID:        uuid.New(),
 		State:     FeedbackStateNew,
-		Status:    StatusActive,
 		CreatedAt: now,
 		UpdatedAt: now,
 	}
@@ -37,7 +38,13 @@ func NewFeedback(projectID string, userID *string, categoryID, content string, r
 	if err := f.SetProjectID(projectID); err != nil {
 		return nil, err
 	}
+	if err := f.SetCampaignID(campaignID); err != nil {
+		return nil, err
+	}
 	if err := f.SetUserID(userID); err != nil {
+		return nil, err
+	}
+	if err := f.SetEmail(email); err != nil {
 		return nil, err
 	}
 	if err := f.SetCategoryID(categoryID); err != nil {
@@ -62,15 +69,40 @@ func (f *Feedback) SetProjectID(projectID string) error {
 	return nil
 }
 
+func (f *Feedback) SetCampaignID(campaignID string) error {
+	if !uuid.IsValidID(campaignID) {
+		return apperrors.Project.InvalidCampaign
+	}
+
+	f.CampaignID = campaignID
+	f.SetUpdatedAt()
+	return nil
+}
+
 func (f *Feedback) SetUserID(userID *string) error {
 	if userID != nil && !uuid.IsValidID(*userID) {
 		return apperrors.User.InvalidUserID
 	}
 
 	f.UserID = userID
-	f.IsAnonymous = userID == nil
+	f.SetIsAnonymous()
 	f.SetUpdatedAt()
 	return nil
+}
+
+func (f *Feedback) SetEmail(email *string) error {
+	if email != nil && !validation.IsValidEmail(*email) {
+		return apperrors.Common.InvalidEmail
+	}
+
+	f.Email = email
+	f.SetIsAnonymous()
+	f.SetUpdatedAt()
+	return nil
+}
+
+func (f *Feedback) SetIsAnonymous() {
+	f.IsAnonymous = f.UserID == nil && f.Email == nil
 }
 
 func (f *Feedback) SetCategoryID(categoryID string) error {
@@ -110,17 +142,6 @@ func (f *Feedback) SetState(state string) error {
 	}
 
 	f.State = dState
-	f.SetUpdatedAt()
-	return nil
-}
-
-func (f *Feedback) SetStatus(status string) error {
-	var dStatus = ToStatus(status)
-	if !dStatus.IsValid() {
-		return apperrors.Common.InvalidStatus
-	}
-
-	f.Status = dStatus
 	f.SetUpdatedAt()
 	return nil
 }

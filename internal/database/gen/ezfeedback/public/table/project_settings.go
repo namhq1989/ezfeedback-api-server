@@ -17,13 +17,12 @@ type projectSettingsTable struct {
 	postgres.Table
 
 	// Columns
-	ID                     postgres.ColumnString
-	ProjectID              postgres.ColumnString
-	IsFeedbackPublic       postgres.ColumnBool
-	AllowAnonymousFeedback postgres.ColumnBool
-	EnableVoting           postgres.ColumnBool
-	CreatedAt              postgres.ColumnTimestampz
-	UpdatedAt              postgres.ColumnTimestampz
+	ID           postgres.ColumnString
+	ProjectID    postgres.ColumnString
+	Domain       postgres.ColumnString
+	PrimaryColor postgres.ColumnString
+	CreatedAt    postgres.ColumnTimestampz
+	UpdatedAt    postgres.ColumnTimestampz
 
 	AllColumns     postgres.ColumnList
 	MutableColumns postgres.ColumnList
@@ -64,28 +63,26 @@ func newProjectSettingsTable(schemaName, tableName, alias string) *ProjectSettin
 
 func newProjectSettingsTableImpl(schemaName, tableName, alias string) projectSettingsTable {
 	var (
-		IDColumn                     = postgres.StringColumn("id")
-		ProjectIDColumn              = postgres.StringColumn("project_id")
-		IsFeedbackPublicColumn       = postgres.BoolColumn("is_feedback_public")
-		AllowAnonymousFeedbackColumn = postgres.BoolColumn("allow_anonymous_feedback")
-		EnableVotingColumn           = postgres.BoolColumn("enable_voting")
-		CreatedAtColumn              = postgres.TimestampzColumn("created_at")
-		UpdatedAtColumn              = postgres.TimestampzColumn("updated_at")
-		allColumns                   = postgres.ColumnList{IDColumn, ProjectIDColumn, IsFeedbackPublicColumn, AllowAnonymousFeedbackColumn, EnableVotingColumn, CreatedAtColumn, UpdatedAtColumn}
-		mutableColumns               = postgres.ColumnList{ProjectIDColumn, IsFeedbackPublicColumn, AllowAnonymousFeedbackColumn, EnableVotingColumn, CreatedAtColumn, UpdatedAtColumn}
+		IDColumn           = postgres.StringColumn("id")
+		ProjectIDColumn    = postgres.StringColumn("project_id")
+		DomainColumn       = postgres.StringColumn("domain")
+		PrimaryColorColumn = postgres.StringColumn("primary_color")
+		CreatedAtColumn    = postgres.TimestampzColumn("created_at")
+		UpdatedAtColumn    = postgres.TimestampzColumn("updated_at")
+		allColumns         = postgres.ColumnList{IDColumn, ProjectIDColumn, DomainColumn, PrimaryColorColumn, CreatedAtColumn, UpdatedAtColumn}
+		mutableColumns     = postgres.ColumnList{ProjectIDColumn, DomainColumn, PrimaryColorColumn, CreatedAtColumn, UpdatedAtColumn}
 	)
 
 	return projectSettingsTable{
 		Table: postgres.NewTable(schemaName, tableName, alias, allColumns...),
 
 		//Columns
-		ID:                     IDColumn,
-		ProjectID:              ProjectIDColumn,
-		IsFeedbackPublic:       IsFeedbackPublicColumn,
-		AllowAnonymousFeedback: AllowAnonymousFeedbackColumn,
-		EnableVoting:           EnableVotingColumn,
-		CreatedAt:              CreatedAtColumn,
-		UpdatedAt:              UpdatedAtColumn,
+		ID:           IDColumn,
+		ProjectID:    ProjectIDColumn,
+		Domain:       DomainColumn,
+		PrimaryColor: PrimaryColorColumn,
+		CreatedAt:    CreatedAtColumn,
+		UpdatedAt:    UpdatedAtColumn,
 
 		AllColumns:     allColumns,
 		MutableColumns: mutableColumns,

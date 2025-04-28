@@ -5,8 +5,13 @@ import (
 
 	apperrors "github.com/namhq1989/ezfeedback-api-server/internal/error"
 	"github.com/namhq1989/ezfeedback-api-server/internal/utils/manipulation"
+	"github.com/namhq1989/ezfeedback-api-server/internal/utils/validation"
 	"github.com/namhq1989/go-utilities/appcontext"
 	"github.com/namhq1989/go-utilities/uuid"
+)
+
+const (
+	projectSettingDefaultColor = "#2563eb" // shadcn blue-600
 )
 
 type ProjectSettingRepository interface {
@@ -16,30 +21,32 @@ type ProjectSettingRepository interface {
 }
 
 type ProjectSetting struct {
-	ID                     string
-	ProjectID              string
-	IsFeedbackPublic       bool
-	AllowAnonymousFeedback bool
-	EnableVoting           bool
-	CreatedAt              time.Time
-	UpdatedAt              time.Time
+	ID           string
+	ProjectID    string
+	Domain       string
+	PrimaryColor string
+	CreatedAt    time.Time
+	UpdatedAt    time.Time
 }
 
-func NewProjectSetting(projectID string, isFeedbackPublic bool, allowAnonymousFeedback bool, enableVoting bool) (*ProjectSetting, error) {
+func NewProjectSetting(projectID, domain, primaryColor string) (*ProjectSetting, error) {
 	var (
 		now = manipulation.NowUTC()
 	)
 
 	var s = &ProjectSetting{
-		ID:                     uuid.New(),
-		IsFeedbackPublic:       isFeedbackPublic,
-		AllowAnonymousFeedback: allowAnonymousFeedback,
-		EnableVoting:           enableVoting,
-		CreatedAt:              now,
-		UpdatedAt:              now,
+		ID:        uuid.New(),
+		CreatedAt: now,
+		UpdatedAt: now,
 	}
 
 	if err := s.SetProjectID(projectID); err != nil {
+		return nil, err
+	}
+	if err := s.SetDomain(domain); err != nil {
+		return nil, err
+	}
+	if err := s.SetPrimaryColor(primaryColor); err != nil {
 		return nil, err
 	}
 
@@ -56,19 +63,27 @@ func (s *ProjectSetting) SetProjectID(projectID string) error {
 	return nil
 }
 
-func (s *ProjectSetting) SetIsFeedbackPublic(isFeedbackPublic bool) {
-	s.IsFeedbackPublic = isFeedbackPublic
+func (s *ProjectSetting) SetDomain(domain string) error {
+	if len(domain) > 0 && !validation.IsValidDomain(domain) {
+		return apperrors.Project.InvalidDomain
+	}
+
+	s.Domain = domain
 	s.SetUpdatedAt()
+	return nil
 }
 
-func (s *ProjectSetting) SetAllowAnonymousFeedback(allowAnonymousFeedback bool) {
-	s.AllowAnonymousFeedback = allowAnonymousFeedback
-	s.SetUpdatedAt()
-}
+func (s *ProjectSetting) SetPrimaryColor(primaryColor string) error {
+	if len(primaryColor) > 0 && !validation.IsValidHexColor(primaryColor) {
+		return apperrors.Project.InvalidPrimaryColor
+	}
 
-func (s *ProjectSetting) SetEnableVoting(enableVoting bool) {
-	s.EnableVoting = enableVoting
+	s.PrimaryColor = primaryColor
+	if s.PrimaryColor == "" {
+		s.PrimaryColor = projectSettingDefaultColor
+	}
 	s.SetUpdatedAt()
+	return nil
 }
 
 func (s *ProjectSetting) SetUpdatedAt() {

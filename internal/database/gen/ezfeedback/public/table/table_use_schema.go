@@ -13,6 +13,8 @@ func UseSchema(schema string) {
 	FeedbackReplies = FeedbackReplies.FromSchema(schema)
 	FeedbackVotes = FeedbackVotes.FromSchema(schema)
 	Feedbacks = Feedbacks.FromSchema(schema)
+	ProjectCampaignCategories = ProjectCampaignCategories.FromSchema(schema)
+	ProjectCampaigns = ProjectCampaigns.FromSchema(schema)
 	ProjectCategories = ProjectCategories.FromSchema(schema)
 	ProjectCollaborators = ProjectCollaborators.FromSchema(schema)
 	ProjectSettings = ProjectSettings.FromSchema(schema)

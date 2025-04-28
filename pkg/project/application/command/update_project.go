@@ -39,8 +39,7 @@ func NewUpdateProjectHandler(
 func (h UpdateProjectHandler) UpdateProject(ctx *appcontext.AppContext, performerID, projectID string, req dto.UpdateProjectRequest) (*dto.UpdateProjectResponse, error) {
 	ctx.Logger().Info("new update project request", appcontext.Fields{
 		"performerID": performerID, "title": req.Title, "description": req.Description,
-		"isFeedbackPublic": req.IsFeedbackPublic, "allowAnonymousFeedback": req.AllowAnonymousFeedback,
-		"enableVoting": req.EnableVoting,
+		"domain": req.Domain, "primaryColor": req.PrimaryColor,
 	})
 
 	ctx.Logger().Text("find project in db")
@@ -82,7 +81,17 @@ func (h UpdateProjectHandler) UpdateProject(ctx *appcontext.AppContext, performe
 	}
 	if setting == nil {
 		ctx.Logger().Text("setting not found, create new")
-		setting, _ = domain.NewProjectSetting(project.ID, req.IsFeedbackPublic, req.AllowAnonymousFeedback, req.EnableVoting)
+		setting, _ = domain.NewProjectSetting(project.ID, req.Domain, req.PrimaryColor)
+	} else {
+		ctx.Logger().Text("update setting data")
+		if err = setting.SetDomain(req.Domain); err != nil {
+			ctx.Logger().Error("failed to update setting domain", err, appcontext.Fields{})
+			return nil, err
+		}
+		if err = setting.SetPrimaryColor(req.PrimaryColor); err != nil {
+			ctx.Logger().Error("failed to update setting primary color", err, appcontext.Fields{})
+			return nil, err
+		}
 	}
 
 	ctx.Logger().Text("update setting in db")
