@@ -72,10 +72,10 @@ func (h ChangeProjectCategoryStatusHandler) ChangeProjectCategoryStatus(ctx *app
 
 	ctx.Logger().Text("delete caching data")
 	if err = h.cachingRepository.DeleteProjectCategoriesByProjectID(ctx, projectID); err != nil {
-		ctx.Logger().Error("failed to set project in caching", err, appcontext.Fields{})
+		ctx.Logger().Error("failed to delete project categories caching data", err, appcontext.Fields{})
 	}
-	if err = h.cachingRepository.DeleteApiGetProjectsByUserID(ctx, performerID); err != nil {
-		ctx.Logger().Error("failed to delete caching data", err, appcontext.Fields{})
+	if err = h.cachingRepository.DeleteApiGetProjectByID(ctx, projectID); err != nil {
+		ctx.Logger().Error("failed to delete api get project by id caching data", err, appcontext.Fields{})
 	}
 
 	ctx.Logger().Text("done change project category status request")

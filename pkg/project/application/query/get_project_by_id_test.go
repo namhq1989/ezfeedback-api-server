@@ -15,25 +15,23 @@ import (
 	"go.uber.org/mock/gomock"
 )
 
-type getProjectsTestSuite struct {
+type getProjectByIDTestSuite struct {
 	suite.Suite
-	handler               query.GetProjectsHandler
+	handler               query.GetProjectByIDHandler
 	mockCtrl              *gomock.Controller
-	mockProjectRepository *mockproject.MockProjectRepository
 	mockCachingRepository *mockproject.MockCachingRepository
 	mockService           *mockproject.MockService
 }
 
-func (s *getProjectsTestSuite) SetupSuite() {
+func (s *getProjectByIDTestSuite) SetupSuite() {
 	s.mockCtrl = gomock.NewController(s.T())
-	s.mockProjectRepository = mockproject.NewMockProjectRepository(s.mockCtrl)
 	s.mockCachingRepository = mockproject.NewMockCachingRepository(s.mockCtrl)
 	s.mockService = mockproject.NewMockService(s.mockCtrl)
 
-	s.handler = query.NewGetProjectsHandler(s.mockProjectRepository, s.mockCachingRepository, s.mockService)
+	s.handler = query.NewGetProjectByIDHandler(s.mockCachingRepository, s.mockService)
 }
 
-func (s *getProjectsTestSuite) TearDownTest() {
+func (s *getProjectByIDTestSuite) TearDownTest() {
 	s.mockCtrl.Finish()
 }
 
@@ -41,43 +39,50 @@ func (s *getProjectsTestSuite) TearDownTest() {
 // CASES
 //
 
-func (s *getProjectsTestSuite) Test_1_Success_FromCache() {
+func (s *getProjectByIDTestSuite) Test_1_Success_FromCache() {
 	cachedData := `{
-		"projects": [
-			{
-				"id": "d0388vpnlp83c24n98mg",
-				"title": "EzFeedback",
-				"slug": "ezfeedback-21hu1t",
-				"status": "active",
-				"stats": {
-				  "totalFeedback": 10
-				}
-			}
-		]
+		"projects": {
+			"id": "d0388vpnlp83c24n98mg",
+			"title": "EzFeedback",
+			"slug": "ezfeedback-21hu1t",
+			"status": "active",
+			"description": "My first project description",
+			"categories": [],
+			"campaigns": [],
+			"setting": {
+			  "isFeedbackPublic": false,
+			  "allowAnonymousFeedback": true,
+			  "enableVoting": true
+			},
+			"stats": {
+			  "totalFeedback": 10
+			},
+			"createdAt": "2025-04-22T00:46:39.916Z",
+			"updatedAt": "2025-04-22T10:02:53.779Z"
+		}
 	}
 	`
 
 	s.mockCachingRepository.EXPECT().
-		GetApiGetProjectsByUserID(gomock.Any(), gomock.Any()).
+		GetApiGetProjectByID(gomock.Any(), gomock.Any()).
 		Return(&cachedData, nil)
 
 	ctx := appcontext.NewRest(context.Background())
-	resp, err := s.handler.GetProjects(ctx, uuid.New(), dto.GetProjectsRequest{})
+	resp, err := s.handler.GetProjectByID(ctx, uuid.New(), uuid.New(), dto.GetProjectByIDRequest{})
 
 	assert.Nil(s.T(), err)
 	assert.NotNil(s.T(), resp)
-	assert.Equal(s.T(), 1, len(resp.Projects))
 }
 
-func (s *getProjectsTestSuite) Test_2_Success_FromDB() {
+func (s *getProjectByIDTestSuite) Test_2_Success_FromDB() {
 	// mock data
 	s.mockCachingRepository.EXPECT().
-		GetApiGetProjectsByUserID(gomock.Any(), gomock.Any()).
+		GetApiGetProjectByID(gomock.Any(), gomock.Any()).
 		Return(nil, nil)
 
-	s.mockProjectRepository.EXPECT().
-		FindByUserID(gomock.Any(), gomock.Any()).
-		Return([]domain.Project{{ID: uuid.New()}}, nil)
+	s.mockService.EXPECT().
+		GetProjectByID(gomock.Any(), gomock.Any(), gomock.Any()).
+		Return(&domain.Project{ID: uuid.New()}, nil)
 
 	s.mockService.EXPECT().
 		GetProjectSettingByProjectID(gomock.Any(), gomock.Any()).
@@ -89,24 +94,28 @@ func (s *getProjectsTestSuite) Test_2_Success_FromDB() {
 		Return([]domain.ProjectCategory{{ID: uuid.New()}}, nil).
 		AnyTimes()
 
+	s.mockService.EXPECT().
+		GetProjectCampaignsByProjectID(gomock.Any(), gomock.Any()).
+		Return([]domain.ProjectCampaign{{ID: uuid.New()}}, nil).
+		AnyTimes()
+
 	s.mockCachingRepository.EXPECT().
-		SetApiGetProjectsByUserID(gomock.Any(), gomock.Any(), gomock.Any()).
+		SetApiGetProjectByID(gomock.Any(), gomock.Any(), gomock.Any()).
 		Return(nil)
 
 	// call handler
 	ctx := appcontext.NewRest(context.Background())
-	resp, err := s.handler.GetProjects(ctx, uuid.New(), dto.GetProjectsRequest{})
+	resp, err := s.handler.GetProjectByID(ctx, uuid.New(), uuid.New(), dto.GetProjectByIDRequest{})
 
 	// assertions
 	assert.Nil(s.T(), err)
 	assert.NotNil(s.T(), resp)
-	assert.Equal(s.T(), 1, len(resp.Projects))
 }
 
 //
 // END OF CASES
 //
 
-func TestGetProjectsTestSuite(t *testing.T) {
-	suite.Run(t, new(getProjectsTestSuite))
+func TestGetProjectByIDTestSuite(t *testing.T) {
+	suite.Run(t, new(getProjectByIDTestSuite))
 }

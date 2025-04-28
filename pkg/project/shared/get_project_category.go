@@ -10,7 +10,7 @@ func (s Service) GetProjectCategory(ctx *appcontext.AppContext, projectID, categ
 	ctx.Logger().Info("[service] get project category", appcontext.Fields{"projectID": projectID, "categoryID": categoryID, "userID": userID})
 
 	ctx.Logger().Text("find project in db")
-	project, err := s.projectRepository.FindByID(ctx, projectID)
+	project, err := s.GetProjectByID(ctx, projectID, userID)
 	if err != nil {
 		ctx.Logger().Error("failed to find project in db", err, appcontext.Fields{})
 		return nil, err
@@ -18,10 +18,6 @@ func (s Service) GetProjectCategory(ctx *appcontext.AppContext, projectID, categ
 	if project == nil {
 		ctx.Logger().ErrorText("project not found")
 		return nil, apperrors.Project.ProjectNotFound
-	}
-	if !project.IsOwner(userID) {
-		ctx.Logger().ErrorText("user is not project owner")
-		return nil, apperrors.Common.NotFound
 	}
 
 	ctx.Logger().Text("find project category in db")

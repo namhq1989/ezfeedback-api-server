@@ -110,6 +110,9 @@ func (h UpdateProjectHandler) UpdateProject(ctx *appcontext.AppContext, performe
 	if err = h.cachingRepository.DeleteApiGetProjectsByUserID(ctx, performerID); err != nil {
 		ctx.Logger().Error("failed to delete caching data", err, appcontext.Fields{})
 	}
+	if err = h.cachingRepository.DeleteApiGetProjectByID(ctx, projectID); err != nil {
+		ctx.Logger().Error("failed to delete caching data", err, appcontext.Fields{})
+	}
 
 	ctx.Logger().Text("done update project request")
 	return &dto.UpdateProjectResponse{}, nil

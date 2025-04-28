@@ -20,6 +20,7 @@ type CachingRepository struct {
 	projectCampaignsByProjectIDCachingTime  time.Duration
 
 	apiGetProjectsByUserIDCachingTime time.Duration
+	apiGetProjectByIDCachingTime      time.Duration
 }
 
 func NewCachingRepository(caching *caching.Caching, isEnvRelease bool) CachingRepository {
@@ -33,6 +34,7 @@ func NewCachingRepository(caching *caching.Caching, isEnvRelease bool) CachingRe
 			projectCampaignsByProjectIDCachingTime:  12 * time.Hour,
 
 			apiGetProjectsByUserIDCachingTime: 12 * time.Hour,
+			apiGetProjectByIDCachingTime:      12 * time.Hour,
 		}
 	} else {
 		cachingTime := 1 * time.Minute
@@ -226,4 +228,38 @@ func (r CachingRepository) DeleteApiGetProjectsByUserID(ctx *appcontext.AppConte
 
 func (r CachingRepository) generateApiGetProjectsByUserID(userID string) string {
 	return r.caching.GenerateKey(r.domain, fmt.Sprintf("api:getProjectsByUserId:%s", userID))
+}
+
+//
+// API GET PROJECT BY ID
+//
+
+func (r CachingRepository) GetApiGetProjectByID(ctx *appcontext.AppContext, id string) (*string, error) {
+	key := r.generateApiGetProjectByID(id)
+
+	dataStr, err := r.caching.Get(ctx, key)
+	if err != nil {
+		return nil, err
+	}
+	if dataStr == "" {
+		return nil, nil
+	}
+
+	return &dataStr, nil
+}
+
+func (r CachingRepository) SetApiGetProjectByID(ctx *appcontext.AppContext, id string, data string) error {
+	key := r.generateApiGetProjectByID(id)
+	r.caching.SetTTL(ctx, key, data, r.apiGetProjectByIDCachingTime)
+	return nil
+}
+
+func (r CachingRepository) DeleteApiGetProjectByID(ctx *appcontext.AppContext, id string) error {
+	key := r.generateApiGetProjectByID(id)
+	_, err := r.caching.Del(ctx, key)
+	return err
+}
+
+func (r CachingRepository) generateApiGetProjectByID(id string) string {
+	return r.caching.GenerateKey(r.domain, fmt.Sprintf("api:getProjectById:%s", id))
 }

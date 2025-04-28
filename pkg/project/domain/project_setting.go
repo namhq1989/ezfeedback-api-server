@@ -29,6 +29,13 @@ type ProjectSetting struct {
 	UpdatedAt    time.Time
 }
 
+func DefaultProjectSetting() *ProjectSetting {
+	return &ProjectSetting{
+		Domain:       "",
+		PrimaryColor: projectSettingDefaultColor,
+	}
+}
+
 func NewProjectSetting(projectID, domain, primaryColor string) (*ProjectSetting, error) {
 	var (
 		now = manipulation.NowUTC()

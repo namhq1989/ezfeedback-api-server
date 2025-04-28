@@ -63,6 +63,10 @@ func (s *createProjectCategoryTestSuite) Test_1_Success() {
 		DeleteProjectCategoriesByProjectID(gomock.Any(), gomock.Any()).
 		Return(nil)
 
+	s.mockCachingRepository.EXPECT().
+		DeleteApiGetProjectByID(gomock.Any(), gomock.Any()).
+		Return(nil)
+
 	ctx := appcontext.NewRest(context.Background())
 	resp, err := s.handler.CreateProjectCategory(ctx, performerID, projectID, dto.CreateProjectCategoryRequest{
 		Name: "Category 1",

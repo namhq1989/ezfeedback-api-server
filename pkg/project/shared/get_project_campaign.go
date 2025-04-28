@@ -10,7 +10,7 @@ func (s Service) GetProjectCampaign(ctx *appcontext.AppContext, projectID, campa
 	ctx.Logger().Info("[service] get project campaign", appcontext.Fields{"projectID": projectID, "campaignID": campaignID, "userID": userID})
 
 	ctx.Logger().Text("find project in db")
-	project, err := s.projectRepository.FindByID(ctx, projectID)
+	project, err := s.GetProjectByID(ctx, projectID, userID)
 	if err != nil {
 		ctx.Logger().Error("failed to find project in db", err, appcontext.Fields{})
 		return nil, err
@@ -18,10 +18,6 @@ func (s Service) GetProjectCampaign(ctx *appcontext.AppContext, projectID, campa
 	if project == nil {
 		ctx.Logger().ErrorText("project not found")
 		return nil, apperrors.Project.ProjectNotFound
-	}
-	if !project.IsOwner(userID) {
-		ctx.Logger().ErrorText("user is not project owner")
-		return nil, apperrors.Common.NotFound
 	}
 
 	ctx.Logger().Text("find project campaign in db")

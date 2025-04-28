@@ -40,6 +40,20 @@ func (m *MockCachingRepository) EXPECT() *MockCachingRepositoryMockRecorder {
 	return m.recorder
 }
 
+// DeleteApiGetProjectByID mocks base method.
+func (m *MockCachingRepository) DeleteApiGetProjectByID(ctx *appcontext.AppContext, id string) error {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "DeleteApiGetProjectByID", ctx, id)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// DeleteApiGetProjectByID indicates an expected call of DeleteApiGetProjectByID.
+func (mr *MockCachingRepositoryMockRecorder) DeleteApiGetProjectByID(ctx, id any) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DeleteApiGetProjectByID", reflect.TypeOf((*MockCachingRepository)(nil).DeleteApiGetProjectByID), ctx, id)
+}
+
 // DeleteApiGetProjectsByUserID mocks base method.
 func (m *MockCachingRepository) DeleteApiGetProjectsByUserID(ctx *appcontext.AppContext, userID string) error {
 	m.ctrl.T.Helper()
@@ -108,6 +122,21 @@ func (m *MockCachingRepository) DeleteProjectSettingByProjectID(ctx *appcontext.
 func (mr *MockCachingRepositoryMockRecorder) DeleteProjectSettingByProjectID(ctx, id any) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DeleteProjectSettingByProjectID", reflect.TypeOf((*MockCachingRepository)(nil).DeleteProjectSettingByProjectID), ctx, id)
+}
+
+// GetApiGetProjectByID mocks base method.
+func (m *MockCachingRepository) GetApiGetProjectByID(ctx *appcontext.AppContext, id string) (*string, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "GetApiGetProjectByID", ctx, id)
+	ret0, _ := ret[0].(*string)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// GetApiGetProjectByID indicates an expected call of GetApiGetProjectByID.
+func (mr *MockCachingRepositoryMockRecorder) GetApiGetProjectByID(ctx, id any) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetApiGetProjectByID", reflect.TypeOf((*MockCachingRepository)(nil).GetApiGetProjectByID), ctx, id)
 }
 
 // GetApiGetProjectsByUserID mocks base method.
@@ -183,6 +212,20 @@ func (m *MockCachingRepository) GetProjectSettingByProjectID(ctx *appcontext.App
 func (mr *MockCachingRepositoryMockRecorder) GetProjectSettingByProjectID(ctx, id any) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetProjectSettingByProjectID", reflect.TypeOf((*MockCachingRepository)(nil).GetProjectSettingByProjectID), ctx, id)
+}
+
+// SetApiGetProjectByID mocks base method.
+func (m *MockCachingRepository) SetApiGetProjectByID(ctx *appcontext.AppContext, id, data string) error {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "SetApiGetProjectByID", ctx, id, data)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// SetApiGetProjectByID indicates an expected call of SetApiGetProjectByID.
+func (mr *MockCachingRepositoryMockRecorder) SetApiGetProjectByID(ctx, id, data any) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "SetApiGetProjectByID", reflect.TypeOf((*MockCachingRepository)(nil).SetApiGetProjectByID), ctx, id, data)
 }
 
 // SetApiGetProjectsByUserID mocks base method.

@@ -22,4 +22,8 @@ type CachingRepository interface {
 	GetApiGetProjectsByUserID(ctx *appcontext.AppContext, userID string) (*string, error)
 	SetApiGetProjectsByUserID(ctx *appcontext.AppContext, userID string, data string) error
 	DeleteApiGetProjectsByUserID(ctx *appcontext.AppContext, userID string) error
+
+	GetApiGetProjectByID(ctx *appcontext.AppContext, id string) (*string, error)
+	SetApiGetProjectByID(ctx *appcontext.AppContext, id string, data string) error
+	DeleteApiGetProjectByID(ctx *appcontext.AppContext, id string) error
 }

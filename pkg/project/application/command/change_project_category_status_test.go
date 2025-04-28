@@ -56,7 +56,7 @@ func (s *changeProjectCategoryStatusTestSuite) Test_1_Success() {
 		Return(nil)
 
 	s.mockCachingRepository.EXPECT().
-		DeleteApiGetProjectsByUserID(gomock.Any(), gomock.Any()).
+		DeleteApiGetProjectByID(gomock.Any(), gomock.Any()).
 		Return(nil)
 
 	ctx := appcontext.NewRest(context.Background())

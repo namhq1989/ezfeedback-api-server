@@ -28,6 +28,7 @@ type (
 		Ping(ctx *appcontext.AppContext, _ dto.PingRequest) (*dto.PingResponse, error)
 
 		GetProjects(ctx *appcontext.AppContext, performerID string, _ dto.GetProjectsRequest) (*dto.GetProjectsResponse, error)
+		GetProjectByID(ctx *appcontext.AppContext, performerID, projectID string, _ dto.GetProjectByIDRequest) (*dto.GetProjectByIDResponse, error)
 	}
 	Instance interface {
 		Commands
@@ -53,6 +54,7 @@ type (
 		query.PingHandler
 
 		query.GetProjectsHandler
+		query.GetProjectByIDHandler
 	}
 	Application struct {
 		commandHandlers
@@ -127,6 +129,10 @@ func New(
 			PingHandler: query.NewPingHandler(),
 
 			GetProjectsHandler: query.NewGetProjectsHandler(projectRepository, cachingRepository, service),
+			GetProjectByIDHandler: query.NewGetProjectByIDHandler(
+				cachingRepository,
+				service,
+			),
 		},
 	}
 }

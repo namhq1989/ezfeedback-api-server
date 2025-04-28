@@ -64,6 +64,17 @@ func (h CreateProjectCampaignHandler) CreateProjectCampaign(ctx *appcontext.AppC
 		return nil, err
 	}
 
+	ctx.Logger().Text("count by campaign type")
+	totalCampaign, err := h.projectCampaignRepository.CountTotalByProjectIDAndCampaignType(ctx, projectID, campaign.CampaignType.String())
+	if err != nil {
+		ctx.Logger().Error("failed to count by campaign type", err, appcontext.Fields{})
+		return nil, err
+	}
+	if domain.IsReachedMaxCampaignPerType(totalCampaign) {
+		ctx.Logger().ErrorText("reached max campaign per type")
+		return nil, apperrors.Project.CampaignTypeLimitExceeded
+	}
+
 	ctx.Logger().Text("persist project campaign in db")
 	if err = h.projectCampaignRepository.Create(ctx, *campaign); err != nil {
 		ctx.Logger().Error("failed to persist project campaign in db", err, appcontext.Fields{})
@@ -72,7 +83,10 @@ func (h CreateProjectCampaignHandler) CreateProjectCampaign(ctx *appcontext.AppC
 
 	ctx.Logger().Text("delete caching data")
 	if err = h.cachingRepository.DeleteProjectCampaignsByProjectID(ctx, projectID); err != nil {
-		ctx.Logger().Error("failed to delete caching data", err, appcontext.Fields{})
+		ctx.Logger().Error("failed to delete project campaigns caching data", err, appcontext.Fields{})
+	}
+	if err = h.cachingRepository.DeleteApiGetProjectByID(ctx, projectID); err != nil {
+		ctx.Logger().Error("failed to delete api get project by id caching data", err, appcontext.Fields{})
 	}
 
 	ctx.Logger().Text("done create project campaign request")

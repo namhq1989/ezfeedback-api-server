@@ -41,18 +41,18 @@ func (m *MockService) EXPECT() *MockServiceMockRecorder {
 }
 
 // GetProjectByID mocks base method.
-func (m *MockService) GetProjectByID(ctx *appcontext.AppContext, id string) (*domain.Project, error) {
+func (m *MockService) GetProjectByID(ctx *appcontext.AppContext, projectID, userID string) (*domain.Project, error) {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "GetProjectByID", ctx, id)
+	ret := m.ctrl.Call(m, "GetProjectByID", ctx, projectID, userID)
 	ret0, _ := ret[0].(*domain.Project)
 	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
 
 // GetProjectByID indicates an expected call of GetProjectByID.
-func (mr *MockServiceMockRecorder) GetProjectByID(ctx, id any) *gomock.Call {
+func (mr *MockServiceMockRecorder) GetProjectByID(ctx, projectID, userID any) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetProjectByID", reflect.TypeOf((*MockService)(nil).GetProjectByID), ctx, id)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetProjectByID", reflect.TypeOf((*MockService)(nil).GetProjectByID), ctx, projectID, userID)
 }
 
 // GetProjectCampaign mocks base method.
@@ -68,6 +68,21 @@ func (m *MockService) GetProjectCampaign(ctx *appcontext.AppContext, projectID, 
 func (mr *MockServiceMockRecorder) GetProjectCampaign(ctx, projectID, campaignID, userID any) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetProjectCampaign", reflect.TypeOf((*MockService)(nil).GetProjectCampaign), ctx, projectID, campaignID, userID)
+}
+
+// GetProjectCampaignsByProjectID mocks base method.
+func (m *MockService) GetProjectCampaignsByProjectID(ctx *appcontext.AppContext, projectID string) ([]domain.ProjectCampaign, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "GetProjectCampaignsByProjectID", ctx, projectID)
+	ret0, _ := ret[0].([]domain.ProjectCampaign)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// GetProjectCampaignsByProjectID indicates an expected call of GetProjectCampaignsByProjectID.
+func (mr *MockServiceMockRecorder) GetProjectCampaignsByProjectID(ctx, projectID any) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetProjectCampaignsByProjectID", reflect.TypeOf((*MockService)(nil).GetProjectCampaignsByProjectID), ctx, projectID)
 }
 
 // GetProjectCategoriesByProjectID mocks base method.

@@ -51,10 +51,16 @@ func (s *createProjectCampaignTestSuite) Test_1_Success() {
 		FindByID(gomock.Any(), gomock.Any()).
 		Return(&domain.Project{ID: projectID, UserID: performerID, Status: domain.StatusActive}, nil)
 	s.mockProjectCampaignRepository.EXPECT().
+		CountTotalByProjectIDAndCampaignType(gomock.Any(), gomock.Any(), gomock.Any()).
+		Return(int64(0), nil)
+	s.mockProjectCampaignRepository.EXPECT().
 		Create(gomock.Any(), gomock.Any()).
 		Return(nil)
 	s.mockCachingRepository.EXPECT().
 		DeleteProjectCampaignsByProjectID(gomock.Any(), gomock.Any()).
+		Return(nil)
+	s.mockCachingRepository.EXPECT().
+		DeleteApiGetProjectByID(gomock.Any(), gomock.Any()).
 		Return(nil)
 
 	ctx := appcontext.NewRest(context.Background())
@@ -132,7 +138,7 @@ func (s *createProjectCampaignTestSuite) Test_4_Fail_InvalidCampaignType() {
 	resp, err := s.handler.CreateProjectCampaign(ctx, performerID, projectID, dto.CreateProjectCampaignRequest{
 		Name:         "Campaign 1",
 		Description:  "Campaign description",
-		CampaignType: "invalid_type", // Invalid campaign type
+		CampaignType: "invalid_type",
 	})
 	assert.Nil(s.T(), resp)
 	assert.Equal(s.T(), apperrors.Project.InvalidCampaignType, err)

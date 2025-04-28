@@ -55,6 +55,10 @@ func (s *changeProjectCampaignStatusTestSuite) Test_1_Success() {
 		DeleteProjectCampaignsByProjectID(gomock.Any(), gomock.Any()).
 		Return(nil)
 
+	s.mockCachingRepository.EXPECT().
+		DeleteApiGetProjectByID(gomock.Any(), gomock.Any()).
+		Return(nil)
+
 	ctx := appcontext.NewRest(context.Background())
 	resp, err := s.handler.ChangeProjectCampaignStatus(ctx, performerID, projectID, campaignID, dto.ChangeProjectCampaignStatusRequest{
 		Status: status,

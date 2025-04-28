@@ -72,7 +72,10 @@ func (h ChangeProjectCampaignStatusHandler) ChangeProjectCampaignStatus(ctx *app
 
 	ctx.Logger().Text("delete caching data")
 	if err = h.cachingRepository.DeleteProjectCampaignsByProjectID(ctx, projectID); err != nil {
-		ctx.Logger().Error("failed to set project in caching", err, appcontext.Fields{})
+		ctx.Logger().Error("failed to delete project campaigns caching data", err, appcontext.Fields{})
+	}
+	if err = h.cachingRepository.DeleteApiGetProjectByID(ctx, projectID); err != nil {
+		ctx.Logger().Error("failed to delete api get project by id caching data", err, appcontext.Fields{})
 	}
 
 	ctx.Logger().Text("done change project category status request")

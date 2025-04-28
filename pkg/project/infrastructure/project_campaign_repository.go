@@ -139,3 +139,26 @@ func (r ProjectCampaignRepository) FindByProjectID(ctx *appcontext.AppContext, p
 	}
 	return result, nil
 }
+
+func (r ProjectCampaignRepository) CountTotalByProjectIDAndCampaignType(ctx *appcontext.AppContext, projectID, campaignType string) (int64, error) {
+	if !uuid.IsValidID(projectID) {
+		return 0, apperrors.Project.InvalidProjectID
+	}
+
+	var (
+		c = r.getTable()
+	)
+
+	stmt := postgres.SELECT(
+		postgres.COUNT(c.ID).AS("count_result.total"),
+	).
+		FROM(c).
+		WHERE(
+			c.ProjectID.EQ(postgres.String(projectID)).
+				AND(c.CampaignType.EQ(postgres.String(campaignType))),
+		)
+
+	var result = database.CountResult{}
+	err := stmt.QueryContext(ctx.Context(), r.getDB(), &result)
+	return result.Total, err
+}

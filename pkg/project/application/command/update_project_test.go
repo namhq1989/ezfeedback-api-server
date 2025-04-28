@@ -4,11 +4,10 @@ import (
 	"context"
 	"testing"
 
-	"github.com/namhq1989/ezfeedback-api-server/pkg/project/domain"
-
 	apperrors "github.com/namhq1989/ezfeedback-api-server/internal/error"
 	mockproject "github.com/namhq1989/ezfeedback-api-server/internal/mock/project"
 	"github.com/namhq1989/ezfeedback-api-server/pkg/project/application/command"
+	"github.com/namhq1989/ezfeedback-api-server/pkg/project/domain"
 	"github.com/namhq1989/ezfeedback-api-server/pkg/project/dto"
 	"github.com/namhq1989/go-utilities/appcontext"
 	"github.com/namhq1989/go-utilities/uuid"
@@ -74,6 +73,10 @@ func (s *updateProjectTestSuite) Test_1_Success() {
 
 	s.mockCachingRepository.EXPECT().
 		DeleteApiGetProjectsByUserID(gomock.Any(), gomock.Any()).
+		Return(nil)
+
+	s.mockCachingRepository.EXPECT().
+		DeleteApiGetProjectByID(gomock.Any(), gomock.Any()).
 		Return(nil)
 
 	ctx := appcontext.NewRest(context.Background())

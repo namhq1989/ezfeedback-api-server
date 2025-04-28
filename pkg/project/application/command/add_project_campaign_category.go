@@ -90,7 +90,10 @@ func (h AddProjectCampaignCategoryHandler) AddProjectCampaignCategory(ctx *appco
 
 	ctx.Logger().Text("delete caching data")
 	if err = h.cachingRepository.DeleteProjectCampaignsByProjectID(ctx, projectID); err != nil {
-		ctx.Logger().Error("failed to delete caching data", err, appcontext.Fields{})
+		ctx.Logger().Error("failed to delete project campaigns caching data", err, appcontext.Fields{})
+	}
+	if err = h.cachingRepository.DeleteApiGetProjectByID(ctx, projectID); err != nil {
+		ctx.Logger().Error("failed to delete api get project by id caching data", err, appcontext.Fields{})
 	}
 
 	ctx.Logger().Text("done add project campaign category request")
