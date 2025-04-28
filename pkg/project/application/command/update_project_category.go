@@ -76,7 +76,7 @@ func (h UpdateProjectCategoryHandler) UpdateProjectCategory(ctx *appcontext.AppC
 
 	ctx.Logger().Text("update project category in db")
 	if err = h.projectCategoryRepository.Update(ctx, *category); err != nil {
-		ctx.Logger().Error("failed to update project in db", err, appcontext.Fields{})
+		ctx.Logger().Error("failed to update project category in db", err, appcontext.Fields{})
 		return nil, err
 	}
 
