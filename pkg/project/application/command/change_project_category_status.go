@@ -34,7 +34,7 @@ func NewChangeProjectCategoryStatusHandler(projectRepository domain.ProjectRepos
 // @success  200     {object} dto.UpdateProjectCategoryResponse
 // @router   /api/project/{projectId}/category/{categoryId}/status [patch]
 func (h ChangeProjectCategoryStatusHandler) ChangeProjectCategoryStatus(ctx *appcontext.AppContext, performerID, projectID, categoryID string, req dto.ChangeProjectCategoryStatusRequest) (*dto.ChangeProjectCategoryStatusResponse, error) {
-	ctx.Logger().Info("new change project status request", appcontext.Fields{
+	ctx.Logger().Info("new change project category status request", appcontext.Fields{
 		"performerID": performerID, "projectID": projectID, "categoryID": categoryID, "status": req.Status,
 	})
 
