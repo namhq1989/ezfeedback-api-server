@@ -122,3 +122,7 @@ func (c *ProjectCampaign) SetSettingWidgetPosition(settingWidgetPosition string)
 func (c *ProjectCampaign) SetUpdatedAt() {
 	c.UpdatedAt = manipulation.NowUTC()
 }
+
+func (c *ProjectCampaign) IsBelongToProject(projectID string) bool {
+	return c.ProjectID == projectID
+}

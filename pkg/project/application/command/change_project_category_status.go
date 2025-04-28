@@ -63,6 +63,10 @@ func (h ChangeProjectCategoryStatusHandler) ChangeProjectCategoryStatus(ctx *app
 		ctx.Logger().ErrorText("project category not found")
 		return nil, apperrors.Project.InvalidCategory
 	}
+	if !category.IsBelongToProject(projectID) {
+		ctx.Logger().ErrorText("project category not belong to project")
+		return nil, apperrors.Project.InvalidCategory
+	}
 
 	if category.Status.IsEqual(req.Status) {
 		ctx.Logger().Text("project category status not changed, respond")

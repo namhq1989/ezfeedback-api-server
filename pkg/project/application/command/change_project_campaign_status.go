@@ -67,6 +67,10 @@ func (h ChangeProjectCampaignStatusHandler) ChangeProjectCampaignStatus(ctx *app
 		ctx.Logger().ErrorText("project campaign not found")
 		return nil, apperrors.Project.InvalidCampaign
 	}
+	if !campaign.IsBelongToProject(projectID) {
+		ctx.Logger().ErrorText("project campaign not belong to project")
+		return nil, apperrors.Project.InvalidCampaign
+	}
 
 	if campaign.Status.IsEqual(req.Status) {
 		ctx.Logger().Text("project campaign status not changed, respond")

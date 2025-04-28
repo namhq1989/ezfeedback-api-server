@@ -67,6 +67,10 @@ func (h UpdateProjectCategoryHandler) UpdateProjectCategory(ctx *appcontext.AppC
 		ctx.Logger().ErrorText("project category not found")
 		return nil, apperrors.Project.InvalidCategory
 	}
+	if !category.IsBelongToProject(projectID) {
+		ctx.Logger().ErrorText("project category not belong to project")
+		return nil, apperrors.Project.InvalidCategory
+	}
 
 	ctx.Logger().Text("set project category data")
 	if err = category.SetName(req.Name); err != nil {

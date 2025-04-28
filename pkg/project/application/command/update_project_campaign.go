@@ -68,6 +68,10 @@ func (h UpdateProjectCampaignHandler) UpdateProjectCampaign(ctx *appcontext.AppC
 		ctx.Logger().ErrorText("project campaign not found")
 		return nil, apperrors.Project.InvalidCampaign
 	}
+	if !campaign.IsBelongToProject(projectID) {
+		ctx.Logger().ErrorText("project campaign not belong to project")
+		return nil, apperrors.Project.InvalidCampaign
+	}
 
 	ctx.Logger().Text("set project campaign data")
 	if err = campaign.SetName(req.Name); err != nil {
