@@ -21,6 +21,8 @@ type (
 		CreateProjectCampaign(ctx *appcontext.AppContext, performerID, projectID string, req dto.CreateProjectCampaignRequest) (*dto.CreateProjectCampaignResponse, error)
 		UpdateProjectCampaign(ctx *appcontext.AppContext, performerID, projectID, campaignID string, req dto.UpdateProjectCampaignRequest) (*dto.UpdateProjectCampaignResponse, error)
 		ChangeProjectCampaignStatus(ctx *appcontext.AppContext, performerID, projectID, campaignID string, req dto.ChangeProjectCampaignStatusRequest) (*dto.ChangeProjectCampaignStatusResponse, error)
+		AddProjectCampaignCategory(ctx *appcontext.AppContext, performerID, projectID, campaignID string, req dto.AddProjectCampaignCategoryRequest) (*dto.AddProjectCampaignCategoryResponse, error)
+		RemoveProjectCampaignCategory(ctx *appcontext.AppContext, performerID, projectID, campaignID string, req dto.RemoveProjectCampaignCategoryRequest) (*dto.RemoveProjectCampaignCategoryResponse, error)
 	}
 	Queries interface {
 		Ping(ctx *appcontext.AppContext, _ dto.PingRequest) (*dto.PingResponse, error)
@@ -44,6 +46,8 @@ type (
 		command.CreateProjectCampaignHandler
 		command.UpdateProjectCampaignHandler
 		command.ChangeProjectCampaignStatusHandler
+		command.AddProjectCampaignCategoryHandler
+		command.RemoveProjectCampaignCategoryHandler
 	}
 	queryHandlers struct {
 		query.PingHandler
@@ -63,6 +67,7 @@ func New(
 	projectSettingRepository domain.ProjectSettingRepository,
 	projectCategoryRepository domain.ProjectCategoryRepository,
 	projectCampaignRepository domain.ProjectCampaignRepository,
+	projectCampaignCategoryRepository domain.ProjectCampaignCategoryRepository,
 	cachingRepository domain.CachingRepository,
 	billingHub domain.BillingHub,
 	service domain.Service,
@@ -82,14 +87,14 @@ func New(
 				cachingRepository,
 			),
 			UpdateProjectCategoryHandler: command.NewUpdateProjectCategoryHandler(
-				projectRepository,
 				projectCategoryRepository,
 				cachingRepository,
+				service,
 			),
 			ChangeProjectCategoryStatusHandler: command.NewChangeProjectCategoryStatusHandler(
-				projectRepository,
 				projectCategoryRepository,
 				cachingRepository,
+				service,
 			),
 
 			CreateProjectCampaignHandler: command.NewCreateProjectCampaignHandler(
@@ -98,14 +103,24 @@ func New(
 				cachingRepository,
 			),
 			UpdateProjectCampaignHandler: command.NewUpdateProjectCampaignHandler(
-				projectRepository,
 				projectCampaignRepository,
 				cachingRepository,
+				service,
 			),
 			ChangeProjectCampaignStatusHandler: command.NewChangeProjectCampaignStatusHandler(
-				projectRepository,
 				projectCampaignRepository,
 				cachingRepository,
+				service,
+			),
+			AddProjectCampaignCategoryHandler: command.NewAddProjectCampaignCategoryHandler(
+				projectCampaignCategoryRepository,
+				cachingRepository,
+				service,
+			),
+			RemoveProjectCampaignCategoryHandler: command.NewRemoveProjectCampaignCategoryHandler(
+				projectCampaignCategoryRepository,
+				cachingRepository,
+				service,
 			),
 		},
 		queryHandlers: queryHandlers{

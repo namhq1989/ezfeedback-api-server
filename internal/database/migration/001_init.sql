@@ -140,7 +140,8 @@ CREATE TABLE project_campaign_categories (
                                   id TEXT PRIMARY KEY,
                                   campaign_id TEXT NOT NULL REFERENCES project_campaigns(id) ON DELETE CASCADE,
                                   category_id TEXT NOT NULL REFERENCES project_categories(id) ON DELETE CASCADE,
-                                  created_at TIMESTAMPTZ DEFAULT NOW() NOT NULL
+                                  created_at TIMESTAMPTZ DEFAULT NOW() NOT NULL,
+                                  UNIQUE(campaign_id, category_id)
 );
 
 CREATE INDEX idx_project_campaign_categories_campaign_id ON project_campaign_categories(campaign_id);

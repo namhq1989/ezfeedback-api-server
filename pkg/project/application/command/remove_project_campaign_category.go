@@ -7,38 +7,38 @@ import (
 	"github.com/namhq1989/go-utilities/appcontext"
 )
 
-type AddProjectCampaignCategoryHandler struct {
+type RemoveProjectCampaignCategoryHandler struct {
 	projectCampaignCategoryRepository domain.ProjectCampaignCategoryRepository
 	cachingRepository                 domain.CachingRepository
 	service                           domain.Service
 }
 
-func NewAddProjectCampaignCategoryHandler(
+func NewRemoveProjectCampaignCategoryHandler(
 	projectCampaignCategoryRepository domain.ProjectCampaignCategoryRepository,
 	cachingRepository domain.CachingRepository,
 	service domain.Service,
-) AddProjectCampaignCategoryHandler {
-	return AddProjectCampaignCategoryHandler{
+) RemoveProjectCampaignCategoryHandler {
+	return RemoveProjectCampaignCategoryHandler{
 		projectCampaignCategoryRepository: projectCampaignCategoryRepository,
 		cachingRepository:                 cachingRepository,
 		service:                           service,
 	}
 }
 
-// AddProjectCampaignCategory godoc
+// RemoveProjectCampaignCategory godoc
 // @tags     Project
-// @summary  Add project campaign category
-// @id       project-add-campaign-category
+// @summary  Remove project campaign category
+// @id       project-remove-campaign-category
 // @security ApiKeyAuth
 // @accept   json
 // @produce  json
 // @param    projectId  	 path     string true "Project id"
 // @param    campaignId  	 path     string true "Campaign id"
-// @param    payload body    dto.AddProjectCampaignCategoryRequest true "Body"
-// @success  200     {object} dto.AddProjectCampaignCategoryResponse
-// @router   /api/project/{projectId}/campaign/{campaignId}/category [post]
-func (h AddProjectCampaignCategoryHandler) AddProjectCampaignCategory(ctx *appcontext.AppContext, performerID, projectID, campaignID string, req dto.AddProjectCampaignCategoryRequest) (*dto.AddProjectCampaignCategoryResponse, error) {
-	ctx.Logger().Info("new add project campaign category request", appcontext.Fields{
+// @param    payload body    dto.RemoveProjectCampaignCategoryRequest true "Body"
+// @success  200     {object} dto.RemoveProjectCampaignCategoryResponse
+// @router   /api/project/{projectId}/campaign/{campaignId}/category [delete]
+func (h RemoveProjectCampaignCategoryHandler) RemoveProjectCampaignCategory(ctx *appcontext.AppContext, performerID, projectID, campaignID string, req dto.RemoveProjectCampaignCategoryRequest) (*dto.RemoveProjectCampaignCategoryResponse, error) {
+	ctx.Logger().Info("new remove project campaign category request", appcontext.Fields{
 		"performerID": performerID, "projectID": projectID, "campaignID": campaignID, "categoryID": req.CategoryID,
 	})
 
@@ -70,21 +70,14 @@ func (h AddProjectCampaignCategoryHandler) AddProjectCampaignCategory(ctx *appco
 		ctx.Logger().Error("failed to find campaign category in db", err, appcontext.Fields{})
 		return nil, err
 	}
-	if campaignCategory != nil {
-		ctx.Logger().Text("campaign category already exists, respond")
-		return &dto.AddProjectCampaignCategoryResponse{}, nil
+	if campaignCategory == nil {
+		ctx.Logger().Text("campaign category does not exist, respond")
+		return &dto.RemoveProjectCampaignCategoryResponse{}, nil
 	}
 
-	ctx.Logger().Text("new project campaign category model")
-	campaignCategory, err = domain.NewProjectCampaignCategory(campaign.ID, category.ID)
-	if err != nil {
-		ctx.Logger().Error("failed to create project campaign category model", err, appcontext.Fields{})
-		return nil, err
-	}
-
-	ctx.Logger().Text("persist project campaign category in db")
-	if err = h.projectCampaignCategoryRepository.Create(ctx, *campaignCategory); err != nil {
-		ctx.Logger().Error("failed to persist project campaign category in db", err, appcontext.Fields{})
+	ctx.Logger().Text("delete project campaign category in db")
+	if err = h.projectCampaignCategoryRepository.Delete(ctx, *campaignCategory); err != nil {
+		ctx.Logger().Error("failed to delete project campaign category in db", err, appcontext.Fields{})
 		return nil, err
 	}
 
@@ -94,5 +87,5 @@ func (h AddProjectCampaignCategoryHandler) AddProjectCampaignCategory(ctx *appco
 	}
 
 	ctx.Logger().Text("done add project campaign category request")
-	return &dto.AddProjectCampaignCategoryResponse{}, nil
+	return &dto.RemoveProjectCampaignCategoryResponse{}, nil
 }

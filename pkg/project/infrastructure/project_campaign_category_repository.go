@@ -88,6 +88,40 @@ func (r ProjectCampaignCategoryRepository) FindByID(ctx *appcontext.AppContext, 
 	return result, nil
 }
 
+func (r ProjectCampaignCategoryRepository) FindByCampaignIDAndCategoryID(ctx *appcontext.AppContext, campaignID string, categoryID string) (*domain.ProjectCampaignCategory, error) {
+	if !uuid.IsValidID(campaignID) {
+		return nil, apperrors.Project.InvalidCampaign
+	}
+	if !uuid.IsValidID(categoryID) {
+		return nil, apperrors.Project.InvalidCategory
+	}
+
+	var cm = r.getTable()
+
+	stmt := postgres.SELECT(
+		cm.AllColumns,
+	).
+		FROM(cm).
+		WHERE(
+			cm.CampaignID.EQ(postgres.String(campaignID)).
+				AND(cm.CategoryID.EQ(postgres.String(categoryID))),
+		)
+
+	var doc model.ProjectCampaignCategories
+	if err := stmt.QueryContext(ctx.Context(), r.getDB(), &doc); err != nil {
+		if r.db.IsNoRowsError(err) {
+			return nil, nil
+		}
+		return nil, err
+	}
+
+	var (
+		mapper    = mapping.ProjectCampaignCategoryMapper{}
+		result, _ = mapper.FromModelToDomain(doc)
+	)
+	return result, nil
+}
+
 func (r ProjectCampaignCategoryRepository) FindByCampaignID(ctx *appcontext.AppContext, campaignID string) ([]domain.ProjectCampaignCategory, error) {
 	if !uuid.IsValidID(campaignID) {
 		return nil, apperrors.Project.InvalidCampaign

@@ -8,20 +8,20 @@ import (
 )
 
 type ChangeProjectCampaignStatusHandler struct {
-	projectRepository         domain.ProjectRepository
 	projectCampaignRepository domain.ProjectCampaignRepository
 	cachingRepository         domain.CachingRepository
+	service                   domain.Service
 }
 
 func NewChangeProjectCampaignStatusHandler(
-	projectRepository domain.ProjectRepository,
 	projectCampaignRepository domain.ProjectCampaignRepository,
 	cachingRepository domain.CachingRepository,
+	service domain.Service,
 ) ChangeProjectCampaignStatusHandler {
 	return ChangeProjectCampaignStatusHandler{
-		projectRepository:         projectRepository,
 		projectCampaignRepository: projectCampaignRepository,
 		cachingRepository:         cachingRepository,
+		service:                   service,
 	}
 }
 
@@ -42,33 +42,14 @@ func (h ChangeProjectCampaignStatusHandler) ChangeProjectCampaignStatus(ctx *app
 		"performerID": performerID, "projectID": projectID, "campaignID": campaignID, "status": req.Status,
 	})
 
-	ctx.Logger().Text("find project in db")
-	project, err := h.projectRepository.FindByID(ctx, projectID)
-	if err != nil {
-		ctx.Logger().Error("failed to find project in db", err, appcontext.Fields{})
-		return nil, err
-	}
-	if project == nil {
-		ctx.Logger().ErrorText("project not found")
-		return nil, apperrors.Project.ProjectNotFound
-	}
-	if !project.IsOwner(performerID) {
-		ctx.Logger().ErrorText("user is not project owner")
-		return nil, apperrors.Common.NotFound
-	}
-
 	ctx.Logger().Text("find project campaign in db")
-	campaign, err := h.projectCampaignRepository.FindByID(ctx, campaignID)
+	campaign, err := h.service.GetProjectCampaign(ctx, projectID, campaignID, performerID)
 	if err != nil {
 		ctx.Logger().Error("failed to find project campaign in db", err, appcontext.Fields{})
 		return nil, err
 	}
 	if campaign == nil {
 		ctx.Logger().ErrorText("project campaign not found")
-		return nil, apperrors.Project.InvalidCampaign
-	}
-	if !campaign.IsBelongToProject(projectID) {
-		ctx.Logger().ErrorText("project campaign not belong to project")
 		return nil, apperrors.Project.InvalidCampaign
 	}
 

@@ -20,17 +20,17 @@ type changeProjectCategoryStatusTestSuite struct {
 	suite.Suite
 	handler                       command.ChangeProjectCategoryStatusHandler
 	mockCtrl                      *gomock.Controller
-	mockProjectRepository         *mockproject.MockProjectRepository
 	mockProjectCategoryRepository *mockproject.MockProjectCategoryRepository
 	mockCachingRepository         *mockproject.MockCachingRepository
+	mockService                   *mockproject.MockService
 }
 
 func (s *changeProjectCategoryStatusTestSuite) SetupSuite() {
 	s.mockCtrl = gomock.NewController(s.T())
-	s.mockProjectRepository = mockproject.NewMockProjectRepository(s.mockCtrl)
 	s.mockProjectCategoryRepository = mockproject.NewMockProjectCategoryRepository(s.mockCtrl)
 	s.mockCachingRepository = mockproject.NewMockCachingRepository(s.mockCtrl)
-	s.handler = command.NewChangeProjectCategoryStatusHandler(s.mockProjectRepository, s.mockProjectCategoryRepository, s.mockCachingRepository)
+	s.mockService = mockproject.NewMockService(s.mockCtrl)
+	s.handler = command.NewChangeProjectCategoryStatusHandler(s.mockProjectCategoryRepository, s.mockCachingRepository, s.mockService)
 }
 
 func (s *changeProjectCategoryStatusTestSuite) TearDownTest() {
@@ -43,12 +43,8 @@ func (s *changeProjectCategoryStatusTestSuite) Test_1_Success() {
 	performerID := uuid.New()
 	status := domain.StatusInactive.String()
 
-	s.mockProjectRepository.EXPECT().
-		FindByID(gomock.Any(), gomock.Any()).
-		Return(&domain.Project{ID: projectID, UserID: performerID}, nil)
-
-	s.mockProjectCategoryRepository.EXPECT().
-		FindByID(gomock.Any(), gomock.Any()).
+	s.mockService.EXPECT().
+		GetProjectCategory(gomock.Any(), gomock.Any(), gomock.Any(), gomock.Any()).
 		Return(&domain.ProjectCategory{ID: categoryID, ProjectID: projectID, Status: domain.StatusActive}, nil)
 
 	s.mockProjectCategoryRepository.EXPECT().
@@ -76,12 +72,8 @@ func (s *changeProjectCategoryStatusTestSuite) Test_1_Success_StatusNotChanged()
 	categoryID := uuid.New()
 	performerID := uuid.New()
 
-	s.mockProjectRepository.EXPECT().
-		FindByID(gomock.Any(), gomock.Any()).
-		Return(&domain.Project{ID: projectID, UserID: performerID}, nil)
-
-	s.mockProjectCategoryRepository.EXPECT().
-		FindByID(gomock.Any(), gomock.Any()).
+	s.mockService.EXPECT().
+		GetProjectCategory(gomock.Any(), gomock.Any(), gomock.Any(), gomock.Any()).
 		Return(&domain.ProjectCategory{ID: categoryID, ProjectID: projectID, Status: domain.StatusInactive}, nil)
 
 	ctx := appcontext.NewRest(context.Background())
@@ -93,9 +85,9 @@ func (s *changeProjectCategoryStatusTestSuite) Test_1_Success_StatusNotChanged()
 }
 
 func (s *changeProjectCategoryStatusTestSuite) Test_2_Fail_InvalidProjectID() {
-	s.mockProjectRepository.EXPECT().
-		FindByID(gomock.Any(), gomock.Any()).
-		Return(nil, apperrors.Project.InvalidProjectID)
+	s.mockService.EXPECT().
+		GetProjectCategory(gomock.Any(), gomock.Any(), gomock.Any(), gomock.Any()).
+		Return(nil, apperrors.Project.ProjectNotFound)
 
 	ctx := appcontext.NewRest(context.Background())
 	resp, err := s.handler.ChangeProjectCategoryStatus(ctx, uuid.New(), "invalid-id", uuid.New(), dto.ChangeProjectCategoryStatusRequest{
@@ -103,19 +95,15 @@ func (s *changeProjectCategoryStatusTestSuite) Test_2_Fail_InvalidProjectID() {
 	})
 	assert.Nil(s.T(), resp)
 	assert.NotNil(s.T(), err)
-	assert.Equal(s.T(), apperrors.Project.InvalidProjectID, err)
+	assert.Equal(s.T(), apperrors.Project.ProjectNotFound, err)
 }
 
 func (s *changeProjectCategoryStatusTestSuite) Test_2_Fail_InvalidCategoryID() {
 	projectID := uuid.New()
 	performerID := uuid.New()
 
-	s.mockProjectRepository.EXPECT().
-		FindByID(gomock.Any(), gomock.Any()).
-		Return(&domain.Project{ID: projectID, UserID: performerID}, nil)
-
-	s.mockProjectCategoryRepository.EXPECT().
-		FindByID(gomock.Any(), gomock.Any()).
+	s.mockService.EXPECT().
+		GetProjectCategory(gomock.Any(), gomock.Any(), gomock.Any(), gomock.Any()).
 		Return(nil, apperrors.Project.InvalidCategory)
 
 	ctx := appcontext.NewRest(context.Background())
@@ -131,11 +119,10 @@ func (s *changeProjectCategoryStatusTestSuite) Test_2_Fail_NotOwner() {
 	projectID := uuid.New()
 	categoryID := uuid.New()
 	performerID := uuid.New()
-	otherUserID := uuid.New()
 
-	s.mockProjectRepository.EXPECT().
-		FindByID(gomock.Any(), gomock.Any()).
-		Return(&domain.Project{ID: projectID, UserID: otherUserID}, nil)
+	s.mockService.EXPECT().
+		GetProjectCategory(gomock.Any(), gomock.Any(), gomock.Any(), gomock.Any()).
+		Return(nil, apperrors.Common.NotFound)
 
 	ctx := appcontext.NewRest(context.Background())
 	resp, err := s.handler.ChangeProjectCategoryStatus(ctx, performerID, projectID, categoryID, dto.ChangeProjectCategoryStatusRequest{
@@ -151,12 +138,8 @@ func (s *changeProjectCategoryStatusTestSuite) Test_2_Fail_InvalidStatus() {
 	categoryID := uuid.New()
 	performerID := uuid.New()
 
-	s.mockProjectRepository.EXPECT().
-		FindByID(gomock.Any(), gomock.Any()).
-		Return(&domain.Project{ID: projectID, UserID: performerID}, nil)
-
-	s.mockProjectCategoryRepository.EXPECT().
-		FindByID(gomock.Any(), gomock.Any()).
+	s.mockService.EXPECT().
+		GetProjectCategory(gomock.Any(), gomock.Any(), gomock.Any(), gomock.Any()).
 		Return(&domain.ProjectCategory{ID: categoryID, ProjectID: projectID, Status: domain.StatusActive}, nil)
 
 	ctx := appcontext.NewRest(context.Background())

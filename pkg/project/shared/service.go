@@ -8,6 +8,7 @@ type Service struct {
 	projectRepository         domain.ProjectRepository
 	projectSettingRepository  domain.ProjectSettingRepository
 	projectCategoryRepository domain.ProjectCategoryRepository
+	projectCampaignRepository domain.ProjectCampaignRepository
 	cachingRepository         domain.CachingRepository
 }
 
@@ -15,12 +16,14 @@ func NewService(
 	projectRepository domain.ProjectRepository,
 	projectSettingRepository domain.ProjectSettingRepository,
 	projectCategoryRepository domain.ProjectCategoryRepository,
+	projectCampaignRepository domain.ProjectCampaignRepository,
 	cachingRepository domain.CachingRepository,
 ) Service {
 	return Service{
 		projectRepository:         projectRepository,
 		projectSettingRepository:  projectSettingRepository,
 		projectCategoryRepository: projectCategoryRepository,
+		projectCampaignRepository: projectCampaignRepository,
 		cachingRepository:         cachingRepository,
 	}
 }

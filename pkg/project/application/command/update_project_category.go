@@ -8,20 +8,20 @@ import (
 )
 
 type UpdateProjectCategoryHandler struct {
-	projectRepository         domain.ProjectRepository
 	projectCategoryRepository domain.ProjectCategoryRepository
 	cachingRepository         domain.CachingRepository
+	service                   domain.Service
 }
 
 func NewUpdateProjectCategoryHandler(
-	projectRepository domain.ProjectRepository,
 	projectCategoryRepository domain.ProjectCategoryRepository,
 	cachingRepository domain.CachingRepository,
+	service domain.Service,
 ) UpdateProjectCategoryHandler {
 	return UpdateProjectCategoryHandler{
-		projectRepository:         projectRepository,
 		projectCategoryRepository: projectCategoryRepository,
 		cachingRepository:         cachingRepository,
+		service:                   service,
 	}
 }
 
@@ -42,33 +42,14 @@ func (h UpdateProjectCategoryHandler) UpdateProjectCategory(ctx *appcontext.AppC
 		"performerID": performerID, "projectID": projectID, "categoryID": categoryID, "name": req.Name,
 	})
 
-	ctx.Logger().Text("find project in db")
-	project, err := h.projectRepository.FindByID(ctx, projectID)
-	if err != nil {
-		ctx.Logger().Error("failed to find project in db", err, appcontext.Fields{})
-		return nil, err
-	}
-	if project == nil {
-		ctx.Logger().ErrorText("project not found")
-		return nil, apperrors.Project.ProjectNotFound
-	}
-	if !project.IsOwner(performerID) {
-		ctx.Logger().ErrorText("user is not project owner")
-		return nil, apperrors.Common.NotFound
-	}
-
 	ctx.Logger().Text("find project category in db")
-	category, err := h.projectCategoryRepository.FindByID(ctx, categoryID)
+	category, err := h.service.GetProjectCategory(ctx, projectID, categoryID, performerID)
 	if err != nil {
 		ctx.Logger().Error("failed to find project category in db", err, appcontext.Fields{})
 		return nil, err
 	}
 	if category == nil {
 		ctx.Logger().ErrorText("project category not found")
-		return nil, apperrors.Project.InvalidCategory
-	}
-	if !category.IsBelongToProject(projectID) {
-		ctx.Logger().ErrorText("project category not belong to project")
 		return nil, apperrors.Project.InvalidCategory
 	}
 
