@@ -105,10 +105,6 @@ CREATE TABLE project_collaborators (
 CREATE INDEX idx_project_collaborators_project_id ON project_collaborators(project_id);
 CREATE INDEX idx_project_collaborators_user_id ON project_collaborators(user_id);
 
--- =============================================
--- Feedback Management
--- =============================================
-
 -- Create project categories table
 CREATE TABLE project_categories (
                                     id TEXT PRIMARY KEY,
@@ -128,15 +124,13 @@ CREATE INDEX idx_project_categories_project_id ON project_categories(project_id)
 CREATE TABLE project_campaigns (
                                    id TEXT PRIMARY KEY,
                                    project_id TEXT NOT NULL REFERENCES projects(id) ON DELETE CASCADE,
-                                   code VARCHAR(4) NOT NULL,
                                    name VARCHAR(255) NOT NULL,
                                    description TEXT DEFAULT '' NOT NULL,
                                    campaign_type campaign_type NOT NULL,
                                    status status NOT NULL,
-                                   setting_widget_position VARCHAR(20) NOT NULL,
+                                   setting_widget_position VARCHAR(30) NOT NULL,
                                    created_at TIMESTAMPTZ DEFAULT NOW() NOT NULL,
-                                   updated_at TIMESTAMPTZ DEFAULT NOW() NOT NULL,
-                                   UNIQUE(project_id, code)
+                                   updated_at TIMESTAMPTZ DEFAULT NOW() NOT NULL
 );
 
 CREATE INDEX idx_project_campaigns_project_campaign_type ON project_campaigns(project_id, campaign_type);
@@ -146,8 +140,7 @@ CREATE TABLE project_campaign_categories (
                                   id TEXT PRIMARY KEY,
                                   campaign_id TEXT NOT NULL REFERENCES project_campaigns(id) ON DELETE CASCADE,
                                   category_id TEXT NOT NULL REFERENCES project_categories(id) ON DELETE CASCADE,
-                                  created_at TIMESTAMPTZ DEFAULT NOW() NOT NULL,
-                                  updated_at TIMESTAMPTZ DEFAULT NOW() NOT NULL
+                                  created_at TIMESTAMPTZ DEFAULT NOW() NOT NULL
 );
 
 CREATE INDEX idx_project_campaign_categories_campaign_id ON project_campaign_categories(campaign_id);
@@ -155,9 +148,8 @@ CREATE INDEX idx_project_campaign_categories_campaign_id ON project_campaign_cat
 -- Create feedbacks table
 CREATE TABLE feedbacks (
                            id TEXT PRIMARY KEY,
-                           code VARCHAR(10) NOT NULL,
                            project_id TEXT NOT NULL REFERENCES projects(id) ON DELETE CASCADE,
-                           campaign_id TEXT REFERENCES project_campaigns(id) ON DELETE SET NULL,
+                           campaign_id TEXT NOT NULL REFERENCES project_campaigns(id) ON DELETE CASCADE,
                            user_id TEXT REFERENCES users(id) ON DELETE SET NULL DEFAULT NULL,
                            email VARCHAR(255),
                            category_id TEXT NOT NULL,
@@ -166,8 +158,7 @@ CREATE TABLE feedbacks (
                            is_anonymous BOOLEAN NOT NULL,
                            state feedback_state NOT NULL,
                            created_at TIMESTAMPTZ DEFAULT NOW() NOT NULL,
-                           updated_at TIMESTAMPTZ DEFAULT NOW() NOT NULL,
-                           UNIQUE(project_id, code)
+                           updated_at TIMESTAMPTZ DEFAULT NOW() NOT NULL
 );
 
 CREATE INDEX idx_feedbacks_project_id ON feedbacks(project_id);

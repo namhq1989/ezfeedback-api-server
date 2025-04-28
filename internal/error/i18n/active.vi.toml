@@ -43,6 +43,10 @@ project_not_found = "Không tìm thấy dự án"
 project_invalid_role = "Vai trò không hợp lệ"
 project_invalid_category = "Danh mục không hợp lệ"
 project_category_limit_exceeded = "Dự án của bạn đã đạt đến số lượng danh mục tối đa cho phép"
+project_invalid_campaign = "Chiến dịch không hợp lệ"
+project_invalid_campaign_type = "Loại chiến dịch không hợp lệ"
+project_invalid_domain = "Domain không hợp lệ"
+project_invalid_primary_color = "Màu chính không hợp lệ"
 
 # feedback
 feedback_invalid_id = "ID phản hồi không hợp lệ"
