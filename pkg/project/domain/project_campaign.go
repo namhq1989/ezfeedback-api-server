@@ -28,15 +28,32 @@ type ProjectCampaign struct {
 	UpdatedAt             time.Time
 }
 
-func NewProjectCampaign() (*ProjectCampaign, error) {
+func NewProjectCampaign(projectID, name, description, campaignType, widgetPosition string) (*ProjectCampaign, error) {
 	var (
 		now = manipulation.NowUTC()
 	)
 
 	var c = &ProjectCampaign{
 		ID:        uuid.New(),
+		Status:    StatusInactive,
 		CreatedAt: now,
 		UpdatedAt: now,
+	}
+
+	if err := c.SetProjectID(projectID); err != nil {
+		return nil, err
+	}
+	if err := c.SetName(name); err != nil {
+		return nil, err
+	}
+	if err := c.SetDescription(description); err != nil {
+		return nil, err
+	}
+	if err := c.SetCampaignType(campaignType); err != nil {
+		return nil, err
+	}
+	if err := c.SetSettingWidgetPosition(widgetPosition); err != nil {
+		return nil, err
 	}
 
 	return c, nil

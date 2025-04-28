@@ -26,6 +26,7 @@ func (Module) Startup(ctx *appcontext.AppContext, mono monolith.Monolith) error 
 		projectRepository         = infrastructure.NewProjectRepository(mono.Database())
 		projectSettingRepository  = infrastructure.NewProjectSettingRepository(mono.Database())
 		projectCategoryRepository = infrastructure.NewProjectCategoryRepository(mono.Database())
+		projectCampaignRepository = infrastructure.NewProjectCampaignRepository(mono.Database())
 		cachingRepository         = infrastructure.NewCachingRepository(mono.Caching(), mono.Config().IsEnvRelease)
 		billingHub                = infrastructure.NewBillingHub(billingGRPCClient)
 
@@ -40,6 +41,7 @@ func (Module) Startup(ctx *appcontext.AppContext, mono monolith.Monolith) error 
 			projectRepository,
 			projectSettingRepository,
 			projectCategoryRepository,
+			projectCampaignRepository,
 			cachingRepository,
 			billingHub,
 			service,

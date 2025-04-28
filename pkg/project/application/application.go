@@ -17,6 +17,8 @@ type (
 		CreateProjectCategory(ctx *appcontext.AppContext, performerID, projectID string, req dto.CreateProjectCategoryRequest) (*dto.CreateProjectCategoryResponse, error)
 		UpdateProjectCategory(ctx *appcontext.AppContext, performerID, projectID, categoryID string, req dto.UpdateProjectCategoryRequest) (*dto.UpdateProjectCategoryResponse, error)
 		ChangeProjectCategoryStatus(ctx *appcontext.AppContext, performerID, projectID, categoryID string, req dto.ChangeProjectCategoryStatusRequest) (*dto.ChangeProjectCategoryStatusResponse, error)
+
+		CreateProjectCampaign(ctx *appcontext.AppContext, performerID, projectID string, req dto.CreateProjectCampaignRequest) (*dto.CreateProjectCampaignResponse, error)
 	}
 	Queries interface {
 		Ping(ctx *appcontext.AppContext, _ dto.PingRequest) (*dto.PingResponse, error)
@@ -36,6 +38,8 @@ type (
 		command.CreateProjectCategoryHandler
 		command.UpdateProjectCategoryHandler
 		command.ChangeProjectCategoryStatusHandler
+
+		command.CreateProjectCampaignHandler
 	}
 	queryHandlers struct {
 		query.PingHandler
@@ -54,6 +58,7 @@ func New(
 	projectRepository domain.ProjectRepository,
 	projectSettingRepository domain.ProjectSettingRepository,
 	projectCategoryRepository domain.ProjectCategoryRepository,
+	projectCampaignRepository domain.ProjectCampaignRepository,
 	cachingRepository domain.CachingRepository,
 	billingHub domain.BillingHub,
 	service domain.Service,
@@ -80,6 +85,12 @@ func New(
 			ChangeProjectCategoryStatusHandler: command.NewChangeProjectCategoryStatusHandler(
 				projectRepository,
 				projectCategoryRepository,
+				cachingRepository,
+			),
+
+			CreateProjectCampaignHandler: command.NewCreateProjectCampaignHandler(
+				projectRepository,
+				projectCampaignRepository,
 				cachingRepository,
 			),
 		},
