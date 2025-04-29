@@ -90,6 +90,10 @@ func (c *ProjectCategory) SetUpdatedAt() {
 	c.UpdatedAt = manipulation.NowUTC()
 }
 
+func (c *ProjectCategory) IsBelongToProject(projectID string) bool {
+	return c.ProjectID == projectID
+}
+
 func IsReachedMaxCategoryPerProject(total int64) bool {
 	return total >= maxCategoryPerProject
 }

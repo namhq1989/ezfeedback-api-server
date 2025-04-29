@@ -85,7 +85,10 @@ func (h CreateProjectCategoryHandler) CreateProjectCategory(ctx *appcontext.AppC
 
 	ctx.Logger().Text("delete caching data")
 	if err = h.cachingRepository.DeleteProjectCategoriesByProjectID(ctx, projectID); err != nil {
-		ctx.Logger().Error("failed to delete caching data", err, appcontext.Fields{})
+		ctx.Logger().Error("failed to delete project categories caching data", err, appcontext.Fields{})
+	}
+	if err = h.cachingRepository.DeleteApiGetProjectByID(ctx, projectID); err != nil {
+		ctx.Logger().Error("failed to delete api get project by id caching data", err, appcontext.Fields{})
 	}
 
 	ctx.Logger().Text("done create project category request")

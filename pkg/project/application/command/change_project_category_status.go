@@ -8,16 +8,20 @@ import (
 )
 
 type ChangeProjectCategoryStatusHandler struct {
-	projectRepository         domain.ProjectRepository
 	projectCategoryRepository domain.ProjectCategoryRepository
 	cachingRepository         domain.CachingRepository
+	service                   domain.Service
 }
 
-func NewChangeProjectCategoryStatusHandler(projectRepository domain.ProjectRepository, projectCategoryRepository domain.ProjectCategoryRepository, cachingRepository domain.CachingRepository) ChangeProjectCategoryStatusHandler {
+func NewChangeProjectCategoryStatusHandler(
+	projectCategoryRepository domain.ProjectCategoryRepository,
+	cachingRepository domain.CachingRepository,
+	service domain.Service,
+) ChangeProjectCategoryStatusHandler {
 	return ChangeProjectCategoryStatusHandler{
-		projectRepository:         projectRepository,
 		projectCategoryRepository: projectCategoryRepository,
 		cachingRepository:         cachingRepository,
+		service:                   service,
 	}
 }
 
@@ -34,27 +38,12 @@ func NewChangeProjectCategoryStatusHandler(projectRepository domain.ProjectRepos
 // @success  200     {object} dto.UpdateProjectCategoryResponse
 // @router   /api/project/{projectId}/category/{categoryId}/status [patch]
 func (h ChangeProjectCategoryStatusHandler) ChangeProjectCategoryStatus(ctx *appcontext.AppContext, performerID, projectID, categoryID string, req dto.ChangeProjectCategoryStatusRequest) (*dto.ChangeProjectCategoryStatusResponse, error) {
-	ctx.Logger().Info("new change project status request", appcontext.Fields{
+	ctx.Logger().Info("new change project category status request", appcontext.Fields{
 		"performerID": performerID, "projectID": projectID, "categoryID": categoryID, "status": req.Status,
 	})
 
-	ctx.Logger().Text("find project in db")
-	project, err := h.projectRepository.FindByID(ctx, projectID)
-	if err != nil {
-		ctx.Logger().Error("failed to find project in db", err, appcontext.Fields{})
-		return nil, err
-	}
-	if project == nil {
-		ctx.Logger().ErrorText("project not found")
-		return nil, apperrors.Project.ProjectNotFound
-	}
-	if !project.IsOwner(performerID) {
-		ctx.Logger().ErrorText("user is not project owner")
-		return nil, apperrors.Common.NotFound
-	}
-
 	ctx.Logger().Text("find project category in db")
-	category, err := h.projectCategoryRepository.FindByID(ctx, categoryID)
+	category, err := h.service.GetProjectCategory(ctx, projectID, categoryID, performerID)
 	if err != nil {
 		ctx.Logger().Error("failed to find project category in db", err, appcontext.Fields{})
 		return nil, err
@@ -83,10 +72,10 @@ func (h ChangeProjectCategoryStatusHandler) ChangeProjectCategoryStatus(ctx *app
 
 	ctx.Logger().Text("delete caching data")
 	if err = h.cachingRepository.DeleteProjectCategoriesByProjectID(ctx, projectID); err != nil {
-		ctx.Logger().Error("failed to set project in caching", err, appcontext.Fields{})
+		ctx.Logger().Error("failed to delete project categories caching data", err, appcontext.Fields{})
 	}
-	if err = h.cachingRepository.DeleteApiGetProjectsByUserID(ctx, performerID); err != nil {
-		ctx.Logger().Error("failed to delete caching data", err, appcontext.Fields{})
+	if err = h.cachingRepository.DeleteApiGetProjectByID(ctx, projectID); err != nil {
+		ctx.Logger().Error("failed to delete api get project by id caching data", err, appcontext.Fields{})
 	}
 
 	ctx.Logger().Text("done change project category status request")

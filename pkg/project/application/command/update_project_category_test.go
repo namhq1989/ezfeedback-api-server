@@ -20,17 +20,17 @@ type updateProjectCategoryTestSuite struct {
 	suite.Suite
 	handler                       command.UpdateProjectCategoryHandler
 	mockCtrl                      *gomock.Controller
-	mockProjectRepository         *mockproject.MockProjectRepository
 	mockProjectCategoryRepository *mockproject.MockProjectCategoryRepository
 	mockCachingRepository         *mockproject.MockCachingRepository
+	mockService                   *mockproject.MockService
 }
 
 func (s *updateProjectCategoryTestSuite) SetupSuite() {
 	s.mockCtrl = gomock.NewController(s.T())
-	s.mockProjectRepository = mockproject.NewMockProjectRepository(s.mockCtrl)
 	s.mockProjectCategoryRepository = mockproject.NewMockProjectCategoryRepository(s.mockCtrl)
 	s.mockCachingRepository = mockproject.NewMockCachingRepository(s.mockCtrl)
-	s.handler = command.NewUpdateProjectCategoryHandler(s.mockProjectRepository, s.mockProjectCategoryRepository, s.mockCachingRepository)
+	s.mockService = mockproject.NewMockService(s.mockCtrl)
+	s.handler = command.NewUpdateProjectCategoryHandler(s.mockProjectCategoryRepository, s.mockCachingRepository, s.mockService)
 }
 
 func (s *updateProjectCategoryTestSuite) TearDownTest() {
@@ -44,12 +44,8 @@ func (s *updateProjectCategoryTestSuite) Test_1_Success() {
 		performerID = uuid.New()
 	)
 
-	s.mockProjectRepository.EXPECT().
-		FindByID(gomock.Any(), gomock.Any()).
-		Return(&domain.Project{ID: projectID, UserID: performerID}, nil)
-
-	s.mockProjectCategoryRepository.EXPECT().
-		FindByID(gomock.Any(), gomock.Any()).
+	s.mockService.EXPECT().
+		GetProjectCategory(gomock.Any(), gomock.Any(), gomock.Any(), gomock.Any()).
 		Return(&domain.ProjectCategory{ID: categoryID, ProjectID: projectID, Name: "OldName"}, nil)
 
 	s.mockProjectCategoryRepository.EXPECT().
@@ -61,7 +57,7 @@ func (s *updateProjectCategoryTestSuite) Test_1_Success() {
 		Return(nil)
 
 	s.mockCachingRepository.EXPECT().
-		DeleteApiGetProjectsByUserID(gomock.Any(), gomock.Any()).
+		DeleteApiGetProjectByID(gomock.Any(), gomock.Any()).
 		Return(nil)
 
 	ctx := appcontext.NewRest(context.Background())
@@ -73,9 +69,9 @@ func (s *updateProjectCategoryTestSuite) Test_1_Success() {
 }
 
 func (s *updateProjectCategoryTestSuite) Test_2_Fail_InvalidProjectID() {
-	s.mockProjectRepository.EXPECT().
-		FindByID(gomock.Any(), gomock.Any()).
-		Return(nil, apperrors.Project.InvalidProjectID)
+	s.mockService.EXPECT().
+		GetProjectCategory(gomock.Any(), gomock.Any(), gomock.Any(), gomock.Any()).
+		Return(nil, apperrors.Project.ProjectNotFound)
 
 	ctx := appcontext.NewRest(context.Background())
 	resp, err := s.handler.UpdateProjectCategory(ctx, uuid.New(), "invalid-id", uuid.New(), dto.UpdateProjectCategoryRequest{
@@ -83,7 +79,7 @@ func (s *updateProjectCategoryTestSuite) Test_2_Fail_InvalidProjectID() {
 	})
 	assert.Nil(s.T(), resp)
 	assert.NotNil(s.T(), err)
-	assert.Equal(s.T(), apperrors.Project.InvalidProjectID, err)
+	assert.Equal(s.T(), apperrors.Project.ProjectNotFound, err)
 }
 
 func (s *updateProjectCategoryTestSuite) Test_2_Fail_InvalidCategoryID() {
@@ -92,12 +88,8 @@ func (s *updateProjectCategoryTestSuite) Test_2_Fail_InvalidCategoryID() {
 		performerID = uuid.New()
 	)
 
-	s.mockProjectRepository.EXPECT().
-		FindByID(gomock.Any(), gomock.Any()).
-		Return(&domain.Project{ID: projectID, UserID: performerID}, nil)
-
-	s.mockProjectCategoryRepository.EXPECT().
-		FindByID(gomock.Any(), gomock.Any()).
+	s.mockService.EXPECT().
+		GetProjectCategory(gomock.Any(), gomock.Any(), gomock.Any(), gomock.Any()).
 		Return(nil, apperrors.Project.InvalidCategory)
 
 	ctx := appcontext.NewRest(context.Background())
@@ -116,12 +108,8 @@ func (s *updateProjectCategoryTestSuite) Test_2_Fail_InvalidName() {
 		performerID = uuid.New()
 	)
 
-	s.mockProjectRepository.EXPECT().
-		FindByID(gomock.Any(), gomock.Any()).
-		Return(&domain.Project{ID: projectID, UserID: performerID}, nil)
-
-	s.mockProjectCategoryRepository.EXPECT().
-		FindByID(gomock.Any(), gomock.Any()).
+	s.mockService.EXPECT().
+		GetProjectCategory(gomock.Any(), gomock.Any(), gomock.Any(), gomock.Any()).
 		Return(&domain.ProjectCategory{ID: categoryID, ProjectID: projectID, Name: "OldName"}, nil)
 
 	ctx := appcontext.NewRest(context.Background())

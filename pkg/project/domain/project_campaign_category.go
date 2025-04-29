@@ -13,6 +13,7 @@ type ProjectCampaignCategoryRepository interface {
 	Create(ctx *appcontext.AppContext, campaignCategory ProjectCampaignCategory) error
 	Delete(ctx *appcontext.AppContext, campaignCategory ProjectCampaignCategory) error
 	FindByID(ctx *appcontext.AppContext, campaignCategoryID string) (*ProjectCampaignCategory, error)
+	FindByCampaignIDAndCategoryID(ctx *appcontext.AppContext, campaignID string, categoryID string) (*ProjectCampaignCategory, error)
 	FindByCampaignID(ctx *appcontext.AppContext, campaignID string) ([]ProjectCampaignCategory, error)
 }
 

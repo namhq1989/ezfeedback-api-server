@@ -44,6 +44,24 @@ func (s server) registerProjectRoutes() {
 		return validation.ValidateHTTPPayload[dto.GetProjectsRequest](next)
 	})
 
+	g.GET("/:id", func(c echo.Context) error {
+		var (
+			ctx         = c.Get("ctx").(*appcontext.AppContext)
+			req         = c.Get("req").(dto.GetProjectByIDRequest)
+			performerID = ctx.GetUserID()
+			projectID   = c.Param("id")
+		)
+
+		resp, err := s.app.GetProjectByID(ctx, performerID, projectID, req)
+		if err != nil {
+			return httprespond.R400(c, err, nil)
+		}
+
+		return httprespond.R200(c, resp)
+	}, s.jwt.RequireSignedIn, func(next echo.HandlerFunc) echo.HandlerFunc {
+		return validation.ValidateHTTPPayload[dto.GetProjectByIDRequest](next)
+	})
+
 	g.POST("", func(c echo.Context) error {
 		var (
 			ctx         = c.Get("ctx").(*appcontext.AppContext)
@@ -151,5 +169,99 @@ func (s server) registerProjectRoutes() {
 		return httprespond.R200(c, resp)
 	}, s.jwt.RequireSignedIn, func(next echo.HandlerFunc) echo.HandlerFunc {
 		return validation.ValidateHTTPPayload[dto.ChangeProjectCategoryStatusRequest](next)
+	})
+
+	g.POST("/:id/campaign", func(c echo.Context) error {
+		var (
+			ctx         = c.Get("ctx").(*appcontext.AppContext)
+			req         = c.Get("req").(dto.CreateProjectCampaignRequest)
+			performerID = ctx.GetUserID()
+			projectID   = c.Param("id")
+		)
+
+		resp, err := s.app.CreateProjectCampaign(ctx, performerID, projectID, req)
+		if err != nil {
+			return httprespond.R400(c, err, nil)
+		}
+
+		return httprespond.R200(c, resp)
+	}, s.jwt.RequireSignedIn, func(next echo.HandlerFunc) echo.HandlerFunc {
+		return validation.ValidateHTTPPayload[dto.CreateProjectCampaignRequest](next)
+	})
+
+	g.PUT("/:projectId/campaign/:campaignId", func(c echo.Context) error {
+		var (
+			ctx         = c.Get("ctx").(*appcontext.AppContext)
+			req         = c.Get("req").(dto.UpdateProjectCampaignRequest)
+			performerID = ctx.GetUserID()
+			projectID   = c.Param("projectId")
+			campaignID  = c.Param("campaignId")
+		)
+
+		resp, err := s.app.UpdateProjectCampaign(ctx, performerID, projectID, campaignID, req)
+		if err != nil {
+			return httprespond.R400(c, err, nil)
+		}
+
+		return httprespond.R200(c, resp)
+	}, s.jwt.RequireSignedIn, func(next echo.HandlerFunc) echo.HandlerFunc {
+		return validation.ValidateHTTPPayload[dto.UpdateProjectCampaignRequest](next)
+	})
+
+	g.PATCH("/:projectId/campaign/:campaignId/status", func(c echo.Context) error {
+		var (
+			ctx         = c.Get("ctx").(*appcontext.AppContext)
+			req         = c.Get("req").(dto.ChangeProjectCampaignStatusRequest)
+			performerID = ctx.GetUserID()
+			projectID   = c.Param("projectId")
+			campaignID  = c.Param("campaignId")
+		)
+
+		resp, err := s.app.ChangeProjectCampaignStatus(ctx, performerID, projectID, campaignID, req)
+		if err != nil {
+			return httprespond.R400(c, err, nil)
+		}
+
+		return httprespond.R200(c, resp)
+	}, s.jwt.RequireSignedIn, func(next echo.HandlerFunc) echo.HandlerFunc {
+		return validation.ValidateHTTPPayload[dto.ChangeProjectCampaignStatusRequest](next)
+	})
+
+	g.POST("/:projectId/campaign/:campaignId/category", func(c echo.Context) error {
+		var (
+			ctx         = c.Get("ctx").(*appcontext.AppContext)
+			req         = c.Get("req").(dto.AddProjectCampaignCategoryRequest)
+			performerID = ctx.GetUserID()
+			projectID   = c.Param("projectId")
+			campaignID  = c.Param("campaignId")
+		)
+
+		resp, err := s.app.AddProjectCampaignCategory(ctx, performerID, projectID, campaignID, req)
+		if err != nil {
+			return httprespond.R400(c, err, nil)
+		}
+
+		return httprespond.R200(c, resp)
+	}, s.jwt.RequireSignedIn, func(next echo.HandlerFunc) echo.HandlerFunc {
+		return validation.ValidateHTTPPayload[dto.AddProjectCampaignCategoryRequest](next)
+	})
+
+	g.DELETE("/:projectId/campaign/:campaignId/category", func(c echo.Context) error {
+		var (
+			ctx         = c.Get("ctx").(*appcontext.AppContext)
+			req         = c.Get("req").(dto.RemoveProjectCampaignCategoryRequest)
+			performerID = ctx.GetUserID()
+			projectID   = c.Param("projectId")
+			campaignID  = c.Param("campaignId")
+		)
+
+		resp, err := s.app.RemoveProjectCampaignCategory(ctx, performerID, projectID, campaignID, req)
+		if err != nil {
+			return httprespond.R400(c, err, nil)
+		}
+
+		return httprespond.R200(c, resp)
+	}, s.jwt.RequireSignedIn, func(next echo.HandlerFunc) echo.HandlerFunc {
+		return validation.ValidateHTTPPayload[dto.RemoveProjectCampaignCategoryRequest](next)
 	})
 }

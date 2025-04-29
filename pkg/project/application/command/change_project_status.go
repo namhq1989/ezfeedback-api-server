@@ -72,7 +72,10 @@ func (h ChangeProjectStatusHandler) ChangeProjectStatus(ctx *appcontext.AppConte
 		ctx.Logger().Error("failed to set project in caching", err, appcontext.Fields{})
 	}
 	if err = h.cachingRepository.DeleteApiGetProjectsByUserID(ctx, performerID); err != nil {
-		ctx.Logger().Error("failed to delete caching data", err, appcontext.Fields{})
+		ctx.Logger().Error("failed to delete api get projects by user id in caching data", err, appcontext.Fields{})
+	}
+	if err = h.cachingRepository.DeleteApiGetProjectByID(ctx, projectID); err != nil {
+		ctx.Logger().Error("failed to delete api get project by id in caching data", err, appcontext.Fields{})
 	}
 
 	ctx.Logger().Text("done change project status request")

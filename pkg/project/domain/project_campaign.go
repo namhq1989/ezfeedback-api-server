@@ -9,11 +9,16 @@ import (
 	"github.com/namhq1989/go-utilities/uuid"
 )
 
+const (
+	maxCampaignPerType = 1
+)
+
 type ProjectCampaignRepository interface {
 	Create(ctx *appcontext.AppContext, campaign ProjectCampaign) error
 	Update(ctx *appcontext.AppContext, campaign ProjectCampaign) error
 	FindByID(ctx *appcontext.AppContext, campaignID string) (*ProjectCampaign, error)
 	FindByProjectID(ctx *appcontext.AppContext, projectID string) ([]ProjectCampaign, error)
+	CountTotalByProjectIDAndCampaignType(ctx *appcontext.AppContext, projectID, campaignType string) (int64, error)
 }
 
 type ProjectCampaign struct {
@@ -26,17 +31,36 @@ type ProjectCampaign struct {
 	SettingWidgetPosition string
 	CreatedAt             time.Time
 	UpdatedAt             time.Time
+
+	Categories []string
 }
 
-func NewProjectCampaign() (*ProjectCampaign, error) {
+func NewProjectCampaign(projectID, name, description, campaignType, widgetPosition string) (*ProjectCampaign, error) {
 	var (
 		now = manipulation.NowUTC()
 	)
 
 	var c = &ProjectCampaign{
 		ID:        uuid.New(),
+		Status:    StatusActive,
 		CreatedAt: now,
 		UpdatedAt: now,
+	}
+
+	if err := c.SetProjectID(projectID); err != nil {
+		return nil, err
+	}
+	if err := c.SetName(name); err != nil {
+		return nil, err
+	}
+	if err := c.SetDescription(description); err != nil {
+		return nil, err
+	}
+	if err := c.SetCampaignType(campaignType); err != nil {
+		return nil, err
+	}
+	if err := c.SetSettingWidgetPosition(widgetPosition); err != nil {
+		return nil, err
 	}
 
 	return c, nil
@@ -104,4 +128,12 @@ func (c *ProjectCampaign) SetSettingWidgetPosition(settingWidgetPosition string)
 
 func (c *ProjectCampaign) SetUpdatedAt() {
 	c.UpdatedAt = manipulation.NowUTC()
+}
+
+func (c *ProjectCampaign) IsBelongToProject(projectID string) bool {
+	return c.ProjectID == projectID
+}
+
+func IsReachedMaxCampaignPerType(total int64) bool {
+	return total >= maxCampaignPerType
 }

@@ -48,18 +48,10 @@ func (s *getProjectsTestSuite) Test_1_Success_FromCache() {
 				"id": "d0388vpnlp83c24n98mg",
 				"title": "EzFeedback",
 				"slug": "ezfeedback-21hu1t",
-				"description": "My first project description",
-				"categories": [],
-				"setting": {
-				  "isFeedbackPublic": false,
-				  "allowAnonymousFeedback": true,
-				  "enableVoting": true
-				},
+				"status": "active",
 				"stats": {
 				  "totalFeedback": 10
-				},
-				"createdAt": "2025-04-22T00:46:39.916Z",
-				"updatedAt": "2025-04-22T10:02:53.779Z"
+				}
 			}
 		]
 	}

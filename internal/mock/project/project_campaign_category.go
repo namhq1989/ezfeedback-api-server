@@ -21,7 +21,6 @@ import (
 type MockProjectCampaignCategoryRepository struct {
 	ctrl     *gomock.Controller
 	recorder *MockProjectCampaignCategoryRepositoryMockRecorder
-	isgomock struct{}
 }
 
 // MockProjectCampaignCategoryRepositoryMockRecorder is the mock recorder for MockProjectCampaignCategoryRepository.
@@ -82,6 +81,21 @@ func (m *MockProjectCampaignCategoryRepository) FindByCampaignID(ctx *appcontext
 func (mr *MockProjectCampaignCategoryRepositoryMockRecorder) FindByCampaignID(ctx, campaignID any) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "FindByCampaignID", reflect.TypeOf((*MockProjectCampaignCategoryRepository)(nil).FindByCampaignID), ctx, campaignID)
+}
+
+// FindByCampaignIDAndCategoryID mocks base method.
+func (m *MockProjectCampaignCategoryRepository) FindByCampaignIDAndCategoryID(ctx *appcontext.AppContext, campaignID, categoryID string) (*domain.ProjectCampaignCategory, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "FindByCampaignIDAndCategoryID", ctx, campaignID, categoryID)
+	ret0, _ := ret[0].(*domain.ProjectCampaignCategory)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// FindByCampaignIDAndCategoryID indicates an expected call of FindByCampaignIDAndCategoryID.
+func (mr *MockProjectCampaignCategoryRepositoryMockRecorder) FindByCampaignIDAndCategoryID(ctx, campaignID, categoryID any) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "FindByCampaignIDAndCategoryID", reflect.TypeOf((*MockProjectCampaignCategoryRepository)(nil).FindByCampaignIDAndCategoryID), ctx, campaignID, categoryID)
 }
 
 // FindByID mocks base method.

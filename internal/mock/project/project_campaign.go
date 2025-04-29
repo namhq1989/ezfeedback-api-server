@@ -21,7 +21,6 @@ import (
 type MockProjectCampaignRepository struct {
 	ctrl     *gomock.Controller
 	recorder *MockProjectCampaignRepositoryMockRecorder
-	isgomock struct{}
 }
 
 // MockProjectCampaignRepositoryMockRecorder is the mock recorder for MockProjectCampaignRepository.
@@ -39,6 +38,21 @@ func NewMockProjectCampaignRepository(ctrl *gomock.Controller) *MockProjectCampa
 // EXPECT returns an object that allows the caller to indicate expected use.
 func (m *MockProjectCampaignRepository) EXPECT() *MockProjectCampaignRepositoryMockRecorder {
 	return m.recorder
+}
+
+// CountTotalByProjectIDAndCampaignType mocks base method.
+func (m *MockProjectCampaignRepository) CountTotalByProjectIDAndCampaignType(ctx *appcontext.AppContext, projectID, campaignType string) (int64, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "CountTotalByProjectIDAndCampaignType", ctx, projectID, campaignType)
+	ret0, _ := ret[0].(int64)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// CountTotalByProjectIDAndCampaignType indicates an expected call of CountTotalByProjectIDAndCampaignType.
+func (mr *MockProjectCampaignRepositoryMockRecorder) CountTotalByProjectIDAndCampaignType(ctx, projectID, campaignType any) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "CountTotalByProjectIDAndCampaignType", reflect.TypeOf((*MockProjectCampaignRepository)(nil).CountTotalByProjectIDAndCampaignType), ctx, projectID, campaignType)
 }
 
 // Create mocks base method.
