@@ -1,6 +1,8 @@
 package dto
 
 import (
+	"slices"
+
 	"github.com/namhq1989/ezfeedback-api-server/internal/utils/httprespond"
 	"github.com/namhq1989/ezfeedback-api-server/pkg/project/domain"
 )
@@ -51,7 +53,14 @@ func (Project) FromDomain(project domain.Project, setting domain.ProjectSetting,
 
 	var campns = make([]ProjectCampaign, len(campaigns))
 	for i, campaign := range campaigns {
-		campns[i] = ProjectCampaign{}.FromDomain(campaign, categories)
+		campaignCategories := make([]domain.ProjectCategory, 0)
+		for _, category := range categories {
+			if slices.Contains(campaign.Categories, category.ID) {
+				campaignCategories = append(campaignCategories, category)
+			}
+		}
+
+		campns[i] = ProjectCampaign{}.FromDomain(campaign, campaignCategories)
 	}
 
 	return Project{

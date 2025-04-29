@@ -107,17 +107,30 @@ func (r ProjectCampaignRepository) FindByProjectID(ctx *appcontext.AppContext, p
 		return nil, apperrors.Project.InvalidProjectID
 	}
 
-	var c = r.getTable()
+	var (
+		pc  = r.getTable().AS("pc")
+		pcc = table.ProjectCampaignCategories.AS("pcc")
+	)
 
 	stmt := postgres.SELECT(
-		c.AllColumns,
+		pc.AllColumns,
+		postgres.COALESCE(
+			postgres.Func("array_remove",
+				postgres.Func("array_agg",
+					postgres.Raw("CASE WHEN pcc.category_id IS NOT NULL THEN pcc.category_id END"),
+				),
+				postgres.Raw("NULL"),
+			),
+			postgres.Raw("ARRAY[]::text[]"),
+		).AS("pc.categories"),
 	).
-		FROM(c).
-		WHERE(c.ProjectID.EQ(postgres.String(projectID))).
-		ORDER_BY(c.CreatedAt.DESC())
+		FROM(pc.LEFT_JOIN(pcc, pc.ID.EQ(pcc.CampaignID))).
+		WHERE(pc.ProjectID.EQ(postgres.String(projectID))).
+		GROUP_BY(pc.ID).
+		ORDER_BY(pc.CreatedAt.DESC())
 
 	var (
-		docs   = make([]model.ProjectCampaigns, 0)
+		docs   = make([]mapping.ProjectCampaignWithData, 0)
 		result = make([]domain.ProjectCampaign, 0)
 	)
 	if err := stmt.QueryContext(ctx.Context(), r.getDB(), &docs); err != nil {
@@ -128,7 +141,7 @@ func (r ProjectCampaignRepository) FindByProjectID(ctx *appcontext.AppContext, p
 	}
 
 	var (
-		mapper = mapping.ProjectCampaignMapper{}
+		mapper = mapping.ProjectCampaignWithDataMapper{}
 	)
 	for _, doc := range docs {
 		campaign, err := mapper.FromModelToDomain(doc)
@@ -155,7 +168,7 @@ func (r ProjectCampaignRepository) CountTotalByProjectIDAndCampaignType(ctx *app
 		FROM(c).
 		WHERE(
 			c.ProjectID.EQ(postgres.String(projectID)).
-				AND(c.CampaignType.EQ(postgres.String(campaignType))),
+				AND(c.CampaignType.EQ(postgres.NewEnumValue(campaignType))),
 		)
 
 	var result = database.CountResult{}

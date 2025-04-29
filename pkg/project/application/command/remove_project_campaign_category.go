@@ -89,6 +89,6 @@ func (h RemoveProjectCampaignCategoryHandler) RemoveProjectCampaignCategory(ctx 
 		ctx.Logger().Error("failed to delete api get project by id caching data", err, appcontext.Fields{})
 	}
 
-	ctx.Logger().Text("done add project campaign category request")
+	ctx.Logger().Text("done remove project campaign category request")
 	return &dto.RemoveProjectCampaignCategoryResponse{}, nil
 }

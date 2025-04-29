@@ -31,6 +31,8 @@ type ProjectCampaign struct {
 	SettingWidgetPosition string
 	CreatedAt             time.Time
 	UpdatedAt             time.Time
+
+	Categories []string
 }
 
 func NewProjectCampaign(projectID, name, description, campaignType, widgetPosition string) (*ProjectCampaign, error) {
@@ -40,7 +42,7 @@ func NewProjectCampaign(projectID, name, description, campaignType, widgetPositi
 
 	var c = &ProjectCampaign{
 		ID:        uuid.New(),
-		Status:    StatusInactive,
+		Status:    StatusActive,
 		CreatedAt: now,
 		UpdatedAt: now,
 	}

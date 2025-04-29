@@ -1,6 +1,7 @@
 package mapping
 
 import (
+	"github.com/lib/pq"
 	"github.com/namhq1989/ezfeedback-api-server/internal/database/gen/ezfeedback/public/model"
 	"github.com/namhq1989/ezfeedback-api-server/pkg/project/domain"
 )
@@ -37,4 +38,26 @@ func (ProjectCampaignMapper) FromDomainToModel(campaign domain.ProjectCampaign) 
 	}
 
 	return result, nil
+}
+
+type ProjectCampaignWithData struct {
+	ProjectCampaign model.ProjectCampaigns `alias:"pc"`
+	Categories      pq.StringArray         `alias:"pc.categories"`
+}
+
+type ProjectCampaignWithDataMapper struct{}
+
+func (ProjectCampaignWithDataMapper) FromModelToDomain(doc ProjectCampaignWithData) (*domain.ProjectCampaign, error) {
+	var (
+		campaignMapper = ProjectCampaignMapper{}
+	)
+
+	campaign, err := campaignMapper.FromModelToDomain(doc.ProjectCampaign)
+	if err != nil {
+		return nil, err
+	}
+
+	campaign.Categories = doc.Categories
+
+	return campaign, nil
 }
