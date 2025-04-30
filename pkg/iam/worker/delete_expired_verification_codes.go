@@ -16,12 +16,12 @@ func NewDeleteExpiredVerificationCodesHandler(verificationCodeRepository domain.
 	}
 }
 
-func (w DeleteExpiredVerificationCodesHandler) DeleteExpiredVerificationCodes(ctx *appcontext.AppContext, _ domain.QueueDeleteExpiredVerificationCodesPayload) error {
+func (h DeleteExpiredVerificationCodesHandler) DeleteExpiredVerificationCodes(ctx *appcontext.AppContext, _ domain.QueueDeleteExpiredVerificationCodesPayload) error {
 	tracer := otel.Tracer("[tracer] delete expired verification codes")
 	spanCtx, span := tracer.Start(ctx.Context(), "[worker] delete expired verification codes")
 	ctx.SetContext(spanCtx)
 	defer span.End()
 
 	ctx.Logger().Text("delete in db")
-	return w.verificationCodeRepository.DeleteExpired(ctx)
+	return h.verificationCodeRepository.DeleteExpired(ctx)
 }

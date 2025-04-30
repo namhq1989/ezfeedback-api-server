@@ -65,6 +65,15 @@ tasks:
       - mockgen -source=pkg/project/domain/billing.go -destination=internal/mock/project/billing.go -package=mockproject
       - mockgen -source=pkg/project/domain/service.go -destination=internal/mock/project/service.go -package=mockproject
 
+      # project
+      - mockgen -source=pkg/feedback/domain/feedback.go -destination=internal/mock/feedback/feedback.go -package=mockfeedback
+      - mockgen -source=pkg/feedback/domain/queue.go -destination=internal/mock/feedback/queue.go -package=mockfeedback
+      - mockgen -source=pkg/feedback/domain/caching.go -destination=internal/mock/feedback/caching.go -package=mockfeedback
+      - mockgen -source=pkg/feedback/domain/externalapi.go -destination=internal/mock/feedback/externalapi.go -package=mockfeedback
+      - mockgen -source=pkg/feedback/domain/billing.go -destination=internal/mock/feedback/billing.go -package=mockfeedback
+      - mockgen -source=pkg/feedback/domain/project.go -destination=internal/mock/feedback/project.go -package=mockfeedback
+      - mockgen -source=pkg/feedback/domain/service.go -destination=internal/mock/feedback/service.go -package=mockfeedback
+
   # swagger generation
   swagger-gen:
     swag init --parseDependencyLevel 1 -g cmd/main.go \

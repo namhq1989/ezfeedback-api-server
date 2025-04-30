@@ -17,18 +17,21 @@ type feedbacksTable struct {
 	postgres.Table
 
 	// Columns
-	ID          postgres.ColumnString
-	ProjectID   postgres.ColumnString
-	CampaignID  postgres.ColumnString
-	UserID      postgres.ColumnString
-	Email       postgres.ColumnString
-	CategoryID  postgres.ColumnString
-	Content     postgres.ColumnString
-	Rating      postgres.ColumnInteger
-	IsAnonymous postgres.ColumnBool
-	State       postgres.ColumnString
-	CreatedAt   postgres.ColumnTimestampz
-	UpdatedAt   postgres.ColumnTimestampz
+	ID           postgres.ColumnString
+	ProjectID    postgres.ColumnString
+	CampaignID   postgres.ColumnString
+	AppUserID    postgres.ColumnString
+	Email        postgres.ColumnString
+	CategoryID   postgres.ColumnString
+	Content      postgres.ColumnString
+	Rating       postgres.ColumnInteger
+	IsAnonymous  postgres.ColumnBool
+	State        postgres.ColumnString
+	CampaignType postgres.ColumnString
+	IP           postgres.ColumnString
+	CountryCode  postgres.ColumnString
+	CreatedAt    postgres.ColumnTimestampz
+	UpdatedAt    postgres.ColumnTimestampz
 
 	AllColumns     postgres.ColumnList
 	MutableColumns postgres.ColumnList
@@ -69,38 +72,44 @@ func newFeedbacksTable(schemaName, tableName, alias string) *FeedbacksTable {
 
 func newFeedbacksTableImpl(schemaName, tableName, alias string) feedbacksTable {
 	var (
-		IDColumn          = postgres.StringColumn("id")
-		ProjectIDColumn   = postgres.StringColumn("project_id")
-		CampaignIDColumn  = postgres.StringColumn("campaign_id")
-		UserIDColumn      = postgres.StringColumn("user_id")
-		EmailColumn       = postgres.StringColumn("email")
-		CategoryIDColumn  = postgres.StringColumn("category_id")
-		ContentColumn     = postgres.StringColumn("content")
-		RatingColumn      = postgres.IntegerColumn("rating")
-		IsAnonymousColumn = postgres.BoolColumn("is_anonymous")
-		StateColumn       = postgres.StringColumn("state")
-		CreatedAtColumn   = postgres.TimestampzColumn("created_at")
-		UpdatedAtColumn   = postgres.TimestampzColumn("updated_at")
-		allColumns        = postgres.ColumnList{IDColumn, ProjectIDColumn, CampaignIDColumn, UserIDColumn, EmailColumn, CategoryIDColumn, ContentColumn, RatingColumn, IsAnonymousColumn, StateColumn, CreatedAtColumn, UpdatedAtColumn}
-		mutableColumns    = postgres.ColumnList{ProjectIDColumn, CampaignIDColumn, UserIDColumn, EmailColumn, CategoryIDColumn, ContentColumn, RatingColumn, IsAnonymousColumn, StateColumn, CreatedAtColumn, UpdatedAtColumn}
+		IDColumn           = postgres.StringColumn("id")
+		ProjectIDColumn    = postgres.StringColumn("project_id")
+		CampaignIDColumn   = postgres.StringColumn("campaign_id")
+		AppUserIDColumn    = postgres.StringColumn("app_user_id")
+		EmailColumn        = postgres.StringColumn("email")
+		CategoryIDColumn   = postgres.StringColumn("category_id")
+		ContentColumn      = postgres.StringColumn("content")
+		RatingColumn       = postgres.IntegerColumn("rating")
+		IsAnonymousColumn  = postgres.BoolColumn("is_anonymous")
+		StateColumn        = postgres.StringColumn("state")
+		CampaignTypeColumn = postgres.StringColumn("campaign_type")
+		IPColumn           = postgres.StringColumn("ip")
+		CountryCodeColumn  = postgres.StringColumn("country_code")
+		CreatedAtColumn    = postgres.TimestampzColumn("created_at")
+		UpdatedAtColumn    = postgres.TimestampzColumn("updated_at")
+		allColumns         = postgres.ColumnList{IDColumn, ProjectIDColumn, CampaignIDColumn, AppUserIDColumn, EmailColumn, CategoryIDColumn, ContentColumn, RatingColumn, IsAnonymousColumn, StateColumn, CampaignTypeColumn, IPColumn, CountryCodeColumn, CreatedAtColumn, UpdatedAtColumn}
+		mutableColumns     = postgres.ColumnList{ProjectIDColumn, CampaignIDColumn, AppUserIDColumn, EmailColumn, CategoryIDColumn, ContentColumn, RatingColumn, IsAnonymousColumn, StateColumn, CampaignTypeColumn, IPColumn, CountryCodeColumn, CreatedAtColumn, UpdatedAtColumn}
 	)
 
 	return feedbacksTable{
 		Table: postgres.NewTable(schemaName, tableName, alias, allColumns...),
 
 		//Columns
-		ID:          IDColumn,
-		ProjectID:   ProjectIDColumn,
-		CampaignID:  CampaignIDColumn,
-		UserID:      UserIDColumn,
-		Email:       EmailColumn,
-		CategoryID:  CategoryIDColumn,
-		Content:     ContentColumn,
-		Rating:      RatingColumn,
-		IsAnonymous: IsAnonymousColumn,
-		State:       StateColumn,
-		CreatedAt:   CreatedAtColumn,
-		UpdatedAt:   UpdatedAtColumn,
+		ID:           IDColumn,
+		ProjectID:    ProjectIDColumn,
+		CampaignID:   CampaignIDColumn,
+		AppUserID:    AppUserIDColumn,
+		Email:        EmailColumn,
+		CategoryID:   CategoryIDColumn,
+		Content:      ContentColumn,
+		Rating:       RatingColumn,
+		IsAnonymous:  IsAnonymousColumn,
+		State:        StateColumn,
+		CampaignType: CampaignTypeColumn,
+		IP:           IPColumn,
+		CountryCode:  CountryCodeColumn,
+		CreatedAt:    CreatedAtColumn,
+		UpdatedAt:    UpdatedAtColumn,
 
 		AllColumns:     allColumns,
 		MutableColumns: mutableColumns,

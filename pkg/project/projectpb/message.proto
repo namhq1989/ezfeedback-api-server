@@ -1,0 +1,19 @@
+syntax = "proto3";
+
+package projectpb;
+
+message Project {
+  string id = 1;
+  string status = 2;
+  ProjectSetting setting = 3;
+}
+
+message ProjectSetting {
+  string domain = 1;
+}
+
+message ProjectCampaign {
+  string id = 1;
+  string campaignType = 2;
+  string status = 3;
+}

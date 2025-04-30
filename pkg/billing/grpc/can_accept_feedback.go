@@ -13,7 +13,7 @@ func NewCanAcceptFeedbackHandler() CanAcceptFeedbackHandler {
 
 func (h CanAcceptFeedbackHandler) CanAcceptFeedback(ctx *appcontext.AppContext, req *billingpb.CanAcceptFeedbackRequest) (*billingpb.CanAcceptFeedbackResponse, error) {
 	ctx.SetTraceID(req.TraceId)
-	ctx.Logger().Info("new check can accept request", appcontext.Fields{"userId": req.UserId})
+	ctx.Logger().Info("new check can accept request", appcontext.Fields{"projectId": req.ProjectId, "totalCreatedFeedbacks": req.TotalCreatedFeedbacks})
 
 	ctx.Logger().Text("done check can accept request")
 	return &billingpb.CanAcceptFeedbackResponse{

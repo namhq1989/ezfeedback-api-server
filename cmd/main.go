@@ -5,6 +5,8 @@ import (
 	"fmt"
 	"time"
 
+	"github.com/namhq1989/ezfeedback-api-server/internal/externalapi"
+
 	"github.com/labstack/echo/v4"
 	"github.com/labstack/echo/v4/middleware"
 	"github.com/namhq1989/ezfeedback-api-server/docs"
@@ -21,6 +23,7 @@ import (
 	"github.com/namhq1989/ezfeedback-api-server/internal/utils/waiter"
 	"github.com/namhq1989/ezfeedback-api-server/pkg/billing"
 	"github.com/namhq1989/ezfeedback-api-server/pkg/common"
+	"github.com/namhq1989/ezfeedback-api-server/pkg/feedback"
 	"github.com/namhq1989/ezfeedback-api-server/pkg/iam"
 	"github.com/namhq1989/ezfeedback-api-server/pkg/project"
 	"github.com/namhq1989/go-utilities/logger"
@@ -93,6 +96,16 @@ func main() {
 		cfg.Environment,
 	)
 
+	// external api
+	a.externalAPI = externalapi.NewExternalAPIClient(cfg.IpInfoToken, externalapi.LemonsqueezyCfg{
+		Token:               cfg.LemonsqueezyAPIToken,
+		StoreID:             cfg.LemonsqueezyStoreID,
+		MonthlyVariantID:    cfg.LemonsqueezySubscriptionMonthlyVariantID,
+		MonthlyDiscountCode: cfg.LemonsqueezySubscriptionMonthlyDiscountCode,
+		YearlyVariantID:     cfg.LemonsqueezySubscriptionYearlyVariantID,
+		YearlyDiscountCode:  cfg.LemonsqueezySubscriptionYearlyDiscountCode,
+	})
+
 	// queue
 	a.queue = queue.Init(cfg.QueueRedisURL, cfg.QueueConcurrency)
 
@@ -123,6 +136,7 @@ func main() {
 		&iam.Module{},
 		&billing.Module{},
 		&project.Module{},
+		&feedback.Module{},
 	}
 
 	// start

@@ -2,6 +2,7 @@ package grpcclient
 
 import (
 	"github.com/namhq1989/ezfeedback-api-server/internal/genproto/billingpb"
+	"github.com/namhq1989/ezfeedback-api-server/internal/genproto/projectpb"
 	"github.com/namhq1989/go-utilities/appcontext"
 	"go.opentelemetry.io/contrib/instrumentation/google.golang.org/grpc/otelgrpc"
 	"google.golang.org/grpc"
@@ -23,4 +24,13 @@ func NewBillingClient(_ *appcontext.AppContext, addr string) (billingpb.BillingS
 	}
 
 	return billingpb.NewBillingServiceClient(conn), nil
+}
+
+func NewProjectClient(_ *appcontext.AppContext, addr string) (projectpb.ProjectServiceClient, error) {
+	conn, err := newConn(addr)
+	if err != nil {
+		return nil, err
+	}
+
+	return projectpb.NewProjectServiceClient(conn), nil
 }

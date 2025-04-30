@@ -16,12 +16,12 @@ func NewSendSignInVerificationCodeEmailHandler(mailerRepository domain.MailerRep
 	}
 }
 
-func (w SendSignInVerificationCodeEmailHandler) SendSignInVerificationCodeEmail(ctx *appcontext.AppContext, payload domain.QueueSendVerificationCodeEmailPayload) error {
+func (h SendSignInVerificationCodeEmailHandler) SendSignInVerificationCodeEmail(ctx *appcontext.AppContext, payload domain.QueueSendVerificationCodeEmailPayload) error {
 	tracer := otel.Tracer("[tracer] send verification code email")
 	spanCtx, span := tracer.Start(ctx.Context(), "[worker] send verification code email")
 	ctx.SetContext(spanCtx)
 	defer span.End()
 
 	ctx.Logger().Text("send email")
-	return w.mailerRepository.SendVerificationCodeEmail(ctx, payload.Email, payload.Code)
+	return h.mailerRepository.SendVerificationCodeEmail(ctx, payload.Email, payload.Code)
 }

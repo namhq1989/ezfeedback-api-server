@@ -44,7 +44,7 @@ func (s *createProjectTestSuite) TearDownTest() {
 
 func (s *createProjectTestSuite) Test_1_Success() {
 	s.mockBillingHub.EXPECT().
-		CanCreateProject(gomock.Any(), gomock.Any()).
+		CanCreateProject(gomock.Any(), gomock.Any(), gomock.Any()).
 		Return(true, nil)
 
 	s.mockProjectRepository.EXPECT().
@@ -73,7 +73,7 @@ func (s *createProjectTestSuite) Test_1_Success() {
 
 func (s *createProjectTestSuite) Test_2_Fail_CanCreateProjectError() {
 	s.mockBillingHub.EXPECT().
-		CanCreateProject(gomock.Any(), gomock.Any()).
+		CanCreateProject(gomock.Any(), gomock.Any(), gomock.Any()).
 		Return(false, apperrors.Common.BadRequest)
 
 	ctx := appcontext.NewRest(context.Background())
@@ -84,7 +84,7 @@ func (s *createProjectTestSuite) Test_2_Fail_CanCreateProjectError() {
 
 func (s *createProjectTestSuite) Test_2_Fail_ProjectLimitExceeded() {
 	s.mockBillingHub.EXPECT().
-		CanCreateProject(gomock.Any(), gomock.Any()).
+		CanCreateProject(gomock.Any(), gomock.Any(), gomock.Any()).
 		Return(false, nil)
 
 	ctx := appcontext.NewRest(context.Background())
@@ -95,7 +95,7 @@ func (s *createProjectTestSuite) Test_2_Fail_ProjectLimitExceeded() {
 
 func (s *createProjectTestSuite) Test_2_Fail_NewProjectInvalidUserID() {
 	s.mockBillingHub.EXPECT().
-		CanCreateProject(gomock.Any(), gomock.Any()).
+		CanCreateProject(gomock.Any(), gomock.Any(), gomock.Any()).
 		Return(true, nil)
 
 	ctx := appcontext.NewRest(context.Background())
@@ -106,7 +106,7 @@ func (s *createProjectTestSuite) Test_2_Fail_NewProjectInvalidUserID() {
 
 func (s *createProjectTestSuite) Test_2_Fail_NewProjectInvalidTitle() {
 	s.mockBillingHub.EXPECT().
-		CanCreateProject(gomock.Any(), gomock.Any()).
+		CanCreateProject(gomock.Any(), gomock.Any(), gomock.Any()).
 		Return(true, nil)
 
 	ctx := appcontext.NewRest(context.Background())
@@ -122,7 +122,7 @@ func (s *createProjectTestSuite) Test_2_Fail_NewProjectInvalidDescription() {
 	}
 
 	s.mockBillingHub.EXPECT().
-		CanCreateProject(gomock.Any(), gomock.Any()).
+		CanCreateProject(gomock.Any(), gomock.Any(), gomock.Any()).
 		Return(true, nil)
 
 	ctx := appcontext.NewRest(context.Background())
@@ -136,7 +136,7 @@ func (s *createProjectTestSuite) Test_2_Fail_NewProjectInvalidDescription() {
 
 func (s *createProjectTestSuite) Test_2_Fail_NewProjectInvalidDomain() {
 	s.mockBillingHub.EXPECT().
-		CanCreateProject(gomock.Any(), gomock.Any()).
+		CanCreateProject(gomock.Any(), gomock.Any(), gomock.Any()).
 		Return(true, nil)
 	s.mockProjectRepository.EXPECT().
 		Create(gomock.Any(), gomock.Any()).
@@ -153,7 +153,7 @@ func (s *createProjectTestSuite) Test_2_Fail_NewProjectInvalidDomain() {
 
 func (s *createProjectTestSuite) Test_2_Fail_NewProjectInvalidPrimaryColor() {
 	s.mockBillingHub.EXPECT().
-		CanCreateProject(gomock.Any(), gomock.Any()).
+		CanCreateProject(gomock.Any(), gomock.Any(), gomock.Any()).
 		Return(true, nil)
 	s.mockProjectRepository.EXPECT().
 		Create(gomock.Any(), gomock.Any()).

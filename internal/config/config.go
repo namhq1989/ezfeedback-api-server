@@ -52,6 +52,20 @@ type (
 
 		// Endpoint
 		CDNEndpoint string
+
+		// Lemonsqueezy
+		LemonsqueezyAPIToken                        string
+		LemonsqueezySigningSecret                   string
+		LemonsqueezyStoreID                         string
+		LemonsqueezySubscriptionMonthlyVariantID    string
+		LemonsqueezySubscriptionMonthlyDiscountCode string
+		LemonsqueezySubscriptionYearlyVariantID     string
+		LemonsqueezySubscriptionYearlyDiscountCode  string
+
+		// 3rd party
+		IpInfoToken      string
+		TelegramBotToken string
+		TelegramChatID   string
 	}
 )
 
@@ -93,6 +107,18 @@ func Init() Server {
 		BrevoApiKey:     getEnvStr("BREVO_API_KEY"),
 
 		CDNEndpoint: getEnvStr("CDN_ENDPOINT"),
+
+		LemonsqueezyAPIToken:                        getEnvStr("LEMONSQUEEZY_API_TOKEN"),
+		LemonsqueezySigningSecret:                   getEnvStr("LEMONSQUEEZY_SIGNING_SECRET"),
+		LemonsqueezyStoreID:                         getEnvStr("LEMONSQUEEZY_STORE_ID"),
+		LemonsqueezySubscriptionMonthlyVariantID:    getEnvStr("LEMONSQUEEZY_SUBSCRIPTION_MONTHLY_VARIANT_ID"),
+		LemonsqueezySubscriptionMonthlyDiscountCode: getEnvStr("LEMONSQUEEZY_SUBSCRIPTION_MONTHLY_DISCOUNT_CODE"),
+		LemonsqueezySubscriptionYearlyVariantID:     getEnvStr("LEMONSQUEEZY_SUBSCRIPTION_YEARLY_VARIANT_ID"),
+		LemonsqueezySubscriptionYearlyDiscountCode:  getEnvStr("LEMONSQUEEZY_SUBSCRIPTION_YEARLY_DISCOUNT_CODE"),
+
+		IpInfoToken:      getEnvStr("IP_INFO_TOKEN"),
+		TelegramBotToken: getEnvStr("TELEGRAM_BOT_TOKEN"),
+		TelegramChatID:   getEnvStr("TELEGRAM_CHAT_ID"),
 	}
 	cfg.IsEnvRelease = cfg.Environment == "release"
 
@@ -131,6 +157,22 @@ func Init() Server {
 
 	if cfg.CDNEndpoint == "" {
 		panic(errors.New("missing CDN_ENDPOINT"))
+	}
+
+	if cfg.LemonsqueezyAPIToken == "" {
+		panic(errors.New("missing LEMONSQUEEZY_API_TOKEN"))
+	}
+
+	if cfg.LemonsqueezySigningSecret == "" {
+		panic(errors.New("missing LEMONSQUEEZY_SIGNING_SECRET"))
+	}
+
+	if cfg.LemonsqueezyStoreID == "" {
+		panic(errors.New("missing LEMONSQUEEZY_STORE_ID"))
+	}
+
+	if cfg.IpInfoToken == "" {
+		panic(errors.New("missing IP_INFO_TOKEN"))
 	}
 
 	return cfg
