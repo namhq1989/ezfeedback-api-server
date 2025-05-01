@@ -1,8 +1,13 @@
 package rest
 
 import (
+	"net/http"
+	"time"
+
 	"github.com/labstack/echo/v4"
+	"github.com/labstack/echo/v4/middleware"
 	"github.com/namhq1989/ezfeedback-api-server/internal/utils/httprespond"
+	"github.com/namhq1989/ezfeedback-api-server/internal/utils/manipulation"
 	"github.com/namhq1989/ezfeedback-api-server/internal/utils/validation"
 	"github.com/namhq1989/ezfeedback-api-server/pkg/feedback/dto"
 	"github.com/namhq1989/go-utilities/appcontext"
@@ -35,13 +40,49 @@ func (s server) registerFeedbackRoutes() {
 			origin = c.Request().Header.Get("Origin")
 		)
 
-		resp, err := s.app.CreateFeedback(ctx, ip, origin, req)
+		domainName, err := manipulation.GetRootDomain(origin)
+		if err != nil {
+			return httprespond.R400(c, err, nil)
+		}
+
+		resp, err := s.app.CreateFeedback(ctx, ip, domainName, req)
 		if err != nil {
 			return httprespond.R400(c, err, nil)
 		}
 
 		return httprespond.R200(c, resp)
-	}, func(next echo.HandlerFunc) echo.HandlerFunc {
+	}, createFeedbackRateLimiter(), func(next echo.HandlerFunc) echo.HandlerFunc {
 		return validation.ValidateHTTPPayload[dto.CreateFeedbackRequest](next)
 	})
+}
+
+func createFeedbackRateLimiter() echo.MiddlewareFunc {
+	feedbackLimiterStore := middleware.NewRateLimiterMemoryStoreWithConfig(
+		middleware.RateLimiterMemoryStoreConfig{
+			Rate:      0.1, // 0.1 requests per second = 1 request per 10 seconds
+			Burst:     1,   // Only allow 1 request at a time
+			ExpiresIn: 1 * time.Minute,
+		},
+	)
+
+	feedbackLimiterConfig := middleware.RateLimiterConfig{
+		Skipper: middleware.DefaultSkipper,
+		Store:   feedbackLimiterStore,
+		IdentifierExtractor: func(ctx echo.Context) (string, error) {
+			id := ctx.RealIP()
+			return id, nil
+		},
+		ErrorHandler: func(context echo.Context, err error) error {
+			return context.JSON(http.StatusInternalServerError, map[string]string{
+				"error": "Rate limiting error occurred",
+			})
+		},
+		DenyHandler: func(context echo.Context, identifier string, err error) error {
+			return context.JSON(http.StatusTooManyRequests, map[string]string{
+				"error": "Your feedback is important to us. Please wait a moment before submitting another response",
+			})
+		},
+	}
+
+	return middleware.RateLimiterWithConfig(feedbackLimiterConfig)
 }

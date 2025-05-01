@@ -35,7 +35,7 @@ func (h RequestVerificationCodeHandler) RequestVerificationCode(ctx *appcontext.
 	ctx.Logger().Info("new request verification code request", appcontext.Fields{"ip": ip, "email": req.Email})
 
 	ctx.Logger().Text("count total sent today by ip")
-	totalSent, err := h.verificationCodeRepository.TotalSentTodayByIp(ctx, ip)
+	totalSent, err := h.verificationCodeRepository.CountTotalSentTodayByIp(ctx, ip)
 	if err != nil {
 		ctx.Logger().Error("failed to count total sent today by ip", err, appcontext.Fields{})
 		return nil, err

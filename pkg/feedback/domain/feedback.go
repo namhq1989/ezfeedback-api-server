@@ -15,7 +15,12 @@ type FeedbackRepository interface {
 	Update(ctx *appcontext.AppContext, feedback Feedback) error
 	FindWithFilter(ctx *appcontext.AppContext, filter FeedbackFilter) ([]Feedback, error)
 	CountMonthlyUsageForProject(ctx *appcontext.AppContext, projectID string) (int64, error)
+	CountProjectTotalCreatedTodayByIp(ctx *appcontext.AppContext, projectID, ip string) (int64, error)
 }
+
+var (
+	feedbackDailyLimitByProject int64 = 10
+)
 
 type Feedback struct {
 	ID           string
@@ -192,4 +197,8 @@ func (f *Feedback) SetCountryCode(countryCode string) error {
 
 func (f *Feedback) SetUpdatedAt() {
 	f.UpdatedAt = manipulation.NowUTC()
+}
+
+func HasExceededDailyFeedbackLimit(created int64) bool {
+	return created >= feedbackDailyLimitByProject
 }

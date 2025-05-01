@@ -55,6 +55,21 @@ func (mr *MockFeedbackRepositoryMockRecorder) CountMonthlyUsageForProject(ctx, p
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "CountMonthlyUsageForProject", reflect.TypeOf((*MockFeedbackRepository)(nil).CountMonthlyUsageForProject), ctx, projectID)
 }
 
+// CountProjectTotalCreatedTodayByIp mocks base method.
+func (m *MockFeedbackRepository) CountProjectTotalCreatedTodayByIp(ctx *appcontext.AppContext, projectID, ip string) (int64, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "CountProjectTotalCreatedTodayByIp", ctx, projectID, ip)
+	ret0, _ := ret[0].(int64)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// CountProjectTotalCreatedTodayByIp indicates an expected call of CountProjectTotalCreatedTodayByIp.
+func (mr *MockFeedbackRepositoryMockRecorder) CountProjectTotalCreatedTodayByIp(ctx, projectID, ip any) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "CountProjectTotalCreatedTodayByIp", reflect.TypeOf((*MockFeedbackRepository)(nil).CountProjectTotalCreatedTodayByIp), ctx, projectID, ip)
+}
+
 // Create mocks base method.
 func (m *MockFeedbackRepository) Create(ctx *appcontext.AppContext, feedback domain.Feedback) error {
 	m.ctrl.T.Helper()

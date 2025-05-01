@@ -172,17 +172,24 @@ CREATE INDEX idx_feedbacks_campaign_id ON feedbacks(campaign_id);
 CREATE INDEX idx_feedbacks_query_patterns ON feedbacks(project_id, campaign_id, category_id, rating, created_at DESC);
 CREATE INDEX idx_feedbacks_search_vector ON feedbacks USING GIN(search_vector);
 
--- Function to generate search vector (simplified to treat all text as English)
+-- Create a custom text search configuration that preserves stop words
+CREATE TEXT SEARCH CONFIGURATION english_nostop (COPY = english);
+ALTER TEXT SEARCH CONFIGURATION english_nostop ALTER MAPPING FOR asciihword, asciiword, hword, word WITH simple;
+
+-- Updated function to generate search vector with improved email handling
 CREATE OR REPLACE FUNCTION feedbacks_search_vector_update() RETURNS trigger AS $$
 BEGIN
   NEW.search_vector =
-    setweight(to_tsvector('english', COALESCE(NEW.content, '')), 'A') ||
-    setweight(to_tsvector('english', COALESCE(NEW.email, '')), 'B');
+    setweight(to_tsvector('english_nostop', COALESCE(NEW.content, '')), 'A') ||
+    setweight(to_tsvector('english_nostop', COALESCE(NEW.email, '')), 'B') ||
+    setweight(to_tsvector('english_nostop',
+      COALESCE(regexp_replace(NEW.email, '[@.]', ' ', 'g'), '')
+    ), 'B');
 RETURN NEW;
 END;
 $$ LANGUAGE plpgsql;
 
--- Trigger to automatically update search_vector
+-- Trigger remains the same
 CREATE TRIGGER feedbacks_search_vector_update_trigger
     BEFORE INSERT OR UPDATE ON feedbacks
                          FOR EACH ROW

@@ -10,7 +10,7 @@ import (
 
 type (
 	Commands interface {
-		CreateFeedback(ctx *appcontext.AppContext, ip, origin string, req dto.CreateFeedbackRequest) (*dto.CreateFeedbackResponse, error)
+		CreateFeedback(ctx *appcontext.AppContext, ip, domain string, req dto.CreateFeedbackRequest) (*dto.CreateFeedbackResponse, error)
 	}
 	Queries interface {
 		Ping(ctx *appcontext.AppContext, _ dto.PingRequest) (*dto.PingResponse, error)

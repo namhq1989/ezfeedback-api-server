@@ -55,6 +55,7 @@ feedback_not_found = "Không tìm thấy phản hồi"
 feedback_invalid_content = "Nội dung không hợp lệ"
 feedback_invalid_rating = "Đánh giá không hợp lệ"
 feedback_invalid_state = "Trạng thái không hợp lệ"
+feedback_daily_limit_exceeded = "Bạn đã đạt giới hạn phản hồi hàng ngày cho dự án này. Vui lòng thử lại vào ngày mai"
 
 # billing
 billing_project_limit_exceeded = "Tài khoản của bạn đã đạt đến số lượng dự án tối đa được phép. Vui lòng nâng cấp gói để tạo thêm dự án"

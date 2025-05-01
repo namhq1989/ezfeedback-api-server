@@ -18,23 +18,23 @@ import (
 
 type createFeedbackTestSuite struct {
 	suite.Suite
-	handler          command.CreateFeedbackHandler
-	mockCtrl         *gomock.Controller
-	mockFeedbackRepo *mockfeedback.MockFeedbackRepository
-	mockQueueRepo    *mockfeedback.MockQueueRepository
-	mockBillingHub   *mockfeedback.MockBillingHub
-	mockProjectHub   *mockfeedback.MockProjectHub
-	mockService      *mockfeedback.MockService
+	handler                command.CreateFeedbackHandler
+	mockCtrl               *gomock.Controller
+	mockFeedbackRepository *mockfeedback.MockFeedbackRepository
+	mockQueueRepository    *mockfeedback.MockQueueRepository
+	mockBillingHub         *mockfeedback.MockBillingHub
+	mockProjectHub         *mockfeedback.MockProjectHub
+	mockService            *mockfeedback.MockService
 }
 
 func (s *createFeedbackTestSuite) SetupSuite() {
 	s.mockCtrl = gomock.NewController(s.T())
-	s.mockFeedbackRepo = mockfeedback.NewMockFeedbackRepository(s.mockCtrl)
-	s.mockQueueRepo = mockfeedback.NewMockQueueRepository(s.mockCtrl)
+	s.mockFeedbackRepository = mockfeedback.NewMockFeedbackRepository(s.mockCtrl)
+	s.mockQueueRepository = mockfeedback.NewMockQueueRepository(s.mockCtrl)
 	s.mockBillingHub = mockfeedback.NewMockBillingHub(s.mockCtrl)
 	s.mockProjectHub = mockfeedback.NewMockProjectHub(s.mockCtrl)
 	s.mockService = mockfeedback.NewMockService(s.mockCtrl)
-	s.handler = command.NewCreateFeedbackHandler(s.mockFeedbackRepo, s.mockQueueRepo, s.mockBillingHub, s.mockProjectHub, s.mockService)
+	s.handler = command.NewCreateFeedbackHandler(s.mockFeedbackRepository, s.mockQueueRepository, s.mockBillingHub, s.mockProjectHub, s.mockService)
 }
 
 func (s *createFeedbackTestSuite) TearDownTest() {
@@ -67,7 +67,11 @@ func (s *createFeedbackTestSuite) Test_1_Success() {
 		GetProjectCampaignByID(gomock.Any(), gomock.Any()).
 		Return(campaignData, nil)
 
-	s.mockFeedbackRepo.EXPECT().
+	s.mockFeedbackRepository.EXPECT().
+		CountProjectTotalCreatedTodayByIp(gomock.Any(), gomock.Any(), gomock.Any()).
+		Return(int64(0), nil)
+
+	s.mockFeedbackRepository.EXPECT().
 		CountMonthlyUsageForProject(gomock.Any(), gomock.Any()).
 		Return(int64(10), nil)
 
@@ -79,11 +83,11 @@ func (s *createFeedbackTestSuite) Test_1_Success() {
 		GetIpLocationData(gomock.Any(), gomock.Any()).
 		Return(&domain.IpLocationData{Country: "us"}, nil)
 
-	s.mockFeedbackRepo.EXPECT().
+	s.mockFeedbackRepository.EXPECT().
 		Create(gomock.Any(), gomock.Any()).
 		Return(nil)
 
-	s.mockQueueRepo.EXPECT().
+	s.mockQueueRepository.EXPECT().
 		FeedbackCreated(gomock.Any(), gomock.Any()).
 		Return(nil)
 
@@ -468,7 +472,11 @@ func (s *createFeedbackTestSuite) Test_2_Fail_CountMonthlyUsageError() {
 		GetProjectCampaignByID(gomock.Any(), gomock.Any()).
 		Return(campaignData, nil)
 
-	s.mockFeedbackRepo.EXPECT().
+	s.mockFeedbackRepository.EXPECT().
+		CountProjectTotalCreatedTodayByIp(gomock.Any(), gomock.Any(), gomock.Any()).
+		Return(int64(0), nil)
+
+	s.mockFeedbackRepository.EXPECT().
 		CountMonthlyUsageForProject(gomock.Any(), gomock.Any()).
 		Return(int64(0), apperrors.Billing.FeedbackLimitExceeded)
 
@@ -508,7 +516,11 @@ func (s *createFeedbackTestSuite) Test_2_Fail_CanAcceptFeedbackError() {
 		GetProjectCampaignByID(gomock.Any(), gomock.Any()).
 		Return(campaignData, nil)
 
-	s.mockFeedbackRepo.EXPECT().
+	s.mockFeedbackRepository.EXPECT().
+		CountProjectTotalCreatedTodayByIp(gomock.Any(), gomock.Any(), gomock.Any()).
+		Return(int64(0), nil)
+
+	s.mockFeedbackRepository.EXPECT().
 		CountMonthlyUsageForProject(gomock.Any(), gomock.Any()).
 		Return(int64(10), nil)
 
@@ -552,7 +564,11 @@ func (s *createFeedbackTestSuite) Test_2_Fail_FeedbackLimitExceeded() {
 		GetProjectCampaignByID(gomock.Any(), gomock.Any()).
 		Return(campaignData, nil)
 
-	s.mockFeedbackRepo.EXPECT().
+	s.mockFeedbackRepository.EXPECT().
+		CountProjectTotalCreatedTodayByIp(gomock.Any(), gomock.Any(), gomock.Any()).
+		Return(int64(0), nil)
+
+	s.mockFeedbackRepository.EXPECT().
 		CountMonthlyUsageForProject(gomock.Any(), gomock.Any()).
 		Return(int64(100), nil)
 

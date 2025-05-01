@@ -161,3 +161,28 @@ func (r FeedbackRepository) CountMonthlyUsageForProject(ctx *appcontext.AppConte
 	err := stmt.QueryContext(ctx.Context(), r.getDB(), &result)
 	return result.Total, err
 }
+
+func (r FeedbackRepository) CountProjectTotalCreatedTodayByIp(ctx *appcontext.AppContext, projectID, ip string) (int64, error) {
+	if !uuid.IsValidID(projectID) {
+		return 0, apperrors.Project.InvalidProjectID
+	}
+
+	var (
+		f            = r.getTable()
+		startOfToday = manipulation.StartOfDay(manipulation.NowUTC())
+	)
+
+	stmt := postgres.SELECT(
+		postgres.COUNT(f.ID).AS("count_result.total"),
+	).
+		FROM(f).
+		WHERE(
+			f.ProjectID.EQ(postgres.String(projectID)).
+				AND(f.IP.EQ(postgres.String(ip)).
+					AND(f.CreatedAt.GT_EQ(postgres.TimestampzT(startOfToday)))),
+		)
+
+	var result = database.CountResult{}
+	err := stmt.QueryContext(ctx.Context(), r.getDB(), &result)
+	return result.Total, err
+}

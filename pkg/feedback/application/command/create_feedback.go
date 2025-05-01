@@ -41,9 +41,9 @@ func NewCreateFeedbackHandler(
 // @param    payload body    dto.CreateFeedbackRequest true "Body"
 // @success  200     {object} dto.CreateFeedbackResponse
 // @router   /api/feedback [post]
-func (h CreateFeedbackHandler) CreateFeedback(ctx *appcontext.AppContext, ip, origin string, req dto.CreateFeedbackRequest) (*dto.CreateFeedbackResponse, error) {
+func (h CreateFeedbackHandler) CreateFeedback(ctx *appcontext.AppContext, ip, domainName string, req dto.CreateFeedbackRequest) (*dto.CreateFeedbackResponse, error) {
 	ctx.Logger().Info("new create feedback request", appcontext.Fields{
-		"ip": ip, "campaignID": req.CampaignID, "email": req.Email, "categoryID": req.CategoryID,
+		"ip": ip, "domainName": domainName, "campaignID": req.CampaignID, "email": req.Email, "categoryID": req.CategoryID,
 		"content": req.Content, "rating": req.Rating, "context.userID": req.Context.UserID,
 	})
 
@@ -55,9 +55,20 @@ func (h CreateFeedbackHandler) CreateFeedback(ctx *appcontext.AppContext, ip, or
 	}
 
 	ctx.Logger().Text("validate data")
-	if err = h.validateData(ctx, origin, req, *campaignData); err != nil {
+	if err = h.validateData(ctx, domainName, req, *campaignData); err != nil {
 		ctx.Logger().Text("invalid data, respond")
 		return nil, err
+	}
+
+	ctx.Logger().Text("count total created today")
+	totalCreated, err := h.feedbackRepository.CountProjectTotalCreatedTodayByIp(ctx, campaignData.Project.ID, ip)
+	if err != nil {
+		ctx.Logger().Error("failed to count total created today", err, appcontext.Fields{})
+		return nil, err
+	}
+	if domain.HasExceededDailyFeedbackLimit(totalCreated) {
+		ctx.Logger().ErrorText("daily limit exceeded, respond")
+		return nil, apperrors.Feedback.DailyLimitExceeded
 	}
 
 	ctx.Logger().Text("count total feedbacks of this month")
@@ -84,9 +95,9 @@ func (h CreateFeedbackHandler) CreateFeedback(ctx *appcontext.AppContext, ip, or
 	)
 	ipLocationData, err := h.service.GetIpLocationData(ctx, ip)
 	if err != nil {
-		ctx.Logger().Error("failed to get ip location data", err, appcontext.Fields{})
+		ctx.Logger().Error("failed to get ip location data, use empty string", err, appcontext.Fields{})
 	} else if ipLocationData == nil {
-		ctx.Logger().ErrorText("ip location not found, respond")
+		ctx.Logger().ErrorText("ip location not found, use empty string")
 	} else {
 		country = ipLocationData.Country
 	}
@@ -126,7 +137,7 @@ func (h CreateFeedbackHandler) CreateFeedback(ctx *appcontext.AppContext, ip, or
 	return &dto.CreateFeedbackResponse{}, nil
 }
 
-func (h CreateFeedbackHandler) validateData(ctx *appcontext.AppContext, origin string, req dto.CreateFeedbackRequest, campaignData domain.ProjectCampaignHubData) error {
+func (h CreateFeedbackHandler) validateData(ctx *appcontext.AppContext, domainName string, req dto.CreateFeedbackRequest, campaignData domain.ProjectCampaignHubData) error {
 	if campaignData.ProjectCampaign.Status.IsInactive() {
 		ctx.Logger().ErrorText("campaign is inactive")
 		return apperrors.Project.InvalidCampaign
@@ -137,7 +148,7 @@ func (h CreateFeedbackHandler) validateData(ctx *appcontext.AppContext, origin s
 		return apperrors.Project.ProjectNotFound
 	}
 
-	if campaignData.Project.Setting.Domain != origin {
+	if campaignData.Project.Setting.Domain != domainName {
 		ctx.Logger().ErrorText("invalid domain")
 		return apperrors.Project.ProjectNotFound
 	}

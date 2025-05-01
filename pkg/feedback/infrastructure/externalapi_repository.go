@@ -21,6 +21,9 @@ func (r ExternalAPIRepository) GetIpLocationData(ctx *appcontext.AppContext, ip 
 	if err != nil {
 		return nil, err
 	}
+	if result == nil {
+		return nil, nil
+	}
 
 	return &domain.IpLocationData{
 		Country: result.Country,
