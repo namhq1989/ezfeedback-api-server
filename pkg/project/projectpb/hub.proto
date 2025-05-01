@@ -1,0 +1,23 @@
+syntax = "proto3";
+
+package projectpb;
+
+import "projectpb/message.proto";
+
+service ProjectService {
+  rpc GetProjectCampaignById(GetProjectCampaignByIdRequest) returns (GetProjectCampaignByIdResponse) {}
+}
+
+//
+// GET PROJECT CAMPAIGN BY ID
+//
+
+message GetProjectCampaignByIdRequest {
+  string traceId = 1;
+  string campaignId = 2;
+}
+
+message GetProjectCampaignByIdResponse {
+  ProjectCampaign campaign = 1;
+  Project project = 2;
+}

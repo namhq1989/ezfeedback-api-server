@@ -112,3 +112,41 @@ func (mr *MockProjectCampaignRepositoryMockRecorder) Update(ctx, campaign any) *
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Update", reflect.TypeOf((*MockProjectCampaignRepository)(nil).Update), ctx, campaign)
 }
+
+// MockProjectCampaignHub is a mock of ProjectCampaignHub interface.
+type MockProjectCampaignHub struct {
+	ctrl     *gomock.Controller
+	recorder *MockProjectCampaignHubMockRecorder
+}
+
+// MockProjectCampaignHubMockRecorder is the mock recorder for MockProjectCampaignHub.
+type MockProjectCampaignHubMockRecorder struct {
+	mock *MockProjectCampaignHub
+}
+
+// NewMockProjectCampaignHub creates a new mock instance.
+func NewMockProjectCampaignHub(ctrl *gomock.Controller) *MockProjectCampaignHub {
+	mock := &MockProjectCampaignHub{ctrl: ctrl}
+	mock.recorder = &MockProjectCampaignHubMockRecorder{mock}
+	return mock
+}
+
+// EXPECT returns an object that allows the caller to indicate expected use.
+func (m *MockProjectCampaignHub) EXPECT() *MockProjectCampaignHubMockRecorder {
+	return m.recorder
+}
+
+// FindProjectCampaignByID mocks base method.
+func (m *MockProjectCampaignHub) FindProjectCampaignByID(ctx *appcontext.AppContext, id string) (*domain.ProjectCampaignHubData, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "FindProjectCampaignByID", ctx, id)
+	ret0, _ := ret[0].(*domain.ProjectCampaignHubData)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// FindProjectCampaignByID indicates an expected call of FindProjectCampaignByID.
+func (mr *MockProjectCampaignHubMockRecorder) FindProjectCampaignByID(ctx, id any) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "FindProjectCampaignByID", reflect.TypeOf((*MockProjectCampaignHub)(nil).FindProjectCampaignByID), ctx, id)
+}

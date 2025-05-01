@@ -14,6 +14,7 @@ service BillingService {
 message CanCreateProjectRequest {
   string traceId = 1;
   string userId = 2;
+  int64 totalCreatedProjects = 3;
 }
 
 message CanCreateProjectResponse {
@@ -26,7 +27,8 @@ message CanCreateProjectResponse {
 
 message CanAcceptFeedbackRequest {
   string traceId = 1;
-  string userId = 2;
+  string projectId = 2;
+  int64 totalCreatedFeedbacks = 3;
 }
 
 message CanAcceptFeedbackResponse {

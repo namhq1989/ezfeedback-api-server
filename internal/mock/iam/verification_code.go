@@ -40,6 +40,21 @@ func (m *MockVerificationCodeRepository) EXPECT() *MockVerificationCodeRepositor
 	return m.recorder
 }
 
+// CountTotalSentTodayByIp mocks base method.
+func (m *MockVerificationCodeRepository) CountTotalSentTodayByIp(ctx *appcontext.AppContext, ip string) (int64, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "CountTotalSentTodayByIp", ctx, ip)
+	ret0, _ := ret[0].(int64)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// CountTotalSentTodayByIp indicates an expected call of CountTotalSentTodayByIp.
+func (mr *MockVerificationCodeRepositoryMockRecorder) CountTotalSentTodayByIp(ctx, ip any) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "CountTotalSentTodayByIp", reflect.TypeOf((*MockVerificationCodeRepository)(nil).CountTotalSentTodayByIp), ctx, ip)
+}
+
 // Create mocks base method.
 func (m *MockVerificationCodeRepository) Create(ctx *appcontext.AppContext, code domain.VerificationCode) error {
 	m.ctrl.T.Helper()
@@ -81,21 +96,6 @@ func (m *MockVerificationCodeRepository) Find(ctx *appcontext.AppContext, ip, em
 func (mr *MockVerificationCodeRepositoryMockRecorder) Find(ctx, ip, email, code any) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Find", reflect.TypeOf((*MockVerificationCodeRepository)(nil).Find), ctx, ip, email, code)
-}
-
-// TotalSentTodayByIp mocks base method.
-func (m *MockVerificationCodeRepository) TotalSentTodayByIp(ctx *appcontext.AppContext, ip string) (int64, error) {
-	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "TotalSentTodayByIp", ctx, ip)
-	ret0, _ := ret[0].(int64)
-	ret1, _ := ret[1].(error)
-	return ret0, ret1
-}
-
-// TotalSentTodayByIp indicates an expected call of TotalSentTodayByIp.
-func (mr *MockVerificationCodeRepositoryMockRecorder) TotalSentTodayByIp(ctx, ip any) *gomock.Call {
-	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "TotalSentTodayByIp", reflect.TypeOf((*MockVerificationCodeRepository)(nil).TotalSentTodayByIp), ctx, ip)
 }
 
 // Update mocks base method.

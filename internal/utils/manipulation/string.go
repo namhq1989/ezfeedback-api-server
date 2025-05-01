@@ -2,9 +2,13 @@ package manipulation
 
 import (
 	"fmt"
+	"net"
+	"net/url"
 	"regexp"
 	"strings"
 	"unicode"
+
+	"golang.org/x/net/publicsuffix"
 
 	"golang.org/x/text/transform"
 	"golang.org/x/text/unicode/norm"
@@ -145,4 +149,35 @@ func ExtractOSFromUserAgent(userAgent string) string {
 	default:
 		return "unknown"
 	}
+}
+
+func GetRootDomain(origin string) (string, error) {
+	parsedURL, err := url.Parse(origin)
+	if err != nil {
+		return "", err
+	}
+
+	host := parsedURL.Host
+
+	domain := host
+	if colonIndex := strings.IndexByte(host, ':'); colonIndex != -1 {
+		domain = host[:colonIndex]
+	}
+
+	if domain == "localhost" || strings.HasSuffix(domain, ".localhost") ||
+		domain == "127.0.0.1" || strings.HasPrefix(domain, "192.168.") ||
+		strings.HasPrefix(domain, "10.") {
+		return domain, nil
+	}
+
+	if net.ParseIP(domain) != nil {
+		return domain, nil
+	}
+
+	registrableDomain, err := publicsuffix.EffectiveTLDPlusOne(domain)
+	if err != nil {
+		return domain, nil
+	}
+
+	return registrableDomain, nil
 }

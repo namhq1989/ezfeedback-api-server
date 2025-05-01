@@ -4,6 +4,7 @@ import (
 	"github.com/namhq1989/ezfeedback-api-server/internal/grpcclient"
 	"github.com/namhq1989/ezfeedback-api-server/internal/monolith"
 	"github.com/namhq1989/ezfeedback-api-server/pkg/project/application"
+	"github.com/namhq1989/ezfeedback-api-server/pkg/project/grpc"
 	"github.com/namhq1989/ezfeedback-api-server/pkg/project/infrastructure"
 	"github.com/namhq1989/ezfeedback-api-server/pkg/project/rest"
 	"github.com/namhq1989/ezfeedback-api-server/pkg/project/shared"
@@ -30,6 +31,7 @@ func (Module) Startup(ctx *appcontext.AppContext, mono monolith.Monolith) error 
 		projectCampaignCategoryRepository = infrastructure.NewProjectCampaignCategoryRepository(mono.Database())
 		cachingRepository                 = infrastructure.NewCachingRepository(mono.Caching(), mono.Config().IsEnvRelease)
 		billingHub                        = infrastructure.NewBillingHub(billingGRPCClient)
+		projectCampaignHub                = infrastructure.NewProjectCampaignHub(mono.Database())
 
 		service = shared.NewService(
 			projectRepository,
@@ -49,10 +51,19 @@ func (Module) Startup(ctx *appcontext.AppContext, mono monolith.Monolith) error 
 			billingHub,
 			service,
 		)
+
+		hub = grpc.New(
+			projectCampaignHub,
+		)
 	)
 
 	// rest server
 	if err = rest.RegisterServer(ctx, app, mono.Rest(), mono.JWT(), mono.Config().IsEnvRelease); err != nil {
+		return err
+	}
+
+	// grpc
+	if err = grpc.RegisterServer(ctx, mono.RPC(), hub); err != nil {
 		return err
 	}
 

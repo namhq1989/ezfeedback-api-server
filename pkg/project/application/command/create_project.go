@@ -45,7 +45,7 @@ func (h CreateProjectHandler) CreateProject(ctx *appcontext.AppContext, performe
 	})
 
 	ctx.Logger().Text("check user usage limit")
-	canCreateProject, err := h.billingHub.CanCreateProject(ctx, performerID)
+	canCreateProject, err := h.billingHub.CanCreateProject(ctx, performerID, 5)
 	if err != nil {
 		ctx.Logger().Error("failed to check user usage limit", err, appcontext.Fields{})
 		return nil, apperrors.Common.BadRequest

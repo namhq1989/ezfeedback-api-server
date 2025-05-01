@@ -12,6 +12,7 @@ import (
 	"github.com/namhq1989/ezfeedback-api-server/internal/caching"
 	"github.com/namhq1989/ezfeedback-api-server/internal/config"
 	"github.com/namhq1989/ezfeedback-api-server/internal/database"
+	"github.com/namhq1989/ezfeedback-api-server/internal/externalapi"
 	appjwt "github.com/namhq1989/ezfeedback-api-server/internal/jwt"
 	"github.com/namhq1989/ezfeedback-api-server/internal/mailer"
 	"github.com/namhq1989/ezfeedback-api-server/internal/monitoring"
@@ -24,17 +25,18 @@ import (
 )
 
 type app struct {
-	cfg        config.Server
-	database   *database.Database
-	caching    *caching.Caching
-	jwt        *appjwt.JWT
-	queue      *queue.Queue
-	mailer     *mailer.Mailer
-	monitoring *monitoring.Monitoring
-	rest       *echo.Echo
-	rpc        *grpc.Server
-	waiter     waiter.Waiter
-	modules    []monolith.Module
+	cfg         config.Server
+	database    *database.Database
+	caching     *caching.Caching
+	jwt         *appjwt.JWT
+	queue       *queue.Queue
+	mailer      *mailer.Mailer
+	monitoring  *monitoring.Monitoring
+	externalAPI *externalapi.ExternalApi
+	rest        *echo.Echo
+	rpc         *grpc.Server
+	waiter      waiter.Waiter
+	modules     []monolith.Module
 }
 
 func (a *app) Config() config.Server {
@@ -63,6 +65,10 @@ func (a *app) Caching() *caching.Caching {
 
 func (a *app) Monitoring() *monitoring.Monitoring {
 	return a.monitoring
+}
+
+func (a *app) ExternalAPI() *externalapi.ExternalApi {
+	return a.externalAPI
 }
 
 func (a *app) JWT() *appjwt.JWT {

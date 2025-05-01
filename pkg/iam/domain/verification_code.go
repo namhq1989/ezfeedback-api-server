@@ -14,12 +14,12 @@ type VerificationCodeRepository interface {
 	Create(ctx *appcontext.AppContext, code VerificationCode) error
 	Update(ctx *appcontext.AppContext, code VerificationCode) error
 	Find(ctx *appcontext.AppContext, ip, email, code string) (*VerificationCode, error)
-	TotalSentTodayByIp(ctx *appcontext.AppContext, ip string) (int64, error)
+	CountTotalSentTodayByIp(ctx *appcontext.AppContext, ip string) (int64, error)
 	DeleteExpired(ctx *appcontext.AppContext) error
 }
 
 var (
-	TotalVerificationCodeSentByIpPerDay int64 = 10
+	totalVerificationCodeSentByIpPerDay int64 = 10
 	otpDigits                                 = 6
 	verificationCodeTTL                       = 15 * time.Minute
 )
@@ -93,5 +93,5 @@ func (c *VerificationCode) IsExpired() bool {
 }
 
 func IsDailyIpOtpLimitExceeded(sent int64) bool {
-	return sent >= TotalVerificationCodeSentByIpPerDay
+	return sent >= totalVerificationCodeSentByIpPerDay
 }

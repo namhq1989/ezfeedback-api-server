@@ -40,16 +40,16 @@ func (m *MockBillingHub) EXPECT() *MockBillingHubMockRecorder {
 }
 
 // CanCreateProject mocks base method.
-func (m *MockBillingHub) CanCreateProject(ctx *appcontext.AppContext, userID string) (bool, error) {
+func (m *MockBillingHub) CanCreateProject(ctx *appcontext.AppContext, userID string, totalCreatedProjects int64) (bool, error) {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "CanCreateProject", ctx, userID)
+	ret := m.ctrl.Call(m, "CanCreateProject", ctx, userID, totalCreatedProjects)
 	ret0, _ := ret[0].(bool)
 	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
 
 // CanCreateProject indicates an expected call of CanCreateProject.
-func (mr *MockBillingHubMockRecorder) CanCreateProject(ctx, userID any) *gomock.Call {
+func (mr *MockBillingHubMockRecorder) CanCreateProject(ctx, userID, totalCreatedProjects any) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "CanCreateProject", reflect.TypeOf((*MockBillingHub)(nil).CanCreateProject), ctx, userID)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "CanCreateProject", reflect.TypeOf((*MockBillingHub)(nil).CanCreateProject), ctx, userID, totalCreatedProjects)
 }

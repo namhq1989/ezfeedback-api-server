@@ -101,7 +101,7 @@ func (r VerificationCodeRepository) Find(ctx *appcontext.AppContext, ip, email, 
 	return result, nil
 }
 
-func (r VerificationCodeRepository) TotalSentTodayByIp(ctx *appcontext.AppContext, ip string) (int64, error) {
+func (r VerificationCodeRepository) CountTotalSentTodayByIp(ctx *appcontext.AppContext, ip string) (int64, error) {
 	var (
 		c            = r.getTable()
 		startOfToday = manipulation.StartOfDay(manipulation.NowUTC())

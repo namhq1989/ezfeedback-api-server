@@ -21,6 +21,10 @@ type ProjectCampaignRepository interface {
 	CountTotalByProjectIDAndCampaignType(ctx *appcontext.AppContext, projectID, campaignType string) (int64, error)
 }
 
+type ProjectCampaignHub interface {
+	FindProjectCampaignByID(ctx *appcontext.AppContext, id string) (*ProjectCampaignHubData, error)
+}
+
 type ProjectCampaign struct {
 	ID                    string
 	ProjectID             string
@@ -136,4 +140,14 @@ func (c *ProjectCampaign) IsBelongToProject(projectID string) bool {
 
 func IsReachedMaxCampaignPerType(total int64) bool {
 	return total >= maxCampaignPerType
+}
+
+//
+// HUB
+//
+
+type ProjectCampaignHubData struct {
+	Project         Project
+	ProjectCampaign ProjectCampaign
+	ProjectSetting  ProjectSetting
 }

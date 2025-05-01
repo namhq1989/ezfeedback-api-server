@@ -61,3 +61,40 @@ func (ProjectCampaignWithDataMapper) FromModelToDomain(doc ProjectCampaignWithDa
 
 	return campaign, nil
 }
+
+type ProjectCampaignHubData struct {
+	ProjectCampaign model.ProjectCampaigns `alias:"pc"`
+	Project         model.Projects         `alias:"p"`
+	Setting         model.ProjectSettings  `alias:"ps"`
+}
+
+type ProjectCampaignHubDataMapper struct{}
+
+func (ProjectCampaignHubDataMapper) FromModelToDomain(doc ProjectCampaignHubData) (*domain.ProjectCampaignHubData, error) {
+	var (
+		campaignMapper       = ProjectCampaignMapper{}
+		projectMapper        = ProjectMapper{}
+		projectSettingMapper = ProjectSettingMapper{}
+	)
+
+	campaign, err := campaignMapper.FromModelToDomain(doc.ProjectCampaign)
+	if err != nil {
+		return nil, err
+	}
+
+	project, err := projectMapper.FromModelToDomain(doc.Project)
+	if err != nil {
+		return nil, err
+	}
+
+	projectSetting, err := projectSettingMapper.FromModelToDomain(doc.Setting)
+	if err != nil {
+		return nil, err
+	}
+
+	return &domain.ProjectCampaignHubData{
+		ProjectCampaign: *campaign,
+		Project:         *project,
+		ProjectSetting:  *projectSetting,
+	}, nil
+}

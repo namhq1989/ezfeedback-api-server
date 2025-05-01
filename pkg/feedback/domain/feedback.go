@@ -6,25 +6,41 @@ import (
 	apperrors "github.com/namhq1989/ezfeedback-api-server/internal/error"
 	"github.com/namhq1989/ezfeedback-api-server/internal/utils/manipulation"
 	"github.com/namhq1989/ezfeedback-api-server/internal/utils/validation"
+	"github.com/namhq1989/go-utilities/appcontext"
 	"github.com/namhq1989/go-utilities/uuid"
 )
 
-type Feedback struct {
-	ID          string
-	ProjectID   string
-	CampaignID  string
-	UserID      *string
-	Email       *string
-	CategoryID  string
-	Content     string
-	Rating      int32
-	IsAnonymous bool
-	State       FeedbackState
-	CreatedAt   time.Time
-	UpdatedAt   time.Time
+type FeedbackRepository interface {
+	Create(ctx *appcontext.AppContext, feedback Feedback) error
+	Update(ctx *appcontext.AppContext, feedback Feedback) error
+	FindWithFilter(ctx *appcontext.AppContext, filter FeedbackFilter) ([]Feedback, error)
+	CountMonthlyUsageForProject(ctx *appcontext.AppContext, projectID string) (int64, error)
+	CountProjectTotalCreatedTodayByIp(ctx *appcontext.AppContext, projectID, ip string) (int64, error)
 }
 
-func NewFeedback(projectID, campaignID string, userID, email *string, categoryID, content string, rating int32) (*Feedback, error) {
+var (
+	feedbackDailyLimitByProject int64 = 10
+)
+
+type Feedback struct {
+	ID           string
+	ProjectID    string
+	CampaignID   string
+	AppUserID    *string
+	Email        *string
+	CategoryID   string
+	Content      string
+	Rating       int32
+	IsAnonymous  bool
+	State        FeedbackState
+	CampaignType ProjectCampaignType
+	Ip           string
+	CountryCode  string
+	CreatedAt    time.Time
+	UpdatedAt    time.Time
+}
+
+func NewFeedback(projectID, campaignID string, appUserID, email *string, categoryID, content string, rating int32, campaignType, ip, countryCode string) (*Feedback, error) {
 	var (
 		now = manipulation.NowUTC()
 	)
@@ -41,7 +57,7 @@ func NewFeedback(projectID, campaignID string, userID, email *string, categoryID
 	if err := f.SetCampaignID(campaignID); err != nil {
 		return nil, err
 	}
-	if err := f.SetUserID(userID); err != nil {
+	if err := f.SetAppUserID(appUserID); err != nil {
 		return nil, err
 	}
 	if err := f.SetEmail(email); err != nil {
@@ -54,6 +70,15 @@ func NewFeedback(projectID, campaignID string, userID, email *string, categoryID
 		return nil, err
 	}
 	if err := f.SetRating(rating); err != nil {
+		return nil, err
+	}
+	if err := f.SetCampaignType(campaignType); err != nil {
+		return nil, err
+	}
+	if err := f.SetIp(ip); err != nil {
+		return nil, err
+	}
+	if err := f.SetCountryCode(countryCode); err != nil {
 		return nil, err
 	}
 	return f, nil
@@ -79,12 +104,8 @@ func (f *Feedback) SetCampaignID(campaignID string) error {
 	return nil
 }
 
-func (f *Feedback) SetUserID(userID *string) error {
-	if userID != nil && !uuid.IsValidID(*userID) {
-		return apperrors.User.InvalidUserID
-	}
-
-	f.UserID = userID
+func (f *Feedback) SetAppUserID(userID *string) error {
+	f.AppUserID = userID
 	f.SetIsAnonymous()
 	f.SetUpdatedAt()
 	return nil
@@ -102,11 +123,11 @@ func (f *Feedback) SetEmail(email *string) error {
 }
 
 func (f *Feedback) SetIsAnonymous() {
-	f.IsAnonymous = f.UserID == nil && f.Email == nil
+	f.IsAnonymous = f.AppUserID == nil && f.Email == nil
 }
 
 func (f *Feedback) SetCategoryID(categoryID string) error {
-	if !uuid.IsValidID(categoryID) {
+	if len(categoryID) > 0 && !uuid.IsValidID(categoryID) {
 		return apperrors.Project.InvalidCategory
 	}
 
@@ -146,6 +167,38 @@ func (f *Feedback) SetState(state string) error {
 	return nil
 }
 
+func (f *Feedback) SetCampaignType(campaignType string) error {
+	var dCampaignType = ToProjectCampaignType(campaignType)
+	if !dCampaignType.IsValid() {
+		// set default as feedback
+		dCampaignType = ProjectCampaignTypeFeedback
+	}
+
+	f.CampaignType = dCampaignType
+	f.SetUpdatedAt()
+	return nil
+}
+
+func (f *Feedback) SetIp(ip string) error {
+	if ip == "" {
+		return apperrors.Common.InvalidIp
+	}
+
+	f.Ip = ip
+	f.SetUpdatedAt()
+	return nil
+}
+
+func (f *Feedback) SetCountryCode(countryCode string) error {
+	f.CountryCode = countryCode
+	f.SetUpdatedAt()
+	return nil
+}
+
 func (f *Feedback) SetUpdatedAt() {
 	f.UpdatedAt = manipulation.NowUTC()
+}
+
+func HasExceededDailyFeedbackLimit(created int64) bool {
+	return created >= feedbackDailyLimitByProject
 }

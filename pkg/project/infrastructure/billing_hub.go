@@ -15,10 +15,11 @@ func NewBillingHub(client billingpb.BillingServiceClient) BillingHub {
 	}
 }
 
-func (r BillingHub) CanCreateProject(ctx *appcontext.AppContext, userID string) (bool, error) {
+func (r BillingHub) CanCreateProject(ctx *appcontext.AppContext, userID string, totalCreatedProjects int64) (bool, error) {
 	resp, err := r.client.CanCreateProject(ctx.Context(), &billingpb.CanCreateProjectRequest{
-		TraceId: ctx.GetTraceID(),
-		UserId:  userID,
+		TraceId:              ctx.GetTraceID(),
+		UserId:               userID,
+		TotalCreatedProjects: totalCreatedProjects,
 	})
 	if err != nil {
 		return false, err

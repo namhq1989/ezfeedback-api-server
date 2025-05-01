@@ -2,7 +2,7 @@ package main
 
 import (
 	"net/http"
-	"strings"
+	"slices"
 	"time"
 
 	"github.com/labstack/echo/v4"
@@ -25,7 +25,7 @@ func setMiddleware(e *echo.Echo, cfg config.Server) {
 	e.Use(otelecho.Middleware(cfg.AppName))
 	addCorsMiddleware(e, cfg)
 	addContext(e)
-	addIp(e)
+	addIp(e, cfg)
 	addLanguageMiddleware(e)
 	addRateLimiter(e)
 	e.Use(middleware.GzipWithConfig(middleware.GzipConfig{
@@ -65,13 +65,23 @@ func addContext(e *echo.Echo) {
 	})
 }
 
-func addIp(e *echo.Echo) {
+var localIps = []string{
+	"127.0.0.1",
+	"::ffff:127.0.0.1",
+	"::1",
+}
+
+func addIp(e *echo.Echo, cfg config.Server) {
 	e.Use(func(next echo.HandlerFunc) echo.HandlerFunc {
 		return func(c echo.Context) error {
 			var (
 				ctx = c.Get("ctx").(*appcontext.AppContext)
 				ip  = c.RealIP()
 			)
+
+			if !cfg.IsEnvRelease && slices.Contains(localIps, ip) {
+				ip = "116.110.50.117" // set default to Da-Nang for local testing (including Weather api)
+			}
 
 			ctx.SetIP(ip)
 			return next(c)
@@ -124,18 +134,7 @@ func addCorsMiddleware(e *echo.Echo, cfg config.Server) {
 	}
 
 	e.Use(middleware.CORSWithConfig(middleware.CORSConfig{
-		AllowOriginFunc: func(origin string) (bool, error) {
-			for _, allowedOrigin := range allowedOrigins {
-				if allowedOrigin == origin {
-					return true, nil
-				}
-			}
-			if strings.HasPrefix(origin, "chrome-extension://") {
-				return true, nil
-			}
-			return false, nil
-		},
-		// AllowOrigins:     allowedOrigins,
+		AllowOrigins:     allowedOrigins,
 		AllowMethods:     []string{"GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"},
 		AllowHeaders:     []string{"Accept", "Authorization", "Content-Type"},
 		AllowCredentials: true,

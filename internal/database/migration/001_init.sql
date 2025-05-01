@@ -151,22 +151,49 @@ CREATE TABLE feedbacks (
                            id TEXT PRIMARY KEY,
                            project_id TEXT NOT NULL REFERENCES projects(id) ON DELETE CASCADE,
                            campaign_id TEXT NOT NULL REFERENCES project_campaigns(id) ON DELETE CASCADE,
-                           user_id TEXT REFERENCES users(id) ON DELETE SET NULL DEFAULT NULL,
+                           app_user_id VARCHAR(255),
                            email VARCHAR(255),
                            category_id TEXT NOT NULL,
                            content TEXT NOT NULL,
                            rating INTEGER NOT NULL CHECK (rating IS NULL OR (rating >= 1 AND rating <= 10)),
                            is_anonymous BOOLEAN NOT NULL,
                            state feedback_state NOT NULL,
+                           campaign_type campaign_type NOT NULL,
+                           ip VARCHAR(45) NOT NULL,
+                           country_code VARCHAR(2) NOT NULL,
+                           search_vector tsvector NOT NULL,
                            created_at TIMESTAMPTZ DEFAULT NOW() NOT NULL,
                            updated_at TIMESTAMPTZ DEFAULT NOW() NOT NULL
 );
 
 CREATE INDEX idx_feedbacks_project_id ON feedbacks(project_id);
-CREATE INDEX idx_feedbacks_user_id ON feedbacks(user_id);
 CREATE INDEX idx_feedbacks_campaign_id ON feedbacks(campaign_id);
 
 CREATE INDEX idx_feedbacks_query_patterns ON feedbacks(project_id, campaign_id, category_id, rating, created_at DESC);
+CREATE INDEX idx_feedbacks_search_vector ON feedbacks USING GIN(search_vector);
+
+-- Create a custom text search configuration that preserves stop words
+CREATE TEXT SEARCH CONFIGURATION english_nostop (COPY = english);
+ALTER TEXT SEARCH CONFIGURATION english_nostop ALTER MAPPING FOR asciihword, asciiword, hword, word WITH simple;
+
+-- Updated function to generate search vector with improved email handling
+CREATE OR REPLACE FUNCTION feedbacks_search_vector_update() RETURNS trigger AS $$
+BEGIN
+  NEW.search_vector =
+    setweight(to_tsvector('english_nostop', COALESCE(NEW.content, '')), 'A') ||
+    setweight(to_tsvector('english_nostop', COALESCE(NEW.email, '')), 'B') ||
+    setweight(to_tsvector('english_nostop',
+      COALESCE(regexp_replace(NEW.email, '[@.]', ' ', 'g'), '')
+    ), 'B');
+RETURN NEW;
+END;
+$$ LANGUAGE plpgsql;
+
+-- Trigger remains the same
+CREATE TRIGGER feedbacks_search_vector_update_trigger
+    BEFORE INSERT OR UPDATE ON feedbacks
+                         FOR EACH ROW
+                         EXECUTE FUNCTION feedbacks_search_vector_update();
 
 -- Create feedback replies table
 CREATE TABLE feedback_replies (

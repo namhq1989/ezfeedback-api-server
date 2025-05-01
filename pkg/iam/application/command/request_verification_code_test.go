@@ -45,7 +45,7 @@ func (s *requestVerificationCodeTestSuite) TearDownTest() {
 func (s *requestVerificationCodeTestSuite) Test_1_Success() {
 	// mock data
 	s.mockVerificationCodeRepository.EXPECT().
-		TotalSentTodayByIp(gomock.Any(), gomock.Any()).
+		CountTotalSentTodayByIp(gomock.Any(), gomock.Any()).
 		Return(int64(0), nil)
 
 	s.mockVerificationCodeRepository.EXPECT().
@@ -68,7 +68,7 @@ func (s *requestVerificationCodeTestSuite) Test_1_Success() {
 func (s *requestVerificationCodeTestSuite) Test_2_Fail_ExceededDailyLimit() {
 	// mock data
 	s.mockVerificationCodeRepository.EXPECT().
-		TotalSentTodayByIp(gomock.Any(), gomock.Any()).
+		CountTotalSentTodayByIp(gomock.Any(), gomock.Any()).
 		Return(int64(100), nil)
 
 	// call
@@ -84,7 +84,7 @@ func (s *requestVerificationCodeTestSuite) Test_2_Fail_ExceededDailyLimit() {
 func (s *requestVerificationCodeTestSuite) Test_2_Fail_InvalidEmail() {
 	// mock data
 	s.mockVerificationCodeRepository.EXPECT().
-		TotalSentTodayByIp(gomock.Any(), gomock.Any()).
+		CountTotalSentTodayByIp(gomock.Any(), gomock.Any()).
 		Return(int64(0), nil)
 
 	// call
