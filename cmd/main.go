@@ -5,8 +5,6 @@ import (
 	"fmt"
 	"time"
 
-	"github.com/namhq1989/ezfeedback-api-server/internal/externalapi"
-
 	"github.com/labstack/echo/v4"
 	"github.com/labstack/echo/v4/middleware"
 	"github.com/namhq1989/ezfeedback-api-server/docs"
@@ -14,6 +12,7 @@ import (
 	"github.com/namhq1989/ezfeedback-api-server/internal/config"
 	"github.com/namhq1989/ezfeedback-api-server/internal/database"
 	apperrors "github.com/namhq1989/ezfeedback-api-server/internal/error"
+	"github.com/namhq1989/ezfeedback-api-server/internal/externalapi"
 	appjwt "github.com/namhq1989/ezfeedback-api-server/internal/jwt"
 	"github.com/namhq1989/ezfeedback-api-server/internal/mailer"
 	"github.com/namhq1989/ezfeedback-api-server/internal/monitoring"
@@ -25,6 +24,7 @@ import (
 	"github.com/namhq1989/ezfeedback-api-server/pkg/common"
 	"github.com/namhq1989/ezfeedback-api-server/pkg/feedback"
 	"github.com/namhq1989/ezfeedback-api-server/pkg/iam"
+	"github.com/namhq1989/ezfeedback-api-server/pkg/notification"
 	"github.com/namhq1989/ezfeedback-api-server/pkg/project"
 	"github.com/namhq1989/go-utilities/logger"
 	echoSwagger "github.com/swaggo/echo-swagger"
@@ -137,6 +137,7 @@ func main() {
 		&billing.Module{},
 		&project.Module{},
 		&feedback.Module{},
+		&notification.Module{},
 	}
 
 	// start

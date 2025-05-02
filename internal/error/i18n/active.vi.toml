@@ -60,3 +60,6 @@ feedback_daily_limit_exceeded = "Bạn đã đạt giới hạn phản hồi hà
 # billing
 billing_project_limit_exceeded = "Tài khoản của bạn đã đạt đến số lượng dự án tối đa được phép. Vui lòng nâng cấp gói để tạo thêm dự án"
 billing_feedback_limit_exceeded = "Cảm ơn bạn đã quan tâm. Đội ngũ hiện đang xử lý các phản hồi đã nhận và tạm thời tạm dừng nhận phản hồi mới. Vui lòng quay lại sau"
+
+# notification
+notification_user_project_notification_setting_not_found = "Không tìm thấy cài đặt thông báo"
