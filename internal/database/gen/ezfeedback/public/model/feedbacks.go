@@ -27,4 +27,5 @@ type Feedbacks struct {
 	CountryCode  string
 	CreatedAt    time.Time
 	UpdatedAt    time.Time
+	SearchVector string
 }

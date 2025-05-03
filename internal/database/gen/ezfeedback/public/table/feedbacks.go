@@ -32,6 +32,7 @@ type feedbacksTable struct {
 	CountryCode  postgres.ColumnString
 	CreatedAt    postgres.ColumnTimestampz
 	UpdatedAt    postgres.ColumnTimestampz
+	SearchVector postgres.ColumnString
 
 	AllColumns     postgres.ColumnList
 	MutableColumns postgres.ColumnList
@@ -87,8 +88,9 @@ func newFeedbacksTableImpl(schemaName, tableName, alias string) feedbacksTable {
 		CountryCodeColumn  = postgres.StringColumn("country_code")
 		CreatedAtColumn    = postgres.TimestampzColumn("created_at")
 		UpdatedAtColumn    = postgres.TimestampzColumn("updated_at")
-		allColumns         = postgres.ColumnList{IDColumn, ProjectIDColumn, CampaignIDColumn, AppUserIDColumn, EmailColumn, CategoryIDColumn, ContentColumn, RatingColumn, IsAnonymousColumn, StateColumn, CampaignTypeColumn, IPColumn, CountryCodeColumn, CreatedAtColumn, UpdatedAtColumn}
-		mutableColumns     = postgres.ColumnList{ProjectIDColumn, CampaignIDColumn, AppUserIDColumn, EmailColumn, CategoryIDColumn, ContentColumn, RatingColumn, IsAnonymousColumn, StateColumn, CampaignTypeColumn, IPColumn, CountryCodeColumn, CreatedAtColumn, UpdatedAtColumn}
+		SearchVectorColumn = postgres.StringColumn("search_vector")
+		allColumns         = postgres.ColumnList{IDColumn, ProjectIDColumn, CampaignIDColumn, AppUserIDColumn, EmailColumn, CategoryIDColumn, ContentColumn, RatingColumn, IsAnonymousColumn, StateColumn, CampaignTypeColumn, IPColumn, CountryCodeColumn, CreatedAtColumn, UpdatedAtColumn, SearchVectorColumn}
+		mutableColumns     = postgres.ColumnList{ProjectIDColumn, CampaignIDColumn, AppUserIDColumn, EmailColumn, CategoryIDColumn, ContentColumn, RatingColumn, IsAnonymousColumn, StateColumn, CampaignTypeColumn, IPColumn, CountryCodeColumn, CreatedAtColumn, UpdatedAtColumn, SearchVectorColumn}
 	)
 
 	return feedbacksTable{
@@ -110,6 +112,7 @@ func newFeedbacksTableImpl(schemaName, tableName, alias string) feedbacksTable {
 		CountryCode:  CountryCodeColumn,
 		CreatedAt:    CreatedAtColumn,
 		UpdatedAt:    UpdatedAtColumn,
+		SearchVector: SearchVectorColumn,
 
 		AllColumns:     allColumns,
 		MutableColumns: mutableColumns,

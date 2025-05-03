@@ -11,6 +11,8 @@ CREATE TYPE invitation_status AS ENUM ('pending', 'accepted', 'expired', 'declin
 
 CREATE TYPE campaign_type AS ENUM ('feedback', 'nps', 'csat');
 
+CREATE TYPE notification_type AS ENUM ('new_feedback', 'system');
+
 -- =============================================
 -- User Authentication and Management
 -- =============================================
@@ -244,3 +246,46 @@ CREATE INDEX idx_user_invitations_status_expires ON user_invitations(status, exp
 
 -- Partial index for pending invitations
 CREATE INDEX idx_user_invitations_pending ON user_invitations(email, project_id) WHERE status = 'pending';
+
+-- =============================================
+-- Notification
+-- =============================================
+
+-- Create notification reminders table
+CREATE TABLE notification_reminders (
+                                id TEXT PRIMARY KEY,
+                                project_id TEXT NOT NULL REFERENCES projects(id) ON DELETE CASCADE,
+                                created_at TIMESTAMPTZ DEFAULT NOW() NOT NULL
+);
+
+CREATE INDEX idx_notification_reminders_created_at ON notification_reminders(created_at);
+
+-- Create notifications table
+CREATE TABLE notifications (
+                               id TEXT PRIMARY KEY,
+                               user_id TEXT NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+                               type notification_type NOT NULL,
+                               is_read BOOLEAN DEFAULT FALSE NOT NULL,
+                               metadata JSONB DEFAULT '{}'::JSONB NOT NULL,
+                               created_at TIMESTAMPTZ DEFAULT NOW() NOT NULL,
+                               updated_at TIMESTAMPTZ DEFAULT NOW() NOT NULL
+);
+
+CREATE INDEX idx_notifications_user_id_created_at ON notifications(user_id, created_at);
+CREATE INDEX idx_notifications_user_unread ON notifications(user_id, is_read) WHERE is_read = FALSE;
+CREATE INDEX idx_notifications_created_at ON notifications(created_at);
+
+-- Create user project notification settings
+CREATE TABLE user_project_notification_settings (
+                            id TEXT PRIMARY KEY,
+                            user_id TEXT NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+                            project_id TEXT NOT NULL REFERENCES projects(id) ON DELETE CASCADE,
+                            receive_new_feedback BOOLEAN DEFAULT TRUE NOT NULL,
+                            receive_daily_summary BOOLEAN DEFAULT FALSE NOT NULL,
+                            receive_weekly_summary BOOLEAN DEFAULT TRUE NOT NULL,
+                            created_at TIMESTAMPTZ DEFAULT NOW() NOT NULL,
+                            updated_at TIMESTAMPTZ DEFAULT NOW() NOT NULL,
+                            UNIQUE(user_id, project_id)
+);
+
+CREATE INDEX idx_upns_user_id_project_id ON user_project_notification_settings(user_id, project_id);
