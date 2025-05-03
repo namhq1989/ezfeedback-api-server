@@ -27,6 +27,23 @@ func (s server) registerNotificationRoutes() {
 		return validation.ValidateHTTPPayload[dto.PingRequest](next)
 	})
 
+	g.GET("/project-setting", func(c echo.Context) error {
+		var (
+			ctx         = c.Get("ctx").(*appcontext.AppContext)
+			req         = c.Get("req").(dto.GetUserProjectNotificationSettingRequest)
+			performerID = ctx.GetUserID()
+		)
+
+		resp, err := s.app.GetUserProjectNotificationSetting(ctx, performerID, req)
+		if err != nil {
+			return httprespond.R400(c, err, nil)
+		}
+
+		return httprespond.R200(c, resp)
+	}, s.jwt.RequireSignedIn, func(next echo.HandlerFunc) echo.HandlerFunc {
+		return validation.ValidateHTTPPayload[dto.GetUserProjectNotificationSettingRequest](next)
+	})
+
 	g.PUT("/project-setting", func(c echo.Context) error {
 		var (
 			ctx         = c.Get("ctx").(*appcontext.AppContext)

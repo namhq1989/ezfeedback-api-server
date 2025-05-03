@@ -27,7 +27,7 @@ func NewUpdateUserProjectNotificationSettingHandler(
 
 // UpdateUserProjectNotificationSetting godoc
 // @tags     Notification
-// @summary  Notification update user project notification setting
+// @summary  Update user project notification setting
 // @id       notification-update-user-project-notification-setting
 // @security ApiKeyAuth
 // @accept   json

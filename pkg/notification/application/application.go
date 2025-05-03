@@ -14,6 +14,8 @@ type (
 	}
 	Queries interface {
 		Ping(ctx *appcontext.AppContext, _ dto.PingRequest) (*dto.PingResponse, error)
+
+		GetUserProjectNotificationSetting(ctx *appcontext.AppContext, performerID string, req dto.GetUserProjectNotificationSettingRequest) (*dto.GetUserProjectNotificationSettingResponse, error)
 	}
 	Instance interface {
 		Commands
@@ -25,6 +27,8 @@ type (
 	}
 	queryHandlers struct {
 		query.PingHandler
+
+		query.GetUserProjectNotificationSettingHandler
 	}
 	Application struct {
 		commandHandlers
@@ -49,6 +53,8 @@ func New(
 		},
 		queryHandlers: queryHandlers{
 			PingHandler: query.NewPingHandler(),
+
+			GetUserProjectNotificationSettingHandler: query.NewGetUserProjectNotificationSettingHandler(service),
 		},
 	}
 }
