@@ -61,6 +61,7 @@ tasks:
       - mockgen -source=pkg/project/domain/project_category.go -destination=internal/mock/project/project_category.go -package=mockproject
       - mockgen -source=pkg/project/domain/project_campaign.go -destination=internal/mock/project/project_campaign.go -package=mockproject
       - mockgen -source=pkg/project/domain/project_campaign_category.go -destination=internal/mock/project/project_campaign_category.go -package=mockproject
+      - mockgen -source=pkg/project/domain/project_collaborator.go -destination=internal/mock/project/project_collaborator.go -package=mockproject
       - mockgen -source=pkg/project/domain/caching.go -destination=internal/mock/project/caching.go -package=mockproject
       - mockgen -source=pkg/project/domain/billing.go -destination=internal/mock/project/billing.go -package=mockproject
       - mockgen -source=pkg/project/domain/service.go -destination=internal/mock/project/service.go -package=mockproject
@@ -79,6 +80,7 @@ tasks:
       - mockgen -source=pkg/notification/domain/notification_reminder.go -destination=internal/mock/notification/notification_reminder.go -package=mocknotification
       - mockgen -source=pkg/notification/domain/user_project_notification_setting.go -destination=internal/mock/notification/user_project_notification_setting.go -package=mocknotification
       - mockgen -source=pkg/notification/domain/caching.go -destination=internal/mock/notification/caching.go -package=mocknotification
+      - mockgen -source=pkg/notification/domain/queue.go -destination=internal/mock/notification/queue.go -package=mocknotification
       - mockgen -source=pkg/notification/domain/service.go -destination=internal/mock/notification/service.go -package=mocknotification
 
   # swagger generation

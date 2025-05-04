@@ -29,7 +29,7 @@ func (s Service) GetProjectByID(ctx *appcontext.AppContext, projectID, userID st
 		ctx.Logger().ErrorText("project not found")
 		return nil, apperrors.Project.ProjectNotFound
 	}
-	if !project.IsOwner(userID) {
+	if userID != "" && !project.IsOwner(userID) {
 		ctx.Logger().ErrorText("user is not project owner")
 		return nil, apperrors.Common.NotFound
 	}

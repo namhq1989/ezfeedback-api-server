@@ -3,6 +3,7 @@ package iam
 import (
 	"github.com/namhq1989/ezfeedback-api-server/internal/monolith"
 	"github.com/namhq1989/ezfeedback-api-server/pkg/iam/application"
+	"github.com/namhq1989/ezfeedback-api-server/pkg/iam/grpc"
 	"github.com/namhq1989/ezfeedback-api-server/pkg/iam/infrastructure"
 	"github.com/namhq1989/ezfeedback-api-server/pkg/iam/rest"
 	"github.com/namhq1989/ezfeedback-api-server/pkg/iam/shared"
@@ -38,10 +39,19 @@ func (Module) Startup(ctx *appcontext.AppContext, mono monolith.Monolith) error 
 			cachingRepository,
 			service,
 		)
+
+		hub = grpc.New(
+			service,
+		)
 	)
 
 	// rest server
 	if err := rest.RegisterServer(ctx, app, mono.Rest(), mono.JWT(), mono.Config().IsEnvRelease); err != nil {
+		return err
+	}
+
+	// grpc
+	if err := grpc.RegisterServer(ctx, mono.RPC(), hub); err != nil {
 		return err
 	}
 

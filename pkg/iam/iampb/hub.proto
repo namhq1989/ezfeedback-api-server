@@ -1,0 +1,22 @@
+syntax = "proto3";
+
+package iampb;
+
+import "iampb/message.proto";
+
+service IAMService {
+  rpc GetUsersByIds(GetUsersByIdsRequest) returns (GetUsersByIdsResponse);
+}
+
+//
+// GET USERS BY IDS
+//
+
+message GetUsersByIdsRequest {
+  string traceId = 1;
+  repeated string userIds = 2;
+}
+
+message GetUsersByIdsResponse {
+  repeated User users = 1;
+}

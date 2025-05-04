@@ -13,11 +13,12 @@ import (
 type CachingRepository struct {
 	caching caching.Operations
 
-	domain                                  string
-	projectByIDCachingTime                  time.Duration
-	projectSettingByProjectIDCachingTime    time.Duration
-	projectCategoriesByProjectIDCachingTime time.Duration
-	projectCampaignsByProjectIDCachingTime  time.Duration
+	domain                                     string
+	projectByIDCachingTime                     time.Duration
+	projectSettingByProjectIDCachingTime       time.Duration
+	projectCategoriesByProjectIDCachingTime    time.Duration
+	projectCampaignsByProjectIDCachingTime     time.Duration
+	projectCollaboratorsByProjectIDCachingTime time.Duration
 
 	apiGetProjectsByUserIDCachingTime time.Duration
 	apiGetProjectByIDCachingTime      time.Duration
@@ -26,12 +27,13 @@ type CachingRepository struct {
 func NewCachingRepository(caching *caching.Caching, isEnvRelease bool) CachingRepository {
 	if isEnvRelease {
 		return CachingRepository{
-			caching:                                 caching,
-			domain:                                  "project",
-			projectByIDCachingTime:                  12 * time.Hour,
-			projectSettingByProjectIDCachingTime:    12 * time.Hour,
-			projectCategoriesByProjectIDCachingTime: 12 * time.Hour,
-			projectCampaignsByProjectIDCachingTime:  12 * time.Hour,
+			caching:                                    caching,
+			domain:                                     "project",
+			projectByIDCachingTime:                     12 * time.Hour,
+			projectSettingByProjectIDCachingTime:       12 * time.Hour,
+			projectCategoriesByProjectIDCachingTime:    12 * time.Hour,
+			projectCampaignsByProjectIDCachingTime:     12 * time.Hour,
+			projectCollaboratorsByProjectIDCachingTime: 12 * time.Hour,
 
 			apiGetProjectsByUserIDCachingTime: 12 * time.Hour,
 			apiGetProjectByIDCachingTime:      12 * time.Hour,
@@ -40,12 +42,13 @@ func NewCachingRepository(caching *caching.Caching, isEnvRelease bool) CachingRe
 		cachingTime := 1 * time.Minute
 
 		return CachingRepository{
-			caching:                                 caching,
-			domain:                                  "project",
-			projectByIDCachingTime:                  cachingTime,
-			projectSettingByProjectIDCachingTime:    cachingTime,
-			projectCategoriesByProjectIDCachingTime: cachingTime,
-			projectCampaignsByProjectIDCachingTime:  cachingTime,
+			caching:                                    caching,
+			domain:                                     "project",
+			projectByIDCachingTime:                     cachingTime,
+			projectSettingByProjectIDCachingTime:       cachingTime,
+			projectCategoriesByProjectIDCachingTime:    cachingTime,
+			projectCampaignsByProjectIDCachingTime:     cachingTime,
+			projectCollaboratorsByProjectIDCachingTime: cachingTime,
 
 			apiGetProjectsByUserIDCachingTime: cachingTime,
 			apiGetProjectByIDCachingTime:      cachingTime,
@@ -195,6 +198,42 @@ func (r CachingRepository) DeleteProjectCampaignsByProjectID(ctx *appcontext.App
 
 func (r CachingRepository) generateProjectCampaignsByProjectIDKey(id string) string {
 	return r.caching.GenerateKey(r.domain, fmt.Sprintf("project:%s:campaigns", id))
+}
+
+//
+// GET PROJECT COLLABORATORS BY PROJECT ID
+//
+
+func (r CachingRepository) GetProjectCollaboratorsByProjectID(ctx *appcontext.AppContext, id string) ([]domain.ProjectCollaborator, error) {
+	key := r.generateProjectCollaboratorsByProjectIDKey(id)
+
+	dataStr, err := r.caching.Get(ctx, key)
+	if err != nil {
+		return nil, err
+	}
+
+	var result []domain.ProjectCollaborator
+	if err = json.Unmarshal([]byte(dataStr), &result); err != nil {
+		return nil, nil
+	}
+
+	return result, nil
+}
+
+func (r CachingRepository) SetProjectCollaboratorsByProjectID(ctx *appcontext.AppContext, id string, collaborators []domain.ProjectCollaborator) error {
+	key := r.generateProjectCollaboratorsByProjectIDKey(id)
+	r.caching.SetTTL(ctx, key, collaborators, r.projectCollaboratorsByProjectIDCachingTime)
+	return nil
+}
+
+func (r CachingRepository) DeleteProjectCollaboratorsByProjectID(ctx *appcontext.AppContext, id string) error {
+	key := r.generateProjectCollaboratorsByProjectIDKey(id)
+	_, err := r.caching.Del(ctx, key)
+	return err
+}
+
+func (r CachingRepository) generateProjectCollaboratorsByProjectIDKey(id string) string {
+	return r.caching.GenerateKey(r.domain, fmt.Sprintf("project:%s:collaborators", id))
 }
 
 //

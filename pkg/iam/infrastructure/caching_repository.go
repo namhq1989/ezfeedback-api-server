@@ -35,6 +35,10 @@ func NewCachingRepository(caching *caching.Caching, isEnvRelease bool) CachingRe
 	}
 }
 
+//
+// GET USER BY ID
+//
+
 func (r CachingRepository) GetUserByID(ctx *appcontext.AppContext, id string) (*domain.User, error) {
 	key := r.generateUserByIDKey(id)
 

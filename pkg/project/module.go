@@ -29,6 +29,7 @@ func (Module) Startup(ctx *appcontext.AppContext, mono monolith.Monolith) error 
 		projectCategoryRepository         = infrastructure.NewProjectCategoryRepository(mono.Database())
 		projectCampaignRepository         = infrastructure.NewProjectCampaignRepository(mono.Database())
 		projectCampaignCategoryRepository = infrastructure.NewProjectCampaignCategoryRepository(mono.Database())
+		projectCollaboratorRepository     = infrastructure.NewProjectCollaboratorRepository(mono.Database())
 		cachingRepository                 = infrastructure.NewCachingRepository(mono.Caching(), mono.Config().IsEnvRelease)
 		billingHub                        = infrastructure.NewBillingHub(billingGRPCClient)
 		projectCampaignHub                = infrastructure.NewProjectCampaignHub(mono.Database())
@@ -38,6 +39,7 @@ func (Module) Startup(ctx *appcontext.AppContext, mono monolith.Monolith) error 
 			projectSettingRepository,
 			projectCategoryRepository,
 			projectCampaignRepository,
+			projectCollaboratorRepository,
 			cachingRepository,
 		)
 
@@ -54,6 +56,7 @@ func (Module) Startup(ctx *appcontext.AppContext, mono monolith.Monolith) error 
 
 		hub = grpc.New(
 			projectCampaignHub,
+			service,
 		)
 	)
 

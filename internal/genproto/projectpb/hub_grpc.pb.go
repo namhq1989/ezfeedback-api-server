@@ -19,14 +19,18 @@ import (
 const _ = grpc.SupportPackageIsVersion9
 
 const (
-	ProjectService_GetProjectCampaignById_FullMethodName = "/projectpb.ProjectService/GetProjectCampaignById"
+	ProjectService_GetProjectById_FullMethodName          = "/projectpb.ProjectService/GetProjectById"
+	ProjectService_GetProjectCampaignById_FullMethodName  = "/projectpb.ProjectService/GetProjectCampaignById"
+	ProjectService_GetProjectCollaborators_FullMethodName = "/projectpb.ProjectService/GetProjectCollaborators"
 )
 
 // ProjectServiceClient is the client API for ProjectService service.
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type ProjectServiceClient interface {
+	GetProjectById(ctx context.Context, in *GetProjectByIdRequest, opts ...grpc.CallOption) (*GetProjectByIdResponse, error)
 	GetProjectCampaignById(ctx context.Context, in *GetProjectCampaignByIdRequest, opts ...grpc.CallOption) (*GetProjectCampaignByIdResponse, error)
+	GetProjectCollaborators(ctx context.Context, in *GetProjectCollaboratorsRequest, opts ...grpc.CallOption) (*GetProjectCollaboratorsResponse, error)
 }
 
 type projectServiceClient struct {
@@ -35,6 +39,16 @@ type projectServiceClient struct {
 
 func NewProjectServiceClient(cc grpc.ClientConnInterface) ProjectServiceClient {
 	return &projectServiceClient{cc}
+}
+
+func (c *projectServiceClient) GetProjectById(ctx context.Context, in *GetProjectByIdRequest, opts ...grpc.CallOption) (*GetProjectByIdResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(GetProjectByIdResponse)
+	err := c.cc.Invoke(ctx, ProjectService_GetProjectById_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
 }
 
 func (c *projectServiceClient) GetProjectCampaignById(ctx context.Context, in *GetProjectCampaignByIdRequest, opts ...grpc.CallOption) (*GetProjectCampaignByIdResponse, error) {
@@ -47,11 +61,23 @@ func (c *projectServiceClient) GetProjectCampaignById(ctx context.Context, in *G
 	return out, nil
 }
 
+func (c *projectServiceClient) GetProjectCollaborators(ctx context.Context, in *GetProjectCollaboratorsRequest, opts ...grpc.CallOption) (*GetProjectCollaboratorsResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(GetProjectCollaboratorsResponse)
+	err := c.cc.Invoke(ctx, ProjectService_GetProjectCollaborators_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // ProjectServiceServer is the server API for ProjectService service.
 // All implementations should embed UnimplementedProjectServiceServer
 // for forward compatibility.
 type ProjectServiceServer interface {
+	GetProjectById(context.Context, *GetProjectByIdRequest) (*GetProjectByIdResponse, error)
 	GetProjectCampaignById(context.Context, *GetProjectCampaignByIdRequest) (*GetProjectCampaignByIdResponse, error)
+	GetProjectCollaborators(context.Context, *GetProjectCollaboratorsRequest) (*GetProjectCollaboratorsResponse, error)
 }
 
 // UnimplementedProjectServiceServer should be embedded to have
@@ -61,8 +87,14 @@ type ProjectServiceServer interface {
 // pointer dereference when methods are called.
 type UnimplementedProjectServiceServer struct{}
 
+func (UnimplementedProjectServiceServer) GetProjectById(context.Context, *GetProjectByIdRequest) (*GetProjectByIdResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetProjectById not implemented")
+}
 func (UnimplementedProjectServiceServer) GetProjectCampaignById(context.Context, *GetProjectCampaignByIdRequest) (*GetProjectCampaignByIdResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetProjectCampaignById not implemented")
+}
+func (UnimplementedProjectServiceServer) GetProjectCollaborators(context.Context, *GetProjectCollaboratorsRequest) (*GetProjectCollaboratorsResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetProjectCollaborators not implemented")
 }
 func (UnimplementedProjectServiceServer) testEmbeddedByValue() {}
 
@@ -84,6 +116,24 @@ func RegisterProjectServiceServer(s grpc.ServiceRegistrar, srv ProjectServiceSer
 	s.RegisterService(&ProjectService_ServiceDesc, srv)
 }
 
+func _ProjectService_GetProjectById_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(GetProjectByIdRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(ProjectServiceServer).GetProjectById(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: ProjectService_GetProjectById_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(ProjectServiceServer).GetProjectById(ctx, req.(*GetProjectByIdRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 func _ProjectService_GetProjectCampaignById_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(GetProjectCampaignByIdRequest)
 	if err := dec(in); err != nil {
@@ -102,6 +152,24 @@ func _ProjectService_GetProjectCampaignById_Handler(srv interface{}, ctx context
 	return interceptor(ctx, in, info, handler)
 }
 
+func _ProjectService_GetProjectCollaborators_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(GetProjectCollaboratorsRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(ProjectServiceServer).GetProjectCollaborators(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: ProjectService_GetProjectCollaborators_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(ProjectServiceServer).GetProjectCollaborators(ctx, req.(*GetProjectCollaboratorsRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // ProjectService_ServiceDesc is the grpc.ServiceDesc for ProjectService service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -110,8 +178,16 @@ var ProjectService_ServiceDesc = grpc.ServiceDesc{
 	HandlerType: (*ProjectServiceServer)(nil),
 	Methods: []grpc.MethodDesc{
 		{
+			MethodName: "GetProjectById",
+			Handler:    _ProjectService_GetProjectById_Handler,
+		},
+		{
 			MethodName: "GetProjectCampaignById",
 			Handler:    _ProjectService_GetProjectCampaignById_Handler,
+		},
+		{
+			MethodName: "GetProjectCollaborators",
+			Handler:    _ProjectService_GetProjectCollaborators_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

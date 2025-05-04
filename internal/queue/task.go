@@ -9,9 +9,9 @@ import (
 )
 
 const (
-	typenamePrefix = "wdapp"
-	queueDefault   = "default"
-	queueCronjob   = "cronjob"
+	typenamePrefix = "ezfb_apiServer"
+	queueDefault   = "ezfb_apiServer:default"
+	queueCronjob   = "ezfb_apiServer:cronjob"
 
 	taskTimeout   time.Duration = 10 * time.Minute
 	taskRetention               = 24 * 7 * time.Hour

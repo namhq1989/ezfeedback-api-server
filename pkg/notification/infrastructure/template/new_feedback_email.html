@@ -1,0 +1,71 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>EasyFeedback</title>
+  <link
+          href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700&display=swap"
+          rel="stylesheet"
+  />
+</head>
+<body
+        style="
+      font-family: 'Inter', sans-serif;
+      font-size: 12px;
+      background-color: oklch(91.99% 0.0059 264.53);
+      margin: 0;
+      padding: 20px;
+      color: oklch(43.12% 0.0426 279.51);
+    "
+>
+<div style="max-width: 600px; margin: auto">
+  <div style="background-color: oklch(100% 0 0); padding: 30px; border-radius: 0.75rem 0.75rem 0 0;">
+    <img
+            src="https://scp.casecdn.org/400x166_kLxN2gu5WiJNyfb6m4z3T3Ag.jpeg"
+            alt="EasyFeedback"
+            height="40"
+    />
+    <div style="height: 20px"></div>
+
+    <div style="font-weight: 600; color: oklch(43.12% 0.0426 279.51);">Hi there,</div>
+
+    <div style="height: 20px"></div>
+
+    <div>
+      Good news! Your project <span style="font-weight: 600">{{projectName}}</span> has received {{feedbackCount}} new {{feedbackLabel}}.
+    </div>
+
+    <div style="height: 20px"></div>
+
+    {{feedbackItemsContent}}
+
+    <div style="height: 20px"></div>
+
+    <a href="{{dashboardUrl}}" style="display: block; background-color: oklch(55.42% 0.2504 296.96); color: oklch(100% 0 0); text-align: center; padding: 12px; border-radius: 0.75rem; text-decoration: none; font-weight: 600;">
+      View All Feedback
+    </a>
+
+    <div style="height: 20px"></div>
+    <div>
+      We've highlighted a sample of your feedback above. Visit your dashboard to see all feedback and respond to your users.
+    </div>
+
+    <div style="height: 20px"></div>
+    <div>
+      If you need assistance, don't hesitate to contact us at <span style="font-weight: 600;color: oklch(55.42% 0.2504 296.96);">support@easyfeedback.com</span>
+    </div>
+    <div style="height: 20px"></div>
+    <div>
+      Have a great day!
+    </div>
+
+    <div style="height: 20px"></div>
+    <div>Regards,</div>
+    <div style="height: 5px"></div>
+    <div style="font-weight: 600;">EasyFeedback Team</div>
+  </div>
+  <div style="background-color: oklch(55.42% 0.2504 296.96); height: 18px; border-radius: 0 0 0.75rem 0.75rem;"></div>
+</div>
+</body>
+</html>

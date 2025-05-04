@@ -18,6 +18,7 @@ func NewGetProjectCampaignByIDHandler(projectCampaignHub domain.ProjectCampaignH
 }
 
 func (h GetProjectCampaignByIDHandler) GetProjectCampaignByID(ctx *appcontext.AppContext, req *projectpb.GetProjectCampaignByIdRequest) (*projectpb.GetProjectCampaignByIdResponse, error) {
+	ctx.SetTraceID(req.GetTraceId())
 	ctx.Logger().Info("new get project campaign by id request", appcontext.Fields{"campaignID": req.GetCampaignId()})
 
 	ctx.Logger().Text("find campaign in db")
@@ -39,6 +40,7 @@ func (h GetProjectCampaignByIDHandler) GetProjectCampaignByID(ctx *appcontext.Ap
 		},
 		Project: &projectpb.Project{
 			Id:     data.Project.ID,
+			Title:  data.Project.Title,
 			Status: data.Project.Status.String(),
 			Setting: &projectpb.ProjectSetting{
 				Domain: data.ProjectSetting.Domain,

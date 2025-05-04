@@ -96,3 +96,18 @@ func (mr *MockNotificationReminderRepositoryMockRecorder) FindAllExisting(ctx an
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "FindAllExisting", reflect.TypeOf((*MockNotificationReminderRepository)(nil).FindAllExisting), ctx)
 }
+
+// FindByProjectID mocks base method.
+func (m *MockNotificationReminderRepository) FindByProjectID(ctx *appcontext.AppContext, projectID string) (*domain.NotificationReminder, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "FindByProjectID", ctx, projectID)
+	ret0, _ := ret[0].(*domain.NotificationReminder)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// FindByProjectID indicates an expected call of FindByProjectID.
+func (mr *MockNotificationReminderRepositoryMockRecorder) FindByProjectID(ctx, projectID any) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "FindByProjectID", reflect.TypeOf((*MockNotificationReminderRepository)(nil).FindByProjectID), ctx, projectID)
+}

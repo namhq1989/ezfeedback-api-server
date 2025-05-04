@@ -20,5 +20,10 @@ func (h FeedbackCreatedHandler) FeedbackCreated(ctx *appcontext.AppContext, payl
 	defer span.End()
 
 	ctx.Logger().Print("payload", payload)
+
+	// call Notification service to create a notification
+	// call Notification service to create a notification reminder
+	// check & create project user
+
 	return nil
 }
