@@ -17,6 +17,25 @@ func NewProjectHub(client projectpb.ProjectServiceClient) ProjectHub {
 	}
 }
 
+func (r ProjectHub) GetProjectByID(ctx *appcontext.AppContext, projectID string) (*domain.Project, error) {
+	resp, err := r.client.GetProjectById(ctx.Context(), &projectpb.GetProjectByIdRequest{
+		TraceId:   ctx.GetTraceID(),
+		ProjectId: projectID,
+	})
+	if err != nil {
+		return nil, err
+	}
+	if resp == nil || resp.GetProject() == nil {
+		return nil, apperrors.Project.ProjectNotFound
+	}
+
+	var project = resp.GetProject()
+	return &domain.Project{
+		ID:    project.GetId(),
+		Title: project.GetTitle(),
+	}, nil
+}
+
 func (r ProjectHub) GetProjectCampaignByID(ctx *appcontext.AppContext, campaignID string) (*domain.ProjectCampaignHubData, error) {
 	resp, err := r.client.GetProjectCampaignById(ctx.Context(), &projectpb.GetProjectCampaignByIdRequest{
 		TraceId:    ctx.GetTraceID(),

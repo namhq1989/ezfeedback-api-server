@@ -1,0 +1,26 @@
+syntax = "proto3";
+
+package feedbackpb;
+
+import "google/protobuf/timestamp.proto";
+import "feedbackpb/message.proto";
+
+service FeedbackService {
+  rpc GetProjectStatsForNotificationReminder(GetProjectStatsForNotificationReminderRequest) returns (GetProjectStatsForNotificationReminderResponse);
+}
+
+//
+// GET PROJECT STATS FOR REMINDER
+//
+
+message GetProjectStatsForNotificationReminderRequest {
+  string traceId = 1;
+  string projectId = 2;
+  google.protobuf.Timestamp timestamp = 3;
+  int64 limit = 4;
+}
+
+message GetProjectStatsForNotificationReminderResponse {
+  repeated Feedback feedbacks = 1;
+  int64 total = 2;
+}

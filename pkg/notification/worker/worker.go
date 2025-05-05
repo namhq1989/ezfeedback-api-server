@@ -11,22 +11,27 @@ import (
 )
 
 type (
+	Handlers interface {
+		ProcessNotificationReminder(ctx *appcontext.AppContext, payload domain.QueueProcessNotificationReminderPayload) error
+	}
 	Cronjob interface {
 		ScanNotificationReminders(ctx *appcontext.AppContext, _ domain.QueueScanNotificationRemindersPayload) error
 	}
 
 	Instance interface {
+		Handlers
 		Cronjob
 	}
 
-	// workerHandlers struct {
-	// }
+	workerHandlers struct {
+		ProcessNotificationReminderHandler
+	}
 	cronjobHandlers struct {
 		ScanNotificationRemindersHandler
 	}
 	Worker struct {
 		queue queue.Operations
-		// workerHandlers
+		workerHandlers
 		cronjobHandlers
 	}
 )
@@ -37,11 +42,15 @@ func New(
 	queue queue.Operations,
 	notificationReminderRepository domain.NotificationReminderRepository,
 	queueRepository domain.QueueRepository,
+	mailerRepository domain.MailerRepository,
+	feedbackHub domain.FeedbackHub,
+	projectHub domain.ProjectHub,
 ) Worker {
 	return Worker{
 		queue: queue,
-		// workerHandlers: workerHandlers{
-		// },
+		workerHandlers: workerHandlers{
+			ProcessNotificationReminderHandler: NewProcessNotificationReminderHandler(notificationReminderRepository, mailerRepository, feedbackHub, projectHub),
+		},
 		cronjobHandlers: cronjobHandlers{
 			ScanNotificationRemindersHandler: NewScanNotificationRemindersHandler(notificationReminderRepository, queueRepository),
 		},
@@ -54,9 +63,9 @@ func (w Worker) Start() {
 	server := w.queue.GetServer()
 
 	// immediately
-	// server.HandleFunc(w.queue.GenerateTypename(queue.TypeNames.SendVerificationCodeEmail), func(bgCtx context.Context, t *asynq.Task) error {
-	// 	return queue.ProcessTask[domain.QueueSendVerificationCodeEmailPayload](bgCtx, t, queue.ParsePayload[domain.QueueSendVerificationCodeEmailPayload], w.SendSignInVerificationCodeEmail)
-	// })
+	server.HandleFunc(w.queue.GenerateTypename(queue.TypeNames.ProcessNotificationReminder), func(bgCtx context.Context, t *asynq.Task) error {
+		return queue.ProcessTask[domain.QueueProcessNotificationReminderPayload](bgCtx, t, queue.ParsePayload[domain.QueueProcessNotificationReminderPayload], w.ProcessNotificationReminder)
+	})
 
 	// cronjob
 	server.HandleFunc(w.queue.GenerateTypename(queue.TypeNames.ScanNotificationReminders), func(bgCtx context.Context, t *asynq.Task) error {

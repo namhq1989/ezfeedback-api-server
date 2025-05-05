@@ -19,6 +19,7 @@ import (
 const _ = grpc.SupportPackageIsVersion9
 
 const (
+	IAMService_GetUserById_FullMethodName   = "/iampb.IAMService/GetUserById"
 	IAMService_GetUsersByIds_FullMethodName = "/iampb.IAMService/GetUsersByIds"
 )
 
@@ -26,6 +27,7 @@ const (
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type IAMServiceClient interface {
+	GetUserById(ctx context.Context, in *GetUserByIdRequest, opts ...grpc.CallOption) (*GetUserByIdResponse, error)
 	GetUsersByIds(ctx context.Context, in *GetUsersByIdsRequest, opts ...grpc.CallOption) (*GetUsersByIdsResponse, error)
 }
 
@@ -35,6 +37,16 @@ type iAMServiceClient struct {
 
 func NewIAMServiceClient(cc grpc.ClientConnInterface) IAMServiceClient {
 	return &iAMServiceClient{cc}
+}
+
+func (c *iAMServiceClient) GetUserById(ctx context.Context, in *GetUserByIdRequest, opts ...grpc.CallOption) (*GetUserByIdResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(GetUserByIdResponse)
+	err := c.cc.Invoke(ctx, IAMService_GetUserById_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
 }
 
 func (c *iAMServiceClient) GetUsersByIds(ctx context.Context, in *GetUsersByIdsRequest, opts ...grpc.CallOption) (*GetUsersByIdsResponse, error) {
@@ -51,6 +63,7 @@ func (c *iAMServiceClient) GetUsersByIds(ctx context.Context, in *GetUsersByIdsR
 // All implementations should embed UnimplementedIAMServiceServer
 // for forward compatibility.
 type IAMServiceServer interface {
+	GetUserById(context.Context, *GetUserByIdRequest) (*GetUserByIdResponse, error)
 	GetUsersByIds(context.Context, *GetUsersByIdsRequest) (*GetUsersByIdsResponse, error)
 }
 
@@ -61,6 +74,9 @@ type IAMServiceServer interface {
 // pointer dereference when methods are called.
 type UnimplementedIAMServiceServer struct{}
 
+func (UnimplementedIAMServiceServer) GetUserById(context.Context, *GetUserByIdRequest) (*GetUserByIdResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetUserById not implemented")
+}
 func (UnimplementedIAMServiceServer) GetUsersByIds(context.Context, *GetUsersByIdsRequest) (*GetUsersByIdsResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetUsersByIds not implemented")
 }
@@ -82,6 +98,24 @@ func RegisterIAMServiceServer(s grpc.ServiceRegistrar, srv IAMServiceServer) {
 		t.testEmbeddedByValue()
 	}
 	s.RegisterService(&IAMService_ServiceDesc, srv)
+}
+
+func _IAMService_GetUserById_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(GetUserByIdRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(IAMServiceServer).GetUserById(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: IAMService_GetUserById_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(IAMServiceServer).GetUserById(ctx, req.(*GetUserByIdRequest))
+	}
+	return interceptor(ctx, in, info, handler)
 }
 
 func _IAMService_GetUsersByIds_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
@@ -109,6 +143,10 @@ var IAMService_ServiceDesc = grpc.ServiceDesc{
 	ServiceName: "iampb.IAMService",
 	HandlerType: (*IAMServiceServer)(nil),
 	Methods: []grpc.MethodDesc{
+		{
+			MethodName: "GetUserById",
+			Handler:    _IAMService_GetUserById_Handler,
+		},
 		{
 			MethodName: "GetUsersByIds",
 			Handler:    _IAMService_GetUsersByIds_Handler,

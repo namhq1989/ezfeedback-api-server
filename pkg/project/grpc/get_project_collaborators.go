@@ -7,11 +7,13 @@ import (
 )
 
 type GetProjectCollaboratorsHandler struct {
+	iamHub  domain.IAMHub
 	service domain.Service
 }
 
-func NewGetProjectCollaboratorsHandler(service domain.Service) GetProjectCollaboratorsHandler {
+func NewGetProjectCollaboratorsHandler(iamHub domain.IAMHub, service domain.Service) GetProjectCollaboratorsHandler {
 	return GetProjectCollaboratorsHandler{
+		iamHub:  iamHub,
 		service: service,
 	}
 }
@@ -29,10 +31,20 @@ func (h GetProjectCollaboratorsHandler) GetProjectCollaborators(ctx *appcontext.
 
 	var result = make([]*projectpb.ProjectCollaborator, 0)
 	for _, collaborator := range collaborators {
+		user, uErr := h.iamHub.GetUserByID(ctx, collaborator.UserID)
+		if uErr != nil {
+			ctx.Logger().Error("failed to find user in db", uErr, appcontext.Fields{})
+			continue
+		}
+
 		result = append(result, &projectpb.ProjectCollaborator{
-			Id:     collaborator.ID,
-			UserId: collaborator.UserID,
-			Role:   collaborator.Role.String(),
+			Id: collaborator.ID,
+			User: &projectpb.Collaborator{
+				Id:    user.ID,
+				Name:  user.Name,
+				Email: user.Email,
+			},
+			Role: collaborator.Role.String(),
 		})
 	}
 

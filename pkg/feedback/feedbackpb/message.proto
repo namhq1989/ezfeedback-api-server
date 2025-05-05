@@ -1,0 +1,21 @@
+syntax = "proto3";
+
+package feedbackpb;
+
+import "google/protobuf/timestamp.proto";
+
+message Feedback {
+  string id = 1;
+  Project project = 2;
+  string appUserId = 3;
+  string email = 4;
+  string content = 5;
+  int32 rating = 6;
+  string campaignType = 7;
+  google.protobuf.Timestamp createdAt = 8;
+}
+
+message Project {
+  string id = 1;
+  string title = 2;
+}

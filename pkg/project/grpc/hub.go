@@ -30,13 +30,14 @@ var _ App = (*Application)(nil)
 
 func New(
 	projectCampaignHub domain.ProjectCampaignHub,
+	iamHub domain.IAMHub,
 	service domain.Service,
 ) *Application {
 	return &Application{
 		appHubHandler: appHubHandler{
 			GetProjectByIDHandler:          NewGetProjectByIDHandler(service),
 			GetProjectCampaignByIDHandler:  NewGetProjectCampaignByIDHandler(projectCampaignHub),
-			GetProjectCollaboratorsHandler: NewGetProjectCollaboratorsHandler(service),
+			GetProjectCollaboratorsHandler: NewGetProjectCollaboratorsHandler(iamHub, service),
 		},
 	}
 }

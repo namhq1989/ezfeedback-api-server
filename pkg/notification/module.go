@@ -1,6 +1,7 @@
 package notification
 
 import (
+	"github.com/namhq1989/ezfeedback-api-server/internal/grpcclient"
 	"github.com/namhq1989/ezfeedback-api-server/internal/monolith"
 	"github.com/namhq1989/ezfeedback-api-server/pkg/notification/application"
 	"github.com/namhq1989/ezfeedback-api-server/pkg/notification/grpc"
@@ -18,11 +19,24 @@ func (Module) Name() string {
 }
 
 func (Module) Startup(ctx *appcontext.AppContext, mono monolith.Monolith) error {
+	projectGRPCClient, err := grpcclient.NewProjectClient(ctx, mono.Config().GRPCPort)
+	if err != nil {
+		return err
+	}
+
+	feedbackGRPCClient, err := grpcclient.NewFeedbackClient(ctx, mono.Config().GRPCPort)
+	if err != nil {
+		return err
+	}
+
 	var (
 		notificationReminderRepository           = infrastructure.NewNotificationReminderRepository(mono.Database())
 		userProjectNotificationSettingRepository = infrastructure.NewUserProjectNotificationSettingRepository(mono.Database())
 		cachingRepository                        = infrastructure.NewCachingRepository(mono.Caching(), mono.Config().IsEnvRelease)
 		queueRepository                          = infrastructure.NewQueueRepository(mono.Queue())
+		mailerRepository                         = infrastructure.NewMailerRepository(mono.Mailer())
+		projectHub                               = infrastructure.NewProjectHub(projectGRPCClient)
+		feedbackHub                              = infrastructure.NewFeedbackHub(feedbackGRPCClient)
 
 		service = shared.NewService(
 			userProjectNotificationSettingRepository,
@@ -55,6 +69,9 @@ func (Module) Startup(ctx *appcontext.AppContext, mono monolith.Monolith) error 
 		mono.Queue(),
 		notificationReminderRepository,
 		queueRepository,
+		mailerRepository,
+		feedbackHub,
+		projectHub,
 	)
 	w.Start()
 

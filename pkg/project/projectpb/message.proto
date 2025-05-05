@@ -21,6 +21,12 @@ message ProjectCampaign {
 
 message ProjectCollaborator {
   string id = 1;
-  string userId = 2;
+  Collaborator user = 2;
   string role = 3;
+}
+
+message Collaborator {
+  string id = 1;
+  string name = 2;
+  string email = 3;
 }

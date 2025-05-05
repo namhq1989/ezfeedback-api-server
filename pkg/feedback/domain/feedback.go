@@ -16,6 +16,8 @@ type FeedbackRepository interface {
 	FindWithFilter(ctx *appcontext.AppContext, filter FeedbackFilter) ([]Feedback, error)
 	CountMonthlyUsageForProject(ctx *appcontext.AppContext, projectID string) (int64, error)
 	CountProjectTotalCreatedTodayByIp(ctx *appcontext.AppContext, projectID, ip string) (int64, error)
+	CountFeedbackForProjectSinceTimestamp(ctx *appcontext.AppContext, projectID string, timestamp time.Time) (int64, error)
+	FindFeedbackForProjectSinceTimestamp(ctx *appcontext.AppContext, projectID string, timestamp time.Time, limit int64) ([]Feedback, error)
 }
 
 var (

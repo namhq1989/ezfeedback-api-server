@@ -2,6 +2,7 @@ package grpcclient
 
 import (
 	"github.com/namhq1989/ezfeedback-api-server/internal/genproto/billingpb"
+	"github.com/namhq1989/ezfeedback-api-server/internal/genproto/feedbackpb"
 	"github.com/namhq1989/ezfeedback-api-server/internal/genproto/iampb"
 	"github.com/namhq1989/ezfeedback-api-server/internal/genproto/projectpb"
 	"github.com/namhq1989/go-utilities/appcontext"
@@ -43,4 +44,13 @@ func NewIAMClient(_ *appcontext.AppContext, addr string) (iampb.IAMServiceClient
 	}
 
 	return iampb.NewIAMServiceClient(conn), nil
+}
+
+func NewFeedbackClient(_ *appcontext.AppContext, addr string) (feedbackpb.FeedbackServiceClient, error) {
+	conn, err := newConn(addr)
+	if err != nil {
+		return nil, err
+	}
+
+	return feedbackpb.NewFeedbackServiceClient(conn), nil
 }

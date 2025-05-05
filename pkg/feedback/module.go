@@ -4,6 +4,7 @@ import (
 	"github.com/namhq1989/ezfeedback-api-server/internal/grpcclient"
 	"github.com/namhq1989/ezfeedback-api-server/internal/monolith"
 	"github.com/namhq1989/ezfeedback-api-server/pkg/feedback/application"
+	"github.com/namhq1989/ezfeedback-api-server/pkg/feedback/grpc"
 	"github.com/namhq1989/ezfeedback-api-server/pkg/feedback/infrastructure"
 	"github.com/namhq1989/ezfeedback-api-server/pkg/feedback/rest"
 	"github.com/namhq1989/ezfeedback-api-server/pkg/feedback/shared"
@@ -48,10 +49,20 @@ func (Module) Startup(ctx *appcontext.AppContext, mono monolith.Monolith) error 
 			projectHub,
 			service,
 		)
+
+		hub = grpc.New(
+			feedbackRepository,
+			projectHub,
+		)
 	)
 
 	// rest server
 	if err = rest.RegisterServer(ctx, app, mono.Rest(), mono.JWT(), mono.Config().IsEnvRelease); err != nil {
+		return err
+	}
+
+	// grpc
+	if err = grpc.RegisterServer(ctx, mono.RPC(), hub); err != nil {
 		return err
 	}
 

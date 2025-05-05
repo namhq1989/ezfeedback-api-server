@@ -5,8 +5,23 @@ package iampb;
 import "iampb/message.proto";
 
 service IAMService {
+  rpc GetUserById(GetUserByIdRequest) returns (GetUserByIdResponse);
   rpc GetUsersByIds(GetUsersByIdsRequest) returns (GetUsersByIdsResponse);
 }
+
+//
+// GET USER BY ID
+//
+
+message GetUserByIdRequest {
+  string traceId = 1;
+  string userId = 2;
+}
+
+message GetUserByIdResponse {
+  User user = 1;
+}
+
 
 //
 // GET USERS BY IDS

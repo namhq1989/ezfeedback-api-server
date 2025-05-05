@@ -20,6 +20,10 @@ func RegisterServer(_ *appcontext.AppContext, registrar grpc.ServiceRegistrar, h
 	return nil
 }
 
+func (s server) GetUserById(bgCtx context.Context, req *iampb.GetUserByIdRequest) (*iampb.GetUserByIdResponse, error) {
+	return s.hub.GetUserById(appcontext.NewGRPC(bgCtx), req)
+}
+
 func (s server) GetUsersByIds(bgCtx context.Context, req *iampb.GetUsersByIdsRequest) (*iampb.GetUsersByIdsResponse, error) {
 	return s.hub.GetUsersByIds(appcontext.NewGRPC(bgCtx), req)
 }

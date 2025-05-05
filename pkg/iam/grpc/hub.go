@@ -8,6 +8,7 @@ import (
 
 type (
 	Hubs interface {
+		GetUserById(ctx *appcontext.AppContext, req *iampb.GetUserByIdRequest) (*iampb.GetUserByIdResponse, error)
 		GetUsersByIds(ctx *appcontext.AppContext, req *iampb.GetUsersByIdsRequest) (*iampb.GetUsersByIdsResponse, error)
 	}
 	App interface {
@@ -15,6 +16,7 @@ type (
 	}
 
 	appHubHandler struct {
+		GetUserByIDHandler
 		GetUsersByIDsHandler
 	}
 	Application struct {
@@ -29,6 +31,7 @@ func New(
 ) *Application {
 	return &Application{
 		appHubHandler: appHubHandler{
+			GetUserByIDHandler:   NewGetUserByIDHandler(service),
 			GetUsersByIDsHandler: NewGetUsersByIDsHandler(service),
 		},
 	}

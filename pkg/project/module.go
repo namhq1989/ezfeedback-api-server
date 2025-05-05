@@ -23,6 +23,11 @@ func (Module) Startup(ctx *appcontext.AppContext, mono monolith.Monolith) error 
 		return err
 	}
 
+	iamGRPCClient, err := grpcclient.NewIAMClient(ctx, mono.Config().GRPCPort)
+	if err != nil {
+		return err
+	}
+
 	var (
 		projectRepository                 = infrastructure.NewProjectRepository(mono.Database())
 		projectSettingRepository          = infrastructure.NewProjectSettingRepository(mono.Database())
@@ -32,6 +37,7 @@ func (Module) Startup(ctx *appcontext.AppContext, mono monolith.Monolith) error 
 		projectCollaboratorRepository     = infrastructure.NewProjectCollaboratorRepository(mono.Database())
 		cachingRepository                 = infrastructure.NewCachingRepository(mono.Caching(), mono.Config().IsEnvRelease)
 		billingHub                        = infrastructure.NewBillingHub(billingGRPCClient)
+		iamHub                            = infrastructure.NewIAMHub(iamGRPCClient)
 		projectCampaignHub                = infrastructure.NewProjectCampaignHub(mono.Database())
 
 		service = shared.NewService(
@@ -56,6 +62,7 @@ func (Module) Startup(ctx *appcontext.AppContext, mono monolith.Monolith) error 
 
 		hub = grpc.New(
 			projectCampaignHub,
+			iamHub,
 			service,
 		)
 	)

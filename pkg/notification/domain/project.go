@@ -15,9 +15,9 @@ type Project struct {
 }
 
 type ProjectCollaborator struct {
-	ID     string
-	UserID string
-	Role   ProjectRole
+	ID   string
+	User User
+	Role ProjectRole
 }
 
 type ProjectRole string

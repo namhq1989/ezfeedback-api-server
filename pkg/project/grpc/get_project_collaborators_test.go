@@ -19,6 +19,7 @@ type getProjectCollaboratorsTestSuite struct {
 	suite.Suite
 	handler     grpc.GetProjectCollaboratorsHandler
 	mockCtrl    *gomock.Controller
+	mockIAMHub  *mockproject.MockIAMHub
 	mockService *mockproject.MockService
 }
 
@@ -28,9 +29,10 @@ func (s *getProjectCollaboratorsTestSuite) SetupSuite() {
 
 func (s *getProjectCollaboratorsTestSuite) setupApplication() {
 	s.mockCtrl = gomock.NewController(s.T())
+	s.mockIAMHub = mockproject.NewMockIAMHub(s.mockCtrl)
 	s.mockService = mockproject.NewMockService(s.mockCtrl)
 
-	s.handler = grpc.NewGetProjectCollaboratorsHandler(s.mockService)
+	s.handler = grpc.NewGetProjectCollaboratorsHandler(s.mockIAMHub, s.mockService)
 }
 
 func (s *getProjectCollaboratorsTestSuite) TearDownTest() {
@@ -46,6 +48,11 @@ func (s *getProjectCollaboratorsTestSuite) Test_1_Success() {
 	s.mockService.EXPECT().
 		GetProjectCollaboratorsByProjectID(gomock.Any(), gomock.Any()).
 		Return([]domain.ProjectCollaborator{{ID: uuid.New()}}, nil)
+
+	s.mockIAMHub.EXPECT().
+		GetUserByID(gomock.Any(), gomock.Any()).
+		Return(&domain.User{ID: uuid.New()}, nil).
+		AnyTimes()
 
 	// call
 	ctx := appcontext.NewGRPC(context.Background())

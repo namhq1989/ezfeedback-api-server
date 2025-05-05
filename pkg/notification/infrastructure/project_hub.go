@@ -49,9 +49,13 @@ func (r ProjectHub) GetProjectCollaborators(ctx *appcontext.AppContext, projectI
 
 	for _, collaborator := range resp.GetCollaborators() {
 		result = append(result, domain.ProjectCollaborator{
-			ID:     collaborator.GetId(),
-			UserID: collaborator.GetUserId(),
-			Role:   domain.ProjectRole(collaborator.GetRole()),
+			ID: collaborator.GetId(),
+			User: domain.User{
+				ID:    collaborator.GetUser().GetId(),
+				Name:  collaborator.GetUser().GetName(),
+				Email: collaborator.GetUser().GetEmail(),
+			},
+			Role: domain.ProjectRole(collaborator.GetRole()),
 		})
 	}
 
