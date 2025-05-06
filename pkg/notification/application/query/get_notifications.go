@@ -60,5 +60,6 @@ func (h GetNotificationsHandler) GetNotifications(ctx *appcontext.AppContext, pe
 	ctx.Logger().Text("done get notifications request")
 	return &dto.GetNotificationResponse{
 		Notifications: result,
+		Limit:         filter.Limit,
 	}, nil
 }

@@ -11,6 +11,8 @@ type (
 		GetProjectById(ctx *appcontext.AppContext, req *projectpb.GetProjectByIdRequest) (*projectpb.GetProjectByIdResponse, error)
 		GetProjectCampaignByID(ctx *appcontext.AppContext, req *projectpb.GetProjectCampaignByIdRequest) (*projectpb.GetProjectCampaignByIdResponse, error)
 		GetProjectCollaborators(ctx *appcontext.AppContext, req *projectpb.GetProjectCollaboratorsRequest) (*projectpb.GetProjectCollaboratorsResponse, error)
+		GetProjectCategories(ctx *appcontext.AppContext, req *projectpb.GetProjectCategoriesRequest) (*projectpb.GetProjectCategoriesResponse, error)
+		GetProjectCampaigns(ctx *appcontext.AppContext, req *projectpb.GetProjectCampaignsRequest) (*projectpb.GetProjectCampaignsResponse, error)
 	}
 	App interface {
 		Hubs
@@ -20,6 +22,8 @@ type (
 		GetProjectByIDHandler
 		GetProjectCampaignByIDHandler
 		GetProjectCollaboratorsHandler
+		GetProjectCategoriesHandler
+		GetProjectCampaignsHandler
 	}
 	Application struct {
 		appHubHandler
@@ -38,6 +42,8 @@ func New(
 			GetProjectByIDHandler:          NewGetProjectByIDHandler(service),
 			GetProjectCampaignByIDHandler:  NewGetProjectCampaignByIDHandler(projectCampaignHub),
 			GetProjectCollaboratorsHandler: NewGetProjectCollaboratorsHandler(iamHub, service),
+			GetProjectCategoriesHandler:    NewGetProjectCategoriesHandler(service),
+			GetProjectCampaignsHandler:     NewGetProjectCampaignsHandler(service),
 		},
 	}
 }

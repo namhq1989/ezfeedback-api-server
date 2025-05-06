@@ -71,6 +71,21 @@ func (mr *MockFeedbackRepositoryMockRecorder) CountProjectTotalCreatedTodayByIp(
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "CountProjectTotalCreatedTodayByIp", reflect.TypeOf((*MockFeedbackRepository)(nil).CountProjectTotalCreatedTodayByIp), ctx, projectID, ip)
 }
 
+// CountWithFilter mocks base method.
+func (m *MockFeedbackRepository) CountWithFilter(ctx *appcontext.AppContext, filter domain.FeedbackFilter) (int64, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "CountWithFilter", ctx, filter)
+	ret0, _ := ret[0].(int64)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// CountWithFilter indicates an expected call of CountWithFilter.
+func (mr *MockFeedbackRepositoryMockRecorder) CountWithFilter(ctx, filter any) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "CountWithFilter", reflect.TypeOf((*MockFeedbackRepository)(nil).CountWithFilter), ctx, filter)
+}
+
 // Create mocks base method.
 func (m *MockFeedbackRepository) Create(ctx *appcontext.AppContext, feedback domain.Feedback) error {
 	m.ctrl.T.Helper()

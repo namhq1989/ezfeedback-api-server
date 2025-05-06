@@ -5,8 +5,10 @@ import (
 )
 
 type ProjectHub interface {
-	GetProjectByID(ctx *appcontext.AppContext, projectID string) (*Project, error)
+	GetProjectByID(ctx *appcontext.AppContext, projectID, userID string) (*Project, error)
 	GetProjectCampaignByID(ctx *appcontext.AppContext, campaignID string) (*ProjectCampaignHubData, error)
+	GetProjectCategories(ctx *appcontext.AppContext, projectID string) ([]ProjectCategory, error)
+	GetProjectCampaigns(ctx *appcontext.AppContext, projectID string) ([]ProjectCampaign, error)
 }
 
 type ProjectCampaignHubData struct {
@@ -24,8 +26,14 @@ type Project struct {
 
 type ProjectCampaign struct {
 	ID           string
+	Name         string
 	CampaignType ProjectCampaignType
 	Status       Status
+}
+
+type ProjectCategory struct {
+	ID   string
+	Name string
 }
 
 type ProjectSetting struct {

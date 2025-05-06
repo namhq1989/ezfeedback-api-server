@@ -6,4 +6,5 @@ type GetNotificationsRequest struct {
 
 type GetNotificationResponse struct {
 	Notifications []Notification `json:"notifications"`
+	Limit         int64          `json:"limit"`
 }

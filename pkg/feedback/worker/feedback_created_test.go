@@ -4,14 +4,12 @@ import (
 	"context"
 	"testing"
 
-	"github.com/namhq1989/ezfeedback-api-server/pkg/feedback/domain"
-	"github.com/namhq1989/go-utilities/uuid"
-
-	"github.com/stretchr/testify/assert"
-
 	mockfeedback "github.com/namhq1989/ezfeedback-api-server/internal/mock/feedback"
+	"github.com/namhq1989/ezfeedback-api-server/pkg/feedback/domain"
 	"github.com/namhq1989/ezfeedback-api-server/pkg/feedback/worker"
 	"github.com/namhq1989/go-utilities/appcontext"
+	"github.com/namhq1989/go-utilities/uuid"
+	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/suite"
 	"go.uber.org/mock/gomock"
 )
@@ -47,7 +45,7 @@ func (s *feedbackCreatedTestSuite) TearDownTest() {
 func (s *feedbackCreatedTestSuite) Test_1_Success() {
 	// mock
 	s.mockProjectHub.EXPECT().
-		GetProjectByID(gomock.Any(), gomock.Any()).
+		GetProjectByID(gomock.Any(), gomock.Any(), gomock.Any()).
 		Return(&domain.Project{
 			ID:     uuid.New(),
 			UserID: uuid.New(),

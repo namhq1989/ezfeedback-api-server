@@ -16,8 +16,9 @@ message ProjectSetting {
 
 message ProjectCampaign {
   string id = 1;
-  string campaignType = 2;
-  string status = 3;
+  string name = 2;
+  string campaignType = 3;
+  string status = 4;
 }
 
 message ProjectCollaborator {
@@ -30,4 +31,9 @@ message Collaborator {
   string id = 1;
   string name = 2;
   string email = 3;
+}
+
+message ProjectCategory {
+  string id = 1;
+  string name = 2;
 }

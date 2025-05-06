@@ -14,6 +14,7 @@ type FeedbackRepository interface {
 	Create(ctx *appcontext.AppContext, feedback Feedback) error
 	Update(ctx *appcontext.AppContext, feedback Feedback) error
 	FindWithFilter(ctx *appcontext.AppContext, filter FeedbackFilter) ([]Feedback, error)
+	CountWithFilter(ctx *appcontext.AppContext, filter FeedbackFilter) (int64, error)
 	CountMonthlyUsageForProject(ctx *appcontext.AppContext, projectID string) (int64, error)
 	CountProjectTotalCreatedTodayByIp(ctx *appcontext.AppContext, projectID, ip string) (int64, error)
 }
@@ -132,7 +133,7 @@ func (f *Feedback) SetIsAnonymous() {
 }
 
 func (f *Feedback) SetCategoryID(categoryID string) error {
-	if len(categoryID) > 0 && !uuid.IsValidID(categoryID) {
+	if categoryID != "" && !uuid.IsValidID(categoryID) {
 		return apperrors.Project.InvalidCategory
 	}
 
