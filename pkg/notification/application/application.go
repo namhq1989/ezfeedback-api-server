@@ -15,6 +15,7 @@ type (
 	Queries interface {
 		Ping(ctx *appcontext.AppContext, _ dto.PingRequest) (*dto.PingResponse, error)
 
+		GetNotifications(ctx *appcontext.AppContext, performerID string, req dto.GetNotificationsRequest) (*dto.GetNotificationResponse, error)
 		GetUserProjectNotificationSetting(ctx *appcontext.AppContext, performerID string, req dto.GetUserProjectNotificationSettingRequest) (*dto.GetUserProjectNotificationSettingResponse, error)
 	}
 	Instance interface {
@@ -28,6 +29,7 @@ type (
 	queryHandlers struct {
 		query.PingHandler
 
+		query.GetNotificationsHandler
 		query.GetUserProjectNotificationSettingHandler
 	}
 	Application struct {
@@ -39,6 +41,7 @@ type (
 var _ Instance = (*Application)(nil)
 
 func New(
+	notificationRepository domain.NotificationRepository,
 	userProjectNotificationSettingRepository domain.UserProjectNotificationSettingRepository,
 	cachingRepository domain.CachingRepository,
 	service domain.Service,
@@ -54,6 +57,7 @@ func New(
 		queryHandlers: queryHandlers{
 			PingHandler: query.NewPingHandler(),
 
+			GetNotificationsHandler:                  query.NewGetNotificationsHandler(notificationRepository),
 			GetUserProjectNotificationSettingHandler: query.NewGetUserProjectNotificationSettingHandler(service),
 		},
 	}

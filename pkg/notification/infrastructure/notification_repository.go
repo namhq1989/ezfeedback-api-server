@@ -4,6 +4,8 @@ import (
 	"database/sql"
 	"time"
 
+	"github.com/namhq1989/ezfeedback-api-server/pkg/notification/infrastructure/template"
+
 	"github.com/go-jet/jet/v2/postgres"
 	"github.com/namhq1989/ezfeedback-api-server/internal/database"
 	"github.com/namhq1989/ezfeedback-api-server/internal/database/gen/ezfeedback/public/model"
@@ -101,4 +103,8 @@ func (r NotificationRepository) CleanupStale(ctx *appcontext.AppContext) error {
 	stmt := n.DELETE().WHERE(n.CreatedAt.LT(postgres.TimestampzT(ts)))
 	_, err := stmt.ExecContext(ctx.Context(), r.getDB())
 	return err
+}
+
+func (r NotificationRepository) GenerateNewFeedbackContent(_ *appcontext.AppContext, language string, projectTitle string) string {
+	return template.NewFeedbackContent(language, projectTitle)
 }

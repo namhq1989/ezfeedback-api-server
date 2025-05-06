@@ -2,7 +2,6 @@ package domain
 
 import (
 	apperrors "github.com/namhq1989/ezfeedback-api-server/internal/error"
-	"github.com/namhq1989/ezfeedback-api-server/internal/utils/pagetoken"
 	"github.com/namhq1989/go-utilities/uuid"
 )
 
@@ -16,16 +15,14 @@ type NotificationFilter struct {
 	Limit  int64
 }
 
-func NewNotificationFilter(pageToken, userID string) (*NotificationFilter, error) {
+func NewNotificationFilter(userID string, page int64) (*NotificationFilter, error) {
 	if !uuid.IsValidID(userID) {
 		return nil, apperrors.User.InvalidUserID
 	}
 
-	pt := pagetoken.Decode(pageToken)
-
 	return &NotificationFilter{
 		UserID: userID,
-		Page:   pt.Page,
+		Page:   page,
 		Limit:  notificationQueryLimit,
 	}, nil
 }
