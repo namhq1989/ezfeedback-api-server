@@ -4,9 +4,10 @@ package projectpb;
 
 message Project {
   string id = 1;
-  string title = 2;
-  string status = 3;
-  ProjectSetting setting = 4;
+  string userId = 2;
+  string title = 3;
+  string status = 4;
+  ProjectSetting setting = 5;
 }
 
 message ProjectSetting {

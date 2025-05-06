@@ -31,8 +31,9 @@ func (r ProjectHub) GetProjectByID(ctx *appcontext.AppContext, projectID string)
 
 	var project = resp.GetProject()
 	return &domain.Project{
-		ID:    project.GetId(),
-		Title: project.GetTitle(),
+		ID:     project.GetId(),
+		UserID: project.GetUserId(),
+		Title:  project.GetTitle(),
 	}, nil
 }
 

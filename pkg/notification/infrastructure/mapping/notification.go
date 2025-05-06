@@ -22,8 +22,8 @@ func (NotificationMapper) FromModelToDomain(notification model.Notifications) (*
 		Type:   domain.ToNotificationType(notification.Type.String()),
 		IsRead: notification.IsRead,
 		Metadata: domain.NotificationMetadata{
-			ProjectName:  metadata.ProjectName,
-			CampaignName: metadata.CampaignName,
+			ProjectID:    metadata.ProjectID,
+			ProjectTitle: metadata.ProjectTitle,
 		},
 		CreatedAt: notification.CreatedAt,
 		UpdatedAt: notification.UpdatedAt,
@@ -44,8 +44,8 @@ func (NotificationMapper) FromDomainToModel(notification domain.Notification) (*
 	}
 
 	var metadata = NotificationMetadata{
-		ProjectName:  notification.Metadata.ProjectName,
-		CampaignName: notification.Metadata.CampaignName,
+		ProjectID:    notification.Metadata.ProjectID,
+		ProjectTitle: notification.Metadata.ProjectTitle,
 	}
 	if metadataBytes, err := json.Marshal(metadata); err != nil {
 		return nil, err

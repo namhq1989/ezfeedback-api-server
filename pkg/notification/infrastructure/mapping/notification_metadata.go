@@ -1,6 +1,6 @@
 package mapping
 
 type NotificationMetadata struct {
-	ProjectName  string `json:"projectName,omitempty"`
-	CampaignName string `json:"campaignName,omitempty"`
+	ProjectID    string `json:"projectId,omitempty"`
+	ProjectTitle string `json:"projectTitle,omitempty"`
 }

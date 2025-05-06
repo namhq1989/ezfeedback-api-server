@@ -30,6 +30,7 @@ func (Module) Startup(ctx *appcontext.AppContext, mono monolith.Monolith) error 
 	}
 
 	var (
+		notificationRepository                   = infrastructure.NewNotificationRepository(mono.Database())
 		notificationReminderRepository           = infrastructure.NewNotificationReminderRepository(mono.Database())
 		userProjectNotificationSettingRepository = infrastructure.NewUserProjectNotificationSettingRepository(mono.Database())
 		cachingRepository                        = infrastructure.NewCachingRepository(mono.Caching(), mono.Config().IsEnvRelease)
@@ -50,6 +51,7 @@ func (Module) Startup(ctx *appcontext.AppContext, mono monolith.Monolith) error 
 		)
 
 		hub = grpc.New(
+			notificationRepository,
 			notificationReminderRepository,
 		)
 	)

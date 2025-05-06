@@ -64,3 +64,5 @@ billing_feedback_limit_exceeded = "Thank you for your interest. The team is curr
 
 # notification
 notification_user_project_notification_setting_not_found = "User project notification setting not found"
+notification_invalid_metadata = "Invalid metadata"
+notification_invalid_type = "Invalid type"

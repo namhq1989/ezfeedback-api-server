@@ -76,6 +76,7 @@ func (Module) Startup(ctx *appcontext.AppContext, mono monolith.Monolith) error 
 	// worker
 	w := worker.New(
 		mono.Queue(),
+		projectHub,
 		notificationHub,
 	)
 	w.Start()
