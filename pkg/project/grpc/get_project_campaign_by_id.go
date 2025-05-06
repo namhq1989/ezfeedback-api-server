@@ -35,6 +35,7 @@ func (h GetProjectCampaignByIDHandler) GetProjectCampaignByID(ctx *appcontext.Ap
 	var result = &projectpb.GetProjectCampaignByIdResponse{
 		Campaign: &projectpb.ProjectCampaign{
 			Id:           data.ProjectCampaign.ID,
+			Name:         data.ProjectCampaign.Name,
 			CampaignType: data.ProjectCampaign.CampaignType.String(),
 			Status:       data.ProjectCampaign.Status.String(),
 		},

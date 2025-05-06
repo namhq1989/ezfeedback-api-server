@@ -28,7 +28,7 @@ func (h FeedbackCreatedHandler) FeedbackCreated(ctx *appcontext.AppContext, payl
 	defer span.End()
 
 	ctx.Logger().Text("find project data via grpc")
-	project, err := h.projectHub.GetProjectByID(ctx, payload.Feedback.ProjectID)
+	project, err := h.projectHub.GetProjectByID(ctx, payload.Feedback.ProjectID, "")
 	if err != nil {
 		ctx.Logger().Error("failed to find project data via grpc", err, appcontext.Fields{})
 		return err

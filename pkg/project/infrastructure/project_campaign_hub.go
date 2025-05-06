@@ -39,7 +39,7 @@ func (r ProjectCampaignHub) FindProjectCampaignByID(ctx *appcontext.AppContext, 
 	)
 
 	stmt := postgres.SELECT(
-		pc.ID, pc.CampaignType, pc.Status,
+		pc.ID, pc.Name, pc.CampaignType, pc.Status,
 		p.ID, p.Title, p.Status,
 		ps.Domain,
 	).

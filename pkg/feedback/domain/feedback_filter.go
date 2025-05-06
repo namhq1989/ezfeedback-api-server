@@ -2,7 +2,6 @@ package domain
 
 import (
 	apperrors "github.com/namhq1989/ezfeedback-api-server/internal/error"
-	"github.com/namhq1989/ezfeedback-api-server/internal/utils/pagetoken"
 	"github.com/namhq1989/go-utilities/uuid"
 )
 
@@ -11,43 +10,38 @@ const (
 )
 
 type FeedbackFilter struct {
-	ProjectID  string
-	CampaignID string
-	CategoryID string
-	Keyword    string
-	State      FeedbackState
-	Rating     int32
-	Page       int64
-	Limit      int64
+	ProjectID    string
+	CampaignType ProjectCampaignType
+	CategoryID   string
+	Keyword      string
+	State        FeedbackState
+	Rating       int32
+	Page         int64
+	Limit        int64
 }
 
-func NewFeedbackFilter(pageToken, projectID, campaignID, categoryID, keyword, state string, rating int32) (*FeedbackFilter, error) {
+func NewFeedbackFilter(projectID, campaignType, categoryID, keyword, state string, rating int32, page int64) (*FeedbackFilter, error) {
 	if !uuid.IsValidID(projectID) {
 		return nil, apperrors.Project.InvalidProjectID
 	}
 
-	if !uuid.IsValidID(campaignID) {
-		return nil, apperrors.Project.InvalidCampaign
+	dCampaignType := ToProjectCampaignType(campaignType)
+	if !dCampaignType.IsValid() {
+		dCampaignType = ProjectCampaignTypeUnknown
 	}
 
-	if !uuid.IsValidID(categoryID) {
+	if categoryID != "" && !uuid.IsValidID(categoryID) {
 		return nil, apperrors.Project.InvalidCategory
 	}
 
-	pt := pagetoken.Decode(pageToken)
-
 	return &FeedbackFilter{
-		ProjectID:  projectID,
-		CampaignID: campaignID,
-		CategoryID: categoryID,
-		Keyword:    keyword,
-		State:      ToFeedbackState(state),
-		Rating:     rating,
-		Page:       pt.Page,
-		Limit:      feedbackQueryLimit,
+		ProjectID:    projectID,
+		CampaignType: dCampaignType,
+		CategoryID:   categoryID,
+		Keyword:      keyword,
+		State:        ToFeedbackState(state),
+		Rating:       rating,
+		Page:         page,
+		Limit:        feedbackQueryLimit,
 	}, nil
-}
-
-func IsEndOfFeedbackResult(total int64) bool {
-	return total < feedbackQueryLimit
 }

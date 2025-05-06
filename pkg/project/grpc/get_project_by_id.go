@@ -19,12 +19,11 @@ func NewGetProjectByIDHandler(service domain.Service) GetProjectByIDHandler {
 
 func (h GetProjectByIDHandler) GetProjectById(ctx *appcontext.AppContext, req *projectpb.GetProjectByIdRequest) (*projectpb.GetProjectByIdResponse, error) {
 	ctx.SetTraceID(req.GetTraceId())
-	ctx.Logger().Info("new get project by id request", appcontext.Fields{"projectID": req.GetProjectId()})
+	ctx.Logger().Info("new get project by id request", appcontext.Fields{"projectID": req.GetProjectId(), "userID": req.GetUserId()})
 
 	ctx.Logger().Text("find project in db")
-	project, err := h.service.GetProjectByID(ctx, req.GetProjectId(), "")
+	project, err := h.service.GetProjectByID(ctx, req.GetProjectId(), req.GetUserId())
 	if err != nil {
-		ctx.Logger().Error("failed to find project in db", err, appcontext.Fields{})
 		return nil, err
 	}
 	if project == nil {

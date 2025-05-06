@@ -67,7 +67,7 @@ func (h GetProjectStatsForNotificationReminderHandler) GetProjectStatsForNotific
 			feedback.Email = *f.Email
 		}
 
-		project, pErr := h.projectHub.GetProjectByID(ctx, f.ProjectID)
+		project, pErr := h.projectHub.GetProjectByID(ctx, f.ProjectID, "")
 		if pErr != nil || project == nil {
 			ctx.Logger().Error("failed to get project by id", pErr, appcontext.Fields{
 				"projectId": f.ProjectID,

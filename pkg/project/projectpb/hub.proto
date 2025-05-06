@@ -8,6 +8,8 @@ service ProjectService {
   rpc GetProjectById(GetProjectByIdRequest) returns (GetProjectByIdResponse) {}
   rpc GetProjectCampaignById(GetProjectCampaignByIdRequest) returns (GetProjectCampaignByIdResponse) {}
   rpc GetProjectCollaborators(GetProjectCollaboratorsRequest) returns (GetProjectCollaboratorsResponse) {}
+  rpc GetProjectCategories(GetProjectCategoriesRequest) returns (GetProjectCategoriesResponse) {}
+  rpc GetProjectCampaigns(GetProjectCampaignsRequest) returns (GetProjectCampaignsResponse) {}
 }
 
 //
@@ -17,6 +19,7 @@ service ProjectService {
 message GetProjectByIdRequest {
   string traceId = 1;
   string projectId = 2;
+  string userId = 3;
 }
 
 message GetProjectByIdResponse {
@@ -48,4 +51,30 @@ message GetProjectCollaboratorsRequest {
 
 message GetProjectCollaboratorsResponse {
   repeated ProjectCollaborator collaborators = 1;
+}
+
+//
+// GET PROJECT CATEGORIES
+//
+
+message GetProjectCategoriesRequest {
+  string traceId = 1;
+  string projectId = 2;
+}
+
+message GetProjectCategoriesResponse {
+  repeated ProjectCategory categories = 1;
+}
+
+//
+// GET PROJECT CAMPAIGNS
+//
+
+message GetProjectCampaignsRequest {
+  string traceId = 1;
+  string projectId = 2;
+}
+
+message GetProjectCampaignsResponse {
+  repeated ProjectCampaign campaigns = 1;
 }

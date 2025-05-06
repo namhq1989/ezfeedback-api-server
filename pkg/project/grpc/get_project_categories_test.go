@@ -1,0 +1,68 @@
+package grpc_test
+
+import (
+	"context"
+	"testing"
+
+	"github.com/namhq1989/ezfeedback-api-server/internal/genproto/projectpb"
+	mockproject "github.com/namhq1989/ezfeedback-api-server/internal/mock/project"
+	"github.com/namhq1989/ezfeedback-api-server/pkg/project/domain"
+	"github.com/namhq1989/ezfeedback-api-server/pkg/project/grpc"
+	"github.com/namhq1989/go-utilities/appcontext"
+	"github.com/namhq1989/go-utilities/uuid"
+	"github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/suite"
+	"go.uber.org/mock/gomock"
+)
+
+type getProjectCategoriesTestSuite struct {
+	suite.Suite
+	handler     grpc.GetProjectCategoriesHandler
+	mockCtrl    *gomock.Controller
+	mockService *mockproject.MockService
+}
+
+func (s *getProjectCategoriesTestSuite) SetupSuite() {
+	s.setupApplication()
+}
+
+func (s *getProjectCategoriesTestSuite) setupApplication() {
+	s.mockCtrl = gomock.NewController(s.T())
+	s.mockService = mockproject.NewMockService(s.mockCtrl)
+
+	s.handler = grpc.NewGetProjectCategoriesHandler(s.mockService)
+}
+
+func (s *getProjectCategoriesTestSuite) TearDownTest() {
+	s.mockCtrl.Finish()
+}
+
+//
+// CASES
+//
+
+func (s *getProjectCategoriesTestSuite) Test_1_Success() {
+	// mock
+	s.mockService.EXPECT().
+		GetProjectCategoriesByProjectID(gomock.Any(), gomock.Any(), gomock.Any()).
+		Return([]domain.ProjectCategory{{ID: uuid.New()}}, nil)
+
+	// call
+	ctx := appcontext.NewGRPC(context.Background())
+	resp, err := s.handler.GetProjectCategories(ctx, &projectpb.GetProjectCategoriesRequest{
+		TraceId:   "trace-id",
+		ProjectId: uuid.New(),
+	})
+
+	assert.Nil(s.T(), err)
+	assert.NotNil(s.T(), resp)
+	assert.Equal(s.T(), 1, len(resp.GetCategories()))
+}
+
+//
+// END OF CASES
+//
+
+func TestGetProjectCategoriesTestSuite(t *testing.T) {
+	suite.Run(t, new(getProjectCategoriesTestSuite))
+}

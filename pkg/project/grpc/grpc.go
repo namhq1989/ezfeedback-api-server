@@ -31,3 +31,11 @@ func (s server) GetProjectCampaignById(bgCtx context.Context, req *projectpb.Get
 func (s server) GetProjectCollaborators(bgCtx context.Context, req *projectpb.GetProjectCollaboratorsRequest) (*projectpb.GetProjectCollaboratorsResponse, error) {
 	return s.hub.GetProjectCollaborators(appcontext.NewGRPC(bgCtx), req)
 }
+
+func (s server) GetProjectCategories(bgCtx context.Context, req *projectpb.GetProjectCategoriesRequest) (*projectpb.GetProjectCategoriesResponse, error) {
+	return s.hub.GetProjectCategories(appcontext.NewGRPC(bgCtx), req)
+}
+
+func (s server) GetProjectCampaigns(bgCtx context.Context, req *projectpb.GetProjectCampaignsRequest) (*projectpb.GetProjectCampaignsResponse, error) {
+	return s.hub.GetProjectCampaigns(appcontext.NewGRPC(bgCtx), req)
+}

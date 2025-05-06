@@ -14,6 +14,9 @@ type (
 	}
 	Queries interface {
 		Ping(ctx *appcontext.AppContext, _ dto.PingRequest) (*dto.PingResponse, error)
+
+		GetFeedbacks(ctx *appcontext.AppContext, performerID string, req dto.GetFeedbacksRequest) (*dto.GetFeedbacksResponse, error)
+		CountFeedbacks(ctx *appcontext.AppContext, performerID string, req dto.CountFeedbacksRequest) (*dto.CountFeedbacksResponse, error)
 	}
 	Instance interface {
 		Commands
@@ -25,6 +28,9 @@ type (
 	}
 	queryHandlers struct {
 		query.PingHandler
+
+		query.GetFeedbacksHandler
+		query.CountFeedbacksHandler
 	}
 	Application struct {
 		commandHandlers
@@ -53,6 +59,9 @@ func New(
 		},
 		queryHandlers: queryHandlers{
 			PingHandler: query.NewPingHandler(),
+
+			GetFeedbacksHandler:   query.NewGetFeedbacksHandler(feedbackRepository, projectHub),
+			CountFeedbacksHandler: query.NewCountFeedbacksHandler(feedbackRepository),
 		},
 	}
 }

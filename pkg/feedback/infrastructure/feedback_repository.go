@@ -81,8 +81,8 @@ func (r FeedbackRepository) FindWithFilter(ctx *appcontext.AppContext, filter do
 		whereStmt = f.ProjectID.EQ(postgres.String(filter.ProjectID))
 	)
 
-	if filter.CampaignID != "" {
-		whereStmt = whereStmt.AND(f.CampaignID.EQ(postgres.String(filter.CampaignID)))
+	if filter.CampaignType.IsValid() {
+		whereStmt = whereStmt.AND(f.CampaignType.EQ(postgres.String(filter.CampaignType.String())))
 	}
 
 	if filter.Keyword != "" {
@@ -133,6 +133,45 @@ func (r FeedbackRepository) FindWithFilter(ctx *appcontext.AppContext, filter do
 		result = append(result, *feedback)
 	}
 	return result, nil
+}
+
+func (r FeedbackRepository) CountWithFilter(ctx *appcontext.AppContext, filter domain.FeedbackFilter) (int64, error) {
+	var (
+		f         = r.getTable()
+		whereStmt = f.ProjectID.EQ(postgres.String(filter.ProjectID))
+	)
+
+	if filter.CampaignType.IsValid() {
+		whereStmt = whereStmt.AND(f.CampaignType.EQ(postgres.String(filter.CampaignType.String())))
+	}
+
+	if filter.Keyword != "" {
+		whereStmt = whereStmt.AND(postgres.RawBool("s.search_vector @@ to_tsquery($keyword)", postgres.RawArgs{
+			"$keyword": filter.Keyword,
+		}))
+	}
+
+	if filter.CategoryID != "" {
+		whereStmt = whereStmt.AND(f.CategoryID.EQ(postgres.String(filter.CategoryID)))
+	}
+
+	if filter.Rating != 0 {
+		whereStmt = whereStmt.AND(f.Rating.EQ(postgres.Int32(filter.Rating)))
+	}
+
+	if filter.State.IsValid() {
+		whereStmt = whereStmt.AND(f.State.EQ(postgres.NewEnumValue(filter.State.String())))
+	}
+
+	stmt := postgres.SELECT(
+		postgres.COUNT(f.ID).AS("count_result.total"),
+	).
+		FROM(f).
+		WHERE(whereStmt)
+
+	var result = database.CountResult{}
+	err := stmt.QueryContext(ctx.Context(), r.getDB(), &result)
+	return result.Total, err
 }
 
 func (r FeedbackRepository) CountMonthlyUsageForProject(ctx *appcontext.AppContext, projectID string) (int64, error) {

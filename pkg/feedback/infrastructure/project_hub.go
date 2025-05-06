@@ -17,10 +17,11 @@ func NewProjectHub(client projectpb.ProjectServiceClient) ProjectHub {
 	}
 }
 
-func (r ProjectHub) GetProjectByID(ctx *appcontext.AppContext, projectID string) (*domain.Project, error) {
+func (r ProjectHub) GetProjectByID(ctx *appcontext.AppContext, projectID, userID string) (*domain.Project, error) {
 	resp, err := r.client.GetProjectById(ctx.Context(), &projectpb.GetProjectByIdRequest{
 		TraceId:   ctx.GetTraceID(),
 		ProjectId: projectID,
+		UserId:    userID,
 	})
 	if err != nil {
 		return nil, err
@@ -66,8 +67,57 @@ func (r ProjectHub) GetProjectCampaignByID(ctx *appcontext.AppContext, campaignI
 		},
 		ProjectCampaign: domain.ProjectCampaign{
 			ID:           campaign.GetId(),
+			Name:         campaign.GetName(),
 			CampaignType: domain.ToProjectCampaignType(campaign.GetCampaignType()),
 			Status:       domain.ToStatus(campaign.GetStatus()),
 		},
 	}, nil
+}
+
+func (r ProjectHub) GetProjectCategories(ctx *appcontext.AppContext, projectID string) ([]domain.ProjectCategory, error) {
+	resp, err := r.client.GetProjectCategories(ctx.Context(), &projectpb.GetProjectCategoriesRequest{
+		TraceId:   ctx.GetTraceID(),
+		ProjectId: projectID,
+	})
+	if err != nil {
+		return nil, err
+	}
+
+	var (
+		result     = make([]domain.ProjectCategory, 0)
+		categories = resp.GetCategories()
+	)
+	for _, category := range categories {
+		result = append(result, domain.ProjectCategory{
+			ID:   category.GetId(),
+			Name: category.GetName(),
+		})
+	}
+
+	return result, nil
+}
+
+func (r ProjectHub) GetProjectCampaigns(ctx *appcontext.AppContext, projectID string) ([]domain.ProjectCampaign, error) {
+	resp, err := r.client.GetProjectCampaigns(ctx.Context(), &projectpb.GetProjectCampaignsRequest{
+		TraceId:   ctx.GetTraceID(),
+		ProjectId: projectID,
+	})
+	if err != nil {
+		return nil, err
+	}
+
+	var (
+		result    = make([]domain.ProjectCampaign, 0)
+		campaigns = resp.GetCampaigns()
+	)
+	for _, campaign := range campaigns {
+		result = append(result, domain.ProjectCampaign{
+			ID:           campaign.GetId(),
+			Name:         campaign.GetName(),
+			CampaignType: domain.ToProjectCampaignType(campaign.GetCampaignType()),
+			Status:       domain.ToStatus(campaign.GetStatus()),
+		})
+	}
+
+	return result, nil
 }

@@ -57,7 +57,7 @@ func (s *getProjectStatsForNotificationReminderTestSuite) Test_1_Success() {
 		}, nil)
 
 	s.mockProjectHub.EXPECT().
-		GetProjectByID(gomock.Any(), gomock.Any()).
+		GetProjectByID(gomock.Any(), gomock.Any(), gomock.Any()).
 		Return(&domain.Project{ID: uuid.New()}, nil).
 		AnyTimes()
 

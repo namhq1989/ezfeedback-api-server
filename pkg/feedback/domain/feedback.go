@@ -14,6 +14,7 @@ type FeedbackRepository interface {
 	Create(ctx *appcontext.AppContext, feedback Feedback) error
 	Update(ctx *appcontext.AppContext, feedback Feedback) error
 	FindWithFilter(ctx *appcontext.AppContext, filter FeedbackFilter) ([]Feedback, error)
+	CountWithFilter(ctx *appcontext.AppContext, filter FeedbackFilter) (int64, error)
 	CountMonthlyUsageForProject(ctx *appcontext.AppContext, projectID string) (int64, error)
 	CountProjectTotalCreatedTodayByIp(ctx *appcontext.AppContext, projectID, ip string) (int64, error)
 }
