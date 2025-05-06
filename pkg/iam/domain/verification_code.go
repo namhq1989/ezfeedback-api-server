@@ -15,7 +15,7 @@ type VerificationCodeRepository interface {
 	Update(ctx *appcontext.AppContext, code VerificationCode) error
 	Find(ctx *appcontext.AppContext, ip, email, code string) (*VerificationCode, error)
 	CountTotalSentTodayByIp(ctx *appcontext.AppContext, ip string) (int64, error)
-	DeleteExpired(ctx *appcontext.AppContext) error
+	CleanupStale(ctx *appcontext.AppContext) error
 }
 
 var (

@@ -6,6 +6,8 @@ type QueueRepository interface {
 	ProcessNotificationReminder(ctx *appcontext.AppContext, payload QueueProcessNotificationReminderPayload) error
 }
 
+type QueueCleanupStaleNotificationsPayload struct{}
+
 type QueueScanNotificationRemindersPayload struct{}
 
 type QueueProcessNotificationReminderPayload struct {

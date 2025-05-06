@@ -15,7 +15,7 @@ type (
 		SendSignInVerificationCodeEmail(ctx *appcontext.AppContext, payload domain.QueueSendVerificationCodeEmailPayload) error
 	}
 	Cronjob interface {
-		DeleteExpiredVerificationCodes(ctx *appcontext.AppContext, _ domain.QueueDeleteExpiredVerificationCodesPayload) error
+		CleanupStaleVerificationCodes(ctx *appcontext.AppContext, _ domain.QueueCleanupStaleVerificationCodesPayload) error
 	}
 
 	Instance interface {
@@ -27,7 +27,7 @@ type (
 		SendSignInVerificationCodeEmailHandler
 	}
 	cronjobHandlers struct {
-		DeleteExpiredVerificationCodesHandler
+		CleanupStaleVerificationCodesHandler
 	}
 	Worker struct {
 		queue queue.Operations
@@ -49,7 +49,7 @@ func New(
 			SendSignInVerificationCodeEmailHandler: NewSendSignInVerificationCodeEmailHandler(mailerRepository),
 		},
 		cronjobHandlers: cronjobHandlers{
-			DeleteExpiredVerificationCodesHandler: NewDeleteExpiredVerificationCodesHandler(verificationCodeRepository),
+			CleanupStaleVerificationCodesHandler: NewCleanupStaleVerificationCodesHandler(verificationCodeRepository),
 		},
 	}
 }
@@ -65,8 +65,8 @@ func (w Worker) Start() {
 	})
 
 	// cronjob
-	server.HandleFunc(w.queue.GenerateTypename(queue.TypeNames.DeleteExpiredVerificationCodes), func(bgCtx context.Context, t *asynq.Task) error {
-		return queue.ProcessTask[domain.QueueDeleteExpiredVerificationCodesPayload](bgCtx, t, queue.ParsePayload[domain.QueueDeleteExpiredVerificationCodesPayload], w.DeleteExpiredVerificationCodes)
+	server.HandleFunc(w.queue.GenerateTypename(queue.TypeNames.CleanupStaleVerificationCodes), func(bgCtx context.Context, t *asynq.Task) error {
+		return queue.ProcessTask[domain.QueueCleanupStaleVerificationCodesPayload](bgCtx, t, queue.ParsePayload[domain.QueueCleanupStaleVerificationCodesPayload], w.CleanupStaleVerificationCodes)
 	})
 }
 
@@ -82,9 +82,9 @@ func (w Worker) addCronjob() {
 		ctx  = appcontext.NewWorker(context.Background())
 		jobs = []cronjobData{
 			{
-				Task:       w.queue.GenerateTypename(queue.TypeNames.DeleteExpiredVerificationCodes),
+				Task:       w.queue.GenerateTypename(queue.TypeNames.CleanupStaleVerificationCodes),
 				CronSpec:   "0 */1 * * *", // every day
-				Payload:    domain.QueueDeleteExpiredVerificationCodesPayload{},
+				Payload:    domain.QueueCleanupStaleVerificationCodesPayload{},
 				RetryTimes: 3,
 			},
 		}
