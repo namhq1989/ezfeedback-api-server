@@ -13,6 +13,8 @@ type NotificationRepository interface {
 	Create(ctx *appcontext.AppContext, notification Notification) error
 	FindWithFilter(ctx *appcontext.AppContext, filter NotificationFilter) ([]Notification, error)
 	CleanupStale(ctx *appcontext.AppContext) error
+
+	GenerateNewFeedbackContent(_ *appcontext.AppContext, language string, projectTitle string) string
 }
 
 type Notification struct {

@@ -83,3 +83,17 @@ func (mr *MockNotificationRepositoryMockRecorder) FindWithFilter(ctx, filter any
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "FindWithFilter", reflect.TypeOf((*MockNotificationRepository)(nil).FindWithFilter), ctx, filter)
 }
+
+// GenerateNewFeedbackContent mocks base method.
+func (m *MockNotificationRepository) GenerateNewFeedbackContent(arg0 *appcontext.AppContext, language, projectTitle string) string {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "GenerateNewFeedbackContent", arg0, language, projectTitle)
+	ret0, _ := ret[0].(string)
+	return ret0
+}
+
+// GenerateNewFeedbackContent indicates an expected call of GenerateNewFeedbackContent.
+func (mr *MockNotificationRepositoryMockRecorder) GenerateNewFeedbackContent(arg0, language, projectTitle any) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GenerateNewFeedbackContent", reflect.TypeOf((*MockNotificationRepository)(nil).GenerateNewFeedbackContent), arg0, language, projectTitle)
+}
