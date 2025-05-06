@@ -1,6 +1,6 @@
 package domain
 
 type NotificationMetadata struct {
-	ProjectName  string
-	CampaignName string
+	ProjectID    string
+	ProjectTitle string
 }

@@ -16,6 +16,7 @@ type ProjectCampaignHubData struct {
 
 type Project struct {
 	ID      string
+	UserID  string
 	Title   string
 	Status  Status
 	Setting ProjectSetting

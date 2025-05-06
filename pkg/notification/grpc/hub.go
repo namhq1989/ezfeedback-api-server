@@ -8,6 +8,7 @@ import (
 
 type (
 	Hubs interface {
+		CreateNewFeedbackNotificationDocument(ctx *appcontext.AppContext, req *notificationpb.CreateNewFeedbackNotificationDocumentRequest) (*notificationpb.CreateNewFeedbackNotificationDocumentResponse, error)
 		CreateNotificationReminder(ctx *appcontext.AppContext, req *notificationpb.CreateNotificationReminderRequest) (*notificationpb.CreateNotificationReminderResponse, error)
 	}
 	App interface {
@@ -15,6 +16,7 @@ type (
 	}
 
 	appHubHandler struct {
+		CreateNewFeedbackNotificationDocumentHandler
 		CreateNotificationReminderHandler
 	}
 	Application struct {
@@ -25,11 +27,13 @@ type (
 var _ App = (*Application)(nil)
 
 func New(
+	notificationRepository domain.NotificationRepository,
 	notificationReminderRepository domain.NotificationReminderRepository,
 ) *Application {
 	return &Application{
 		appHubHandler: appHubHandler{
-			CreateNotificationReminderHandler: NewCreateNotificationReminderHandler(notificationReminderRepository),
+			CreateNewFeedbackNotificationDocumentHandler: NewCreateNewFeedbackNotificationDocumentHandler(notificationRepository),
+			CreateNotificationReminderHandler:            NewCreateNotificationReminderHandler(notificationReminderRepository),
 		},
 	}
 }

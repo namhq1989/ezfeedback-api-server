@@ -19,13 +19,15 @@ import (
 const _ = grpc.SupportPackageIsVersion9
 
 const (
-	NotificationService_CreateNotificationReminder_FullMethodName = "/notificationpb.NotificationService/CreateNotificationReminder"
+	NotificationService_CreateNewFeedbackNotificationDocument_FullMethodName = "/notificationpb.NotificationService/CreateNewFeedbackNotificationDocument"
+	NotificationService_CreateNotificationReminder_FullMethodName            = "/notificationpb.NotificationService/CreateNotificationReminder"
 )
 
 // NotificationServiceClient is the client API for NotificationService service.
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type NotificationServiceClient interface {
+	CreateNewFeedbackNotificationDocument(ctx context.Context, in *CreateNewFeedbackNotificationDocumentRequest, opts ...grpc.CallOption) (*CreateNewFeedbackNotificationDocumentResponse, error)
 	CreateNotificationReminder(ctx context.Context, in *CreateNotificationReminderRequest, opts ...grpc.CallOption) (*CreateNotificationReminderResponse, error)
 }
 
@@ -35,6 +37,16 @@ type notificationServiceClient struct {
 
 func NewNotificationServiceClient(cc grpc.ClientConnInterface) NotificationServiceClient {
 	return &notificationServiceClient{cc}
+}
+
+func (c *notificationServiceClient) CreateNewFeedbackNotificationDocument(ctx context.Context, in *CreateNewFeedbackNotificationDocumentRequest, opts ...grpc.CallOption) (*CreateNewFeedbackNotificationDocumentResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(CreateNewFeedbackNotificationDocumentResponse)
+	err := c.cc.Invoke(ctx, NotificationService_CreateNewFeedbackNotificationDocument_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
 }
 
 func (c *notificationServiceClient) CreateNotificationReminder(ctx context.Context, in *CreateNotificationReminderRequest, opts ...grpc.CallOption) (*CreateNotificationReminderResponse, error) {
@@ -51,6 +63,7 @@ func (c *notificationServiceClient) CreateNotificationReminder(ctx context.Conte
 // All implementations should embed UnimplementedNotificationServiceServer
 // for forward compatibility.
 type NotificationServiceServer interface {
+	CreateNewFeedbackNotificationDocument(context.Context, *CreateNewFeedbackNotificationDocumentRequest) (*CreateNewFeedbackNotificationDocumentResponse, error)
 	CreateNotificationReminder(context.Context, *CreateNotificationReminderRequest) (*CreateNotificationReminderResponse, error)
 }
 
@@ -61,6 +74,9 @@ type NotificationServiceServer interface {
 // pointer dereference when methods are called.
 type UnimplementedNotificationServiceServer struct{}
 
+func (UnimplementedNotificationServiceServer) CreateNewFeedbackNotificationDocument(context.Context, *CreateNewFeedbackNotificationDocumentRequest) (*CreateNewFeedbackNotificationDocumentResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method CreateNewFeedbackNotificationDocument not implemented")
+}
 func (UnimplementedNotificationServiceServer) CreateNotificationReminder(context.Context, *CreateNotificationReminderRequest) (*CreateNotificationReminderResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method CreateNotificationReminder not implemented")
 }
@@ -82,6 +98,24 @@ func RegisterNotificationServiceServer(s grpc.ServiceRegistrar, srv Notification
 		t.testEmbeddedByValue()
 	}
 	s.RegisterService(&NotificationService_ServiceDesc, srv)
+}
+
+func _NotificationService_CreateNewFeedbackNotificationDocument_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(CreateNewFeedbackNotificationDocumentRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(NotificationServiceServer).CreateNewFeedbackNotificationDocument(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: NotificationService_CreateNewFeedbackNotificationDocument_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(NotificationServiceServer).CreateNewFeedbackNotificationDocument(ctx, req.(*CreateNewFeedbackNotificationDocumentRequest))
+	}
+	return interceptor(ctx, in, info, handler)
 }
 
 func _NotificationService_CreateNotificationReminder_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
@@ -109,6 +143,10 @@ var NotificationService_ServiceDesc = grpc.ServiceDesc{
 	ServiceName: "notificationpb.NotificationService",
 	HandlerType: (*NotificationServiceServer)(nil),
 	Methods: []grpc.MethodDesc{
+		{
+			MethodName: "CreateNewFeedbackNotificationDocument",
+			Handler:    _NotificationService_CreateNewFeedbackNotificationDocument_Handler,
+		},
 		{
 			MethodName: "CreateNotificationReminder",
 			Handler:    _NotificationService_CreateNotificationReminder_Handler,

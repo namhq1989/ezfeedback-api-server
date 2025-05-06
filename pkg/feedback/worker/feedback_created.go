@@ -7,11 +7,16 @@ import (
 )
 
 type FeedbackCreatedHandler struct {
+	projectHub      domain.ProjectHub
 	notificationHub domain.NotificationHub
 }
 
-func NewFeedbackCreatedHandler(notificationHub domain.NotificationHub) FeedbackCreatedHandler {
+func NewFeedbackCreatedHandler(
+	projectHub domain.ProjectHub,
+	notificationHub domain.NotificationHub,
+) FeedbackCreatedHandler {
 	return FeedbackCreatedHandler{
+		projectHub:      projectHub,
 		notificationHub: notificationHub,
 	}
 }
@@ -22,13 +27,25 @@ func (h FeedbackCreatedHandler) FeedbackCreated(ctx *appcontext.AppContext, payl
 	ctx.SetContext(spanCtx)
 	defer span.End()
 
+	ctx.Logger().Text("find project data via grpc")
+	project, err := h.projectHub.GetProjectByID(ctx, payload.Feedback.ProjectID)
+	if err != nil {
+		ctx.Logger().Error("failed to find project data via grpc", err, appcontext.Fields{})
+		return err
+	}
+
 	ctx.Logger().Text("create notification reminder")
-	if err := h.notificationHub.CreateNotificationReminder(ctx, payload.Feedback.ProjectID); err != nil {
+	if err = h.notificationHub.CreateNotificationReminder(ctx, payload.Feedback.ProjectID); err != nil {
 		ctx.Logger().Error("failed to create notification reminder", err, appcontext.Fields{})
 	}
 
-	// call Notification service to create a notification
-	// check & create project user
+	ctx.Logger().Text("create notification document")
+	if err = h.notificationHub.CreateNewFeedbackNotificationDocument(ctx, project.UserID, domain.NotificationMetadata{
+		ProjectID:    project.ID,
+		ProjectTitle: project.Title,
+	}); err != nil {
+		ctx.Logger().Error("failed to create notification document", err, appcontext.Fields{})
+	}
 
 	return nil
 }

@@ -36,6 +36,7 @@ func (h GetProjectByIDHandler) GetProjectById(ctx *appcontext.AppContext, req *p
 	return &projectpb.GetProjectByIdResponse{
 		Project: &projectpb.Project{
 			Id:      project.ID,
+			UserId:  project.UserID,
 			Title:   project.Title,
 			Status:  project.Status.String(),
 			Setting: nil,

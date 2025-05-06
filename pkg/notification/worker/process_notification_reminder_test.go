@@ -52,7 +52,7 @@ func (s *processNotificationReminderTestSuite) TearDownTest() {
 // CASES
 //
 
-func (s *processNotificationReminderTestSuite) Test_1_Success_HasReminders() {
+func (s *processNotificationReminderTestSuite) Test_1_Success() {
 	// mock
 	s.mockFeedbackHub.EXPECT().
 		GetProjectStatsForNotificationReminder(gomock.Any(), gomock.Any(), gomock.Any(), gomock.Any()).
@@ -76,6 +76,10 @@ func (s *processNotificationReminderTestSuite) Test_1_Success_HasReminders() {
 		SendNewFeedbackEmail(gomock.Any(), gomock.Any(), gomock.Any()).
 		Return(nil).
 		AnyTimes()
+
+	s.mockNotificationReminderRepository.EXPECT().
+		Delete(gomock.Any(), gomock.Any()).
+		Return(nil)
 
 	// call
 	ctx := appcontext.NewGRPC(context.Background())

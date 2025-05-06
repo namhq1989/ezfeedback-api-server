@@ -64,3 +64,5 @@ billing_feedback_limit_exceeded = "Cảm ơn bạn đã quan tâm. Đội ngũ h
 
 # notification
 notification_user_project_notification_setting_not_found = "Không tìm thấy cài đặt thông báo"
+notification_invalid_metadata = "Dữ liệu không hợp lệ"
+notification_invalid_type = "Loại không hợp lệ"

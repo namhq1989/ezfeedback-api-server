@@ -74,6 +74,7 @@ tasks:
       - mockgen -source=pkg/feedback/domain/externalapi.go -destination=internal/mock/feedback/externalapi.go -package=mockfeedback
       - mockgen -source=pkg/feedback/domain/billing.go -destination=internal/mock/feedback/billing.go -package=mockfeedback
       - mockgen -source=pkg/feedback/domain/project.go -destination=internal/mock/feedback/project.go -package=mockfeedback
+      - mockgen -source=pkg/feedback/domain/notification.go -destination=internal/mock/feedback/notification.go -package=mockfeedback
       - mockgen -source=pkg/feedback/domain/service.go -destination=internal/mock/feedback/service.go -package=mockfeedback
 
       # notification

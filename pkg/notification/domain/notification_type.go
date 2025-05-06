@@ -16,6 +16,14 @@ func (n NotificationType) IsValid() bool {
 	return n != NotificationTypeUnknown
 }
 
+func (n NotificationType) IsNewFeedback() bool {
+	return n == NotificationTypeNewFeedback
+}
+
+func (n NotificationType) IsSystem() bool {
+	return n == NotificationTypeSystem
+}
+
 func ToNotificationType(s string) NotificationType {
 	switch s {
 	case NotificationTypeNewFeedback.String():

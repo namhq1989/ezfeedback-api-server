@@ -3,8 +3,26 @@ syntax = "proto3";
 package notificationpb;
 
 service NotificationService {
+  rpc CreateNewFeedbackNotificationDocument(CreateNewFeedbackNotificationDocumentRequest) returns (CreateNewFeedbackNotificationDocumentResponse);
   rpc CreateNotificationReminder(CreateNotificationReminderRequest) returns (CreateNotificationReminderResponse) {}
 }
+
+//
+// CREATE NOTIFICATION DOCUMENT
+//
+
+message CreateNewFeedbackNotificationDocumentRequest {
+  string traceId = 1;
+  string userId = 2;
+  CreateNewFeedbackNotificationDocumentMetadata metadata = 3;
+}
+
+message CreateNewFeedbackNotificationDocumentMetadata {
+  string projectId = 1;
+  string projectTitle = 2;
+}
+
+message CreateNewFeedbackNotificationDocumentResponse {}
 
 //
 // CREATE NOTIFICATION REMINDER
