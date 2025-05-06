@@ -21,7 +21,6 @@ import (
 type MockExternalAPIRepository struct {
 	ctrl     *gomock.Controller
 	recorder *MockExternalAPIRepositoryMockRecorder
-	isgomock struct{}
 }
 
 // MockExternalAPIRepositoryMockRecorder is the mock recorder for MockExternalAPIRepository.

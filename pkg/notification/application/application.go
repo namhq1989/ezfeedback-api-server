@@ -11,11 +11,15 @@ import (
 type (
 	Commands interface {
 		UpdateUserProjectNotificationSetting(ctx *appcontext.AppContext, performerID string, req dto.UpdateUserProjectNotificationSettingRequest) (*dto.UpdateUserProjectNotificationSettingResponse, error)
+
+		ReadNotification(ctx *appcontext.AppContext, performerID, notificationID string, _ dto.ReadNotificationRequest) (*dto.ReadNotificationResponse, error)
+		DeleteNotification(ctx *appcontext.AppContext, performerID, notificationID string, _ dto.DeleteNotificationRequest) (*dto.DeleteNotificationResponse, error)
 	}
 	Queries interface {
 		Ping(ctx *appcontext.AppContext, _ dto.PingRequest) (*dto.PingResponse, error)
 
 		GetNotifications(ctx *appcontext.AppContext, performerID string, req dto.GetNotificationsRequest) (*dto.GetNotificationResponse, error)
+		CountNotifications(ctx *appcontext.AppContext, performerID string, req dto.CountNotificationsRequest) (*dto.CountNotificationResponse, error)
 		GetUserProjectNotificationSetting(ctx *appcontext.AppContext, performerID string, req dto.GetUserProjectNotificationSettingRequest) (*dto.GetUserProjectNotificationSettingResponse, error)
 	}
 	Instance interface {
@@ -25,11 +29,15 @@ type (
 
 	commandHandlers struct {
 		command.UpdateUserProjectNotificationSettingHandler
+
+		command.ReadNotificationHandler
+		command.DeleteNotificationHandler
 	}
 	queryHandlers struct {
 		query.PingHandler
 
 		query.GetNotificationsHandler
+		query.CountNotificationsHandler
 		query.GetUserProjectNotificationSettingHandler
 	}
 	Application struct {
@@ -53,11 +61,15 @@ func New(
 				cachingRepository,
 				service,
 			),
+
+			ReadNotificationHandler:   command.NewReadNotificationHandler(notificationRepository),
+			DeleteNotificationHandler: command.NewDeleteNotificationHandler(notificationRepository),
 		},
 		queryHandlers: queryHandlers{
 			PingHandler: query.NewPingHandler(),
 
 			GetNotificationsHandler:                  query.NewGetNotificationsHandler(notificationRepository),
+			CountNotificationsHandler:                query.NewCountNotificationsHandler(notificationRepository),
 			GetUserProjectNotificationSettingHandler: query.NewGetUserProjectNotificationSettingHandler(service),
 		},
 	}

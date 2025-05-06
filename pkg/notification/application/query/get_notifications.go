@@ -23,6 +23,7 @@ func NewGetNotificationsHandler(notificationRepository domain.NotificationReposi
 // @security ApiKeyAuth
 // @accept   json
 // @produce  json
+// @param    Accept-Language  header  string  true "en|vi"
 // @param    payload query    dto.GetNotificationsRequest true "Query"
 // @success  200     {object} dto.GetNotificationResponse
 // @router   /api/notification [get]

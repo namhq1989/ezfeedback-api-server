@@ -63,6 +63,8 @@ billing_project_limit_exceeded = "Tài khoản của bạn đã đạt đến s�
 billing_feedback_limit_exceeded = "Cảm ơn bạn đã quan tâm. Đội ngũ hiện đang xử lý các phản hồi đã nhận và tạm thời tạm dừng nhận phản hồi mới. Vui lòng quay lại sau"
 
 # notification
+notification_not_found = "Không tìm thấy thông báo"
+notification_invalid_id = "ID thông báo không hợp lệ"
 notification_user_project_notification_setting_not_found = "Không tìm thấy cài đặt thông báo"
 notification_invalid_metadata = "Dữ liệu không hợp lệ"
 notification_invalid_type = "Loại không hợp lệ"

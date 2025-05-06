@@ -63,6 +63,8 @@ billing_project_limit_exceeded = "Your account has reached the maximum number of
 billing_feedback_limit_exceeded = "Thank you for your interest. The team is currently processing existing feedback and has temporarily paused new submissions. Please check back later"
 
 # notification
+notification_not_found = "Notification not found"
+notification_invalid_id = "Invalid notification id"
 notification_user_project_notification_setting_not_found = "User project notification setting not found"
 notification_invalid_metadata = "Invalid metadata"
 notification_invalid_type = "Invalid type"

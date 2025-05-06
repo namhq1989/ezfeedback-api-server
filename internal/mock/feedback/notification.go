@@ -21,7 +21,6 @@ import (
 type MockNotificationHub struct {
 	ctrl     *gomock.Controller
 	recorder *MockNotificationHubMockRecorder
-	isgomock struct{}
 }
 
 // MockNotificationHubMockRecorder is the mock recorder for MockNotificationHub.

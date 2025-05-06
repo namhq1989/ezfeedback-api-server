@@ -21,7 +21,6 @@ import (
 type MockNotificationRepository struct {
 	ctrl     *gomock.Controller
 	recorder *MockNotificationRepositoryMockRecorder
-	isgomock struct{}
 }
 
 // MockNotificationRepositoryMockRecorder is the mock recorder for MockNotificationRepository.
@@ -55,6 +54,21 @@ func (mr *MockNotificationRepositoryMockRecorder) CleanupStale(ctx any) *gomock.
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "CleanupStale", reflect.TypeOf((*MockNotificationRepository)(nil).CleanupStale), ctx)
 }
 
+// CountWithFilter mocks base method.
+func (m *MockNotificationRepository) CountWithFilter(ctx *appcontext.AppContext, filter domain.NotificationFilter) (int64, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "CountWithFilter", ctx, filter)
+	ret0, _ := ret[0].(int64)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// CountWithFilter indicates an expected call of CountWithFilter.
+func (mr *MockNotificationRepositoryMockRecorder) CountWithFilter(ctx, filter any) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "CountWithFilter", reflect.TypeOf((*MockNotificationRepository)(nil).CountWithFilter), ctx, filter)
+}
+
 // Create mocks base method.
 func (m *MockNotificationRepository) Create(ctx *appcontext.AppContext, notification domain.Notification) error {
 	m.ctrl.T.Helper()
@@ -67,6 +81,35 @@ func (m *MockNotificationRepository) Create(ctx *appcontext.AppContext, notifica
 func (mr *MockNotificationRepositoryMockRecorder) Create(ctx, notification any) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Create", reflect.TypeOf((*MockNotificationRepository)(nil).Create), ctx, notification)
+}
+
+// Delete mocks base method.
+func (m *MockNotificationRepository) Delete(ctx *appcontext.AppContext, notification domain.Notification) error {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "Delete", ctx, notification)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// Delete indicates an expected call of Delete.
+func (mr *MockNotificationRepositoryMockRecorder) Delete(ctx, notification any) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Delete", reflect.TypeOf((*MockNotificationRepository)(nil).Delete), ctx, notification)
+}
+
+// FindByID mocks base method.
+func (m *MockNotificationRepository) FindByID(ctx *appcontext.AppContext, id string) (*domain.Notification, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "FindByID", ctx, id)
+	ret0, _ := ret[0].(*domain.Notification)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// FindByID indicates an expected call of FindByID.
+func (mr *MockNotificationRepositoryMockRecorder) FindByID(ctx, id any) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "FindByID", reflect.TypeOf((*MockNotificationRepository)(nil).FindByID), ctx, id)
 }
 
 // FindWithFilter mocks base method.
@@ -96,4 +139,18 @@ func (m *MockNotificationRepository) GenerateNewFeedbackContent(arg0 *appcontext
 func (mr *MockNotificationRepositoryMockRecorder) GenerateNewFeedbackContent(arg0, language, projectTitle any) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GenerateNewFeedbackContent", reflect.TypeOf((*MockNotificationRepository)(nil).GenerateNewFeedbackContent), arg0, language, projectTitle)
+}
+
+// Update mocks base method.
+func (m *MockNotificationRepository) Update(ctx *appcontext.AppContext, notification domain.Notification) error {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "Update", ctx, notification)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// Update indicates an expected call of Update.
+func (mr *MockNotificationRepositoryMockRecorder) Update(ctx, notification any) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Update", reflect.TypeOf((*MockNotificationRepository)(nil).Update), ctx, notification)
 }

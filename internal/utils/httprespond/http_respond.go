@@ -4,6 +4,7 @@ import (
 	"errors"
 	"net/http"
 	"reflect"
+	"strings"
 
 	"github.com/labstack/echo/v4"
 	apperrors "github.com/namhq1989/ezfeedback-api-server/internal/error"
@@ -44,19 +45,20 @@ func R200(c echo.Context, data interface{}) error {
 
 // R400 bad request
 func R400(c echo.Context, err error, data interface{}) error {
+	if err == nil {
+		err = apperrors.Common.BadRequest
+	}
+
 	// redirect to 403 if error is not_allowed
 	if errors.Is(err, apperrors.Auth.NotAllowed) {
 		return R403(c, err, data)
 	}
 
 	// redirect to 404 if error is not_found
-	if errors.Is(err, apperrors.Common.NotFound) {
+	if strings.Contains(err.Error(), "not_found") {
 		return R404(c, err, data)
 	}
 
-	if err == nil {
-		err = apperrors.Common.BadRequest
-	}
 	return sendResponse(c, http.StatusBadRequest, err, data)
 }
 
