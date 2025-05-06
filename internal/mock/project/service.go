@@ -21,6 +21,7 @@ import (
 type MockService struct {
 	ctrl     *gomock.Controller
 	recorder *MockServiceMockRecorder
+	isgomock struct{}
 }
 
 // MockServiceMockRecorder is the mock recorder for MockService.
@@ -113,6 +114,21 @@ func (m *MockService) GetProjectCategory(ctx *appcontext.AppContext, projectID, 
 func (mr *MockServiceMockRecorder) GetProjectCategory(ctx, projectID, categoryID, userID any) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetProjectCategory", reflect.TypeOf((*MockService)(nil).GetProjectCategory), ctx, projectID, categoryID, userID)
+}
+
+// GetProjectCollaboratorsByProjectID mocks base method.
+func (m *MockService) GetProjectCollaboratorsByProjectID(ctx *appcontext.AppContext, projectID string) ([]domain.ProjectCollaborator, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "GetProjectCollaboratorsByProjectID", ctx, projectID)
+	ret0, _ := ret[0].([]domain.ProjectCollaborator)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// GetProjectCollaboratorsByProjectID indicates an expected call of GetProjectCollaboratorsByProjectID.
+func (mr *MockServiceMockRecorder) GetProjectCollaboratorsByProjectID(ctx, projectID any) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetProjectCollaboratorsByProjectID", reflect.TypeOf((*MockService)(nil).GetProjectCollaboratorsByProjectID), ctx, projectID)
 }
 
 // GetProjectSettingByProjectID mocks base method.

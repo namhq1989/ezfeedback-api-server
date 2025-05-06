@@ -48,6 +48,7 @@ project_invalid_campaign_type = "Invalid campaign type"
 project_campaign_type_limit_exceeded = "Your project has reached the maximum number of campaign types allowed"
 project_invalid_domain = "Invalid domain"
 project_invalid_primary_color = "Invalid primary color"
+project_invalid_collaborator = "Invalid collaborator"
 
 # feedback
 feedback_invalid_id = "Invalid feedback id"

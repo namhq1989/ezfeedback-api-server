@@ -5,6 +5,7 @@ import (
 )
 
 type ProjectHub interface {
+	GetProjectByID(ctx *appcontext.AppContext, projectID string) (*Project, error)
 	GetProjectCampaignByID(ctx *appcontext.AppContext, campaignID string) (*ProjectCampaignHubData, error)
 }
 
@@ -15,6 +16,7 @@ type ProjectCampaignHubData struct {
 
 type Project struct {
 	ID      string
+	Title   string
 	Status  Status
 	Setting ProjectSetting
 }

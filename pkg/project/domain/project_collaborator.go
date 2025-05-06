@@ -5,8 +5,18 @@ import (
 
 	apperrors "github.com/namhq1989/ezfeedback-api-server/internal/error"
 	"github.com/namhq1989/ezfeedback-api-server/internal/utils/manipulation"
+	"github.com/namhq1989/go-utilities/appcontext"
 	"github.com/namhq1989/go-utilities/uuid"
 )
+
+type ProjectCollaboratorRepository interface {
+	Create(ctx *appcontext.AppContext, collaborator ProjectCollaborator) error
+	Update(ctx *appcontext.AppContext, collaborator ProjectCollaborator) error
+	Delete(ctx *appcontext.AppContext, collaborator ProjectCollaborator) error
+	FindByID(ctx *appcontext.AppContext, collaboratorID string) (*ProjectCollaborator, error)
+	FindByProjectID(ctx *appcontext.AppContext, projectID string) ([]ProjectCollaborator, error)
+	CountTotalByProjectID(ctx *appcontext.AppContext, projectID string) (int64, error)
+}
 
 type ProjectCollaborator struct {
 	ID        string

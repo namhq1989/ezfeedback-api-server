@@ -1,0 +1,18 @@
+syntax = "proto3";
+
+package notificationpb;
+
+service NotificationService {
+  rpc CreateNotificationReminder(CreateNotificationReminderRequest) returns (CreateNotificationReminderResponse) {}
+}
+
+//
+// CREATE NOTIFICATION REMINDER
+//
+
+message CreateNotificationReminderRequest {
+  string traceId = 1;
+  string projectId = 2;
+}
+
+message CreateNotificationReminderResponse {}

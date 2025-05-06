@@ -1,0 +1,2 @@
+- When a new project created:
+  - [ ] Create project collaborator document for the owner

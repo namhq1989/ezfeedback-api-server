@@ -7,6 +7,7 @@ type Service interface {
 	GetProjectSettingByProjectID(ctx *appcontext.AppContext, projectID string) (*ProjectSetting, error)
 	GetProjectCategoriesByProjectID(ctx *appcontext.AppContext, projectID string, status Status) ([]ProjectCategory, error)
 	GetProjectCampaignsByProjectID(ctx *appcontext.AppContext, projectID string) ([]ProjectCampaign, error)
+	GetProjectCollaboratorsByProjectID(ctx *appcontext.AppContext, projectID string) ([]ProjectCollaborator, error)
 	GetProjectCampaign(ctx *appcontext.AppContext, projectID, campaignID, userID string) (*ProjectCampaign, error)
 	GetProjectCategory(ctx *appcontext.AppContext, projectID, categoryID, userID string) (*ProjectCategory, error)
 }

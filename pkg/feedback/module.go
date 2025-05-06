@@ -4,6 +4,7 @@ import (
 	"github.com/namhq1989/ezfeedback-api-server/internal/grpcclient"
 	"github.com/namhq1989/ezfeedback-api-server/internal/monolith"
 	"github.com/namhq1989/ezfeedback-api-server/pkg/feedback/application"
+	"github.com/namhq1989/ezfeedback-api-server/pkg/feedback/grpc"
 	"github.com/namhq1989/ezfeedback-api-server/pkg/feedback/infrastructure"
 	"github.com/namhq1989/ezfeedback-api-server/pkg/feedback/rest"
 	"github.com/namhq1989/ezfeedback-api-server/pkg/feedback/shared"
@@ -28,13 +29,20 @@ func (Module) Startup(ctx *appcontext.AppContext, mono monolith.Monolith) error 
 		return err
 	}
 
+	notificationGRPCClient, err := grpcclient.NewNotificationClient(ctx, mono.Config().GRPCPort)
+	if err != nil {
+		return err
+	}
+
 	var (
 		feedbackRepository    = infrastructure.NewFeedbackRepository(mono.Database())
 		queueRepository       = infrastructure.NewQueueRepository(mono.Queue())
 		cachingRepository     = infrastructure.NewCachingRepository(mono.Caching(), mono.Config().IsEnvRelease)
 		externalAPIRepository = infrastructure.NewExternalAPIRepository(mono.ExternalAPI())
+		feedbackHub           = infrastructure.NewFeedbackHub(mono.Database())
 		billingHub            = infrastructure.NewBillingHub(billingGRPCClient)
 		projectHub            = infrastructure.NewProjectHub(projectGRPCClient)
+		notificationHub       = infrastructure.NewNotificationHub(notificationGRPCClient)
 
 		service = shared.NewService(
 			cachingRepository,
@@ -48,6 +56,11 @@ func (Module) Startup(ctx *appcontext.AppContext, mono monolith.Monolith) error 
 			projectHub,
 			service,
 		)
+
+		hub = grpc.New(
+			feedbackHub,
+			projectHub,
+		)
 	)
 
 	// rest server
@@ -55,9 +68,15 @@ func (Module) Startup(ctx *appcontext.AppContext, mono monolith.Monolith) error 
 		return err
 	}
 
+	// grpc
+	if err = grpc.RegisterServer(ctx, mono.RPC(), hub); err != nil {
+		return err
+	}
+
 	// worker
 	w := worker.New(
 		mono.Queue(),
+		notificationHub,
 	)
 	w.Start()
 

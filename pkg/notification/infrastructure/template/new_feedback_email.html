@@ -1,0 +1,71 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>EasyFeedback</title>
+  <link
+          href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700&display=swap"
+          rel="stylesheet"
+  />
+</head>
+<body
+        style="
+      font-family: 'Inter', sans-serif;
+      font-size: 12px;
+      background-color: #e2e4e9;
+      margin: 0;
+      padding: 10px;
+      color: #4b4e68;
+    "
+>
+<div style="max-width: 600px; margin: auto">
+  <div style="background-color: #ffffff; padding: 20px; border-radius: 0.75rem 0.75rem 0 0;">
+    <center>
+      <img
+              src="https://ez.bapbi.app/logo.png"
+              alt="Easy Feedback"
+              height="100"
+      />
+    </center>
+    <div style="height: 30px"></div>
+
+    <div style="font-weight: 600; color: #4b4e68;">Hi there,</div>
+
+    <div style="height: 10px"></div>
+
+    <div>
+      Good news! Your project <span style="font-weight: 600">{{projectName}}</span> has received {{feedbackCount}} new {{feedbackLabel}}.
+    </div>
+
+    <div style="height: 30px"></div>
+
+    {{feedbackItemsContent}}
+
+    <a href="{{dashboardUrl}}" style="display: block; background-color: #8839ef; color: #ffffff; text-align: center; padding: 12px; border-radius: 0.75rem; text-decoration: none; font-weight: 600;">
+      View All Feedback
+    </a>
+
+    <div style="height: 30px"></div>
+    <div>
+      We've highlighted a sample of your feedback above. Visit your dashboard to see all feedback and respond to your users.
+    </div>
+
+    <div style="height: 10px"></div>
+    <div>
+      If you need assistance, don't hesitate to contact us at <span style="font-weight: 600;color: #8839ef;">support@easyfeedback.com</span>
+    </div>
+    <div style="height: 30px"></div>
+    <div>
+      Have a great day!
+    </div>
+
+    <div style="height: 10px"></div>
+    <div>Regards,</div>
+    <div style="height: 5px"></div>
+    <div style="font-weight: 600;">EasyFeedback Team</div>
+  </div>
+  <div style="background-color: #8839ef; height: 18px; border-radius: 0 0 0.75rem 0.75rem;"></div>
+</div>
+</body>
+</html>

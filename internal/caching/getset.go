@@ -46,5 +46,5 @@ func (c Caching) Del(ctx *appcontext.AppContext, key string) (int64, error) {
 }
 
 func (Caching) GenerateKey(domain, key string) string {
-	return fmt.Sprintf("ezfbapi:caching:%s:%s", domain, key)
+	return fmt.Sprintf("ezfb_apiServer:caching:%s:%s", domain, key)
 }

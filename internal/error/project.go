@@ -13,6 +13,7 @@ var Project = struct {
 	CampaignTypeLimitExceeded error
 	InvalidDomain             error
 	InvalidPrimaryColor       error
+	InvalidCollaborator       error
 }{
 	InvalidProjectID:          errors.New("project_invalid_id"),
 	ProjectNotFound:           errors.New("project_not_found"),
@@ -24,4 +25,5 @@ var Project = struct {
 	CampaignTypeLimitExceeded: errors.New("project_campaign_type_limit_exceeded"),
 	InvalidDomain:             errors.New("project_invalid_domain"),
 	InvalidPrimaryColor:       errors.New("project_invalid_primary_color"),
+	InvalidCollaborator:       errors.New("project_invalid_collaborator"),
 }

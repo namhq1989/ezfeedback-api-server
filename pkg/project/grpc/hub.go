@@ -8,14 +8,18 @@ import (
 
 type (
 	Hubs interface {
+		GetProjectById(ctx *appcontext.AppContext, req *projectpb.GetProjectByIdRequest) (*projectpb.GetProjectByIdResponse, error)
 		GetProjectCampaignByID(ctx *appcontext.AppContext, req *projectpb.GetProjectCampaignByIdRequest) (*projectpb.GetProjectCampaignByIdResponse, error)
+		GetProjectCollaborators(ctx *appcontext.AppContext, req *projectpb.GetProjectCollaboratorsRequest) (*projectpb.GetProjectCollaboratorsResponse, error)
 	}
 	App interface {
 		Hubs
 	}
 
 	appHubHandler struct {
+		GetProjectByIDHandler
 		GetProjectCampaignByIDHandler
+		GetProjectCollaboratorsHandler
 	}
 	Application struct {
 		appHubHandler
@@ -26,10 +30,14 @@ var _ App = (*Application)(nil)
 
 func New(
 	projectCampaignHub domain.ProjectCampaignHub,
+	iamHub domain.IAMHub,
+	service domain.Service,
 ) *Application {
 	return &Application{
 		appHubHandler: appHubHandler{
-			GetProjectCampaignByIDHandler: NewGetProjectCampaignByIDHandler(projectCampaignHub),
+			GetProjectByIDHandler:          NewGetProjectByIDHandler(service),
+			GetProjectCampaignByIDHandler:  NewGetProjectCampaignByIDHandler(projectCampaignHub),
+			GetProjectCollaboratorsHandler: NewGetProjectCollaboratorsHandler(iamHub, service),
 		},
 	}
 }

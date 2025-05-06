@@ -9,7 +9,7 @@ import (
 )
 
 const (
-	typenamePrefix = "wdapp"
+	typenamePrefix = "ezfbapi"
 	queueDefault   = "default"
 	queueCronjob   = "cronjob"
 

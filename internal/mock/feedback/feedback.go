@@ -11,6 +11,7 @@ package mockfeedback
 
 import (
 	reflect "reflect"
+	time "time"
 
 	domain "github.com/namhq1989/ezfeedback-api-server/pkg/feedback/domain"
 	appcontext "github.com/namhq1989/go-utilities/appcontext"
@@ -21,6 +22,7 @@ import (
 type MockFeedbackRepository struct {
 	ctrl     *gomock.Controller
 	recorder *MockFeedbackRepositoryMockRecorder
+	isgomock struct{}
 }
 
 // MockFeedbackRepositoryMockRecorder is the mock recorder for MockFeedbackRepository.
@@ -111,4 +113,58 @@ func (m *MockFeedbackRepository) Update(ctx *appcontext.AppContext, feedback dom
 func (mr *MockFeedbackRepositoryMockRecorder) Update(ctx, feedback any) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Update", reflect.TypeOf((*MockFeedbackRepository)(nil).Update), ctx, feedback)
+}
+
+// MockFeedbackHub is a mock of FeedbackHub interface.
+type MockFeedbackHub struct {
+	ctrl     *gomock.Controller
+	recorder *MockFeedbackHubMockRecorder
+	isgomock struct{}
+}
+
+// MockFeedbackHubMockRecorder is the mock recorder for MockFeedbackHub.
+type MockFeedbackHubMockRecorder struct {
+	mock *MockFeedbackHub
+}
+
+// NewMockFeedbackHub creates a new mock instance.
+func NewMockFeedbackHub(ctrl *gomock.Controller) *MockFeedbackHub {
+	mock := &MockFeedbackHub{ctrl: ctrl}
+	mock.recorder = &MockFeedbackHubMockRecorder{mock}
+	return mock
+}
+
+// EXPECT returns an object that allows the caller to indicate expected use.
+func (m *MockFeedbackHub) EXPECT() *MockFeedbackHubMockRecorder {
+	return m.recorder
+}
+
+// CountFeedbackForProjectSinceTimestamp mocks base method.
+func (m *MockFeedbackHub) CountFeedbackForProjectSinceTimestamp(ctx *appcontext.AppContext, projectID string, timestamp time.Time) (int64, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "CountFeedbackForProjectSinceTimestamp", ctx, projectID, timestamp)
+	ret0, _ := ret[0].(int64)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// CountFeedbackForProjectSinceTimestamp indicates an expected call of CountFeedbackForProjectSinceTimestamp.
+func (mr *MockFeedbackHubMockRecorder) CountFeedbackForProjectSinceTimestamp(ctx, projectID, timestamp any) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "CountFeedbackForProjectSinceTimestamp", reflect.TypeOf((*MockFeedbackHub)(nil).CountFeedbackForProjectSinceTimestamp), ctx, projectID, timestamp)
+}
+
+// FindFeedbackForProjectSinceTimestamp mocks base method.
+func (m *MockFeedbackHub) FindFeedbackForProjectSinceTimestamp(ctx *appcontext.AppContext, projectID string, timestamp time.Time, limit int64) ([]domain.Feedback, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "FindFeedbackForProjectSinceTimestamp", ctx, projectID, timestamp, limit)
+	ret0, _ := ret[0].([]domain.Feedback)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// FindFeedbackForProjectSinceTimestamp indicates an expected call of FindFeedbackForProjectSinceTimestamp.
+func (mr *MockFeedbackHubMockRecorder) FindFeedbackForProjectSinceTimestamp(ctx, projectID, timestamp, limit any) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "FindFeedbackForProjectSinceTimestamp", reflect.TypeOf((*MockFeedbackHub)(nil).FindFeedbackForProjectSinceTimestamp), ctx, projectID, timestamp, limit)
 }

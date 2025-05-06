@@ -1,0 +1,43 @@
+<div style="background-color: #e9ecf1; border-radius: 0.75rem; padding: 12px; margin-bottom: 10px;">
+    <!-- Header section with feedback type, project name, and email -->
+    <table width="100%" cellspacing="0" cellpadding="0" border="0" style="margin-bottom: 8px;">
+        <tr>
+            <!-- Left section: Feedback type and project name -->
+            <td align="left" valign="top" style="font-size: 13px; margin-bottom: 5px;">
+                <span style="display: inline-block; background-color: {{typeBadgeColor}}; color: {{typeBadgeTextColor}}; font-size: 10px; padding: 2px 6px; border-radius: 4px; font-weight: 500; margin-right: 2px;">
+                    {{feedbackType}}
+                </span>
+                <span style="font-weight: 600; color: #4b4e68;">{{projectName}}</span>
+            </td>
+            <!-- Right section: Email -->
+            <td align="right" valign="top" style="font-size: 13px;">
+                {{userIdentification}}
+            </td>
+        </tr>
+    </table>
+
+    <!-- Date and rating section -->
+    <table width="100%" cellspacing="0" cellpadding="0" border="0" style="margin-bottom: 20px;">
+        <tr>
+            <!-- Left: Creation date -->
+            <td align="left" style="font-size: 11px; color: #434956;">
+                {{createdAt}}
+            </td>
+            <!-- Right: Rating -->
+            <td align="right" style="font-size: 13px; color: #434956; position: relative; top: -4px;">
+                <span style="font-weight: bold;">{{rating}}</span>/{{maxRating}}
+            </td>
+        </tr>
+    </table>
+
+    <!-- Content section -->
+    {{#if hasContent}}
+    <table width="100%" cellspacing="0" cellpadding="0" border="0">
+        <tr>
+            <td style="color: #404359; font-size: 13px; line-height: 1.4;">
+                {{content}}
+            </td>
+        </tr>
+    </table>
+    {{/if}}
+</div>

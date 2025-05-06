@@ -7,10 +7,13 @@ import (
 )
 
 type FeedbackCreatedHandler struct {
+	notificationHub domain.NotificationHub
 }
 
-func NewFeedbackCreatedHandler() FeedbackCreatedHandler {
-	return FeedbackCreatedHandler{}
+func NewFeedbackCreatedHandler(notificationHub domain.NotificationHub) FeedbackCreatedHandler {
+	return FeedbackCreatedHandler{
+		notificationHub: notificationHub,
+	}
 }
 
 func (h FeedbackCreatedHandler) FeedbackCreated(ctx *appcontext.AppContext, payload domain.QueueFeedbackCreatedPayload) error {
@@ -19,6 +22,13 @@ func (h FeedbackCreatedHandler) FeedbackCreated(ctx *appcontext.AppContext, payl
 	ctx.SetContext(spanCtx)
 	defer span.End()
 
-	ctx.Logger().Print("payload", payload)
+	ctx.Logger().Text("create notification reminder")
+	if err := h.notificationHub.CreateNotificationReminder(ctx, payload.Feedback.ProjectID); err != nil {
+		ctx.Logger().Error("failed to create notification reminder", err, appcontext.Fields{})
+	}
+
+	// call Notification service to create a notification
+	// check & create project user
+
 	return nil
 }

@@ -5,7 +5,22 @@ package projectpb;
 import "projectpb/message.proto";
 
 service ProjectService {
+  rpc GetProjectById(GetProjectByIdRequest) returns (GetProjectByIdResponse) {}
   rpc GetProjectCampaignById(GetProjectCampaignByIdRequest) returns (GetProjectCampaignByIdResponse) {}
+  rpc GetProjectCollaborators(GetProjectCollaboratorsRequest) returns (GetProjectCollaboratorsResponse) {}
+}
+
+//
+// GET PROJECT BY ID
+//
+
+message GetProjectByIdRequest {
+  string traceId = 1;
+  string projectId = 2;
+}
+
+message GetProjectByIdResponse {
+  Project project = 1;
 }
 
 //
@@ -20,4 +35,17 @@ message GetProjectCampaignByIdRequest {
 message GetProjectCampaignByIdResponse {
   ProjectCampaign campaign = 1;
   Project project = 2;
+}
+
+//
+// GET PROJECT COLLABORATORS
+//
+
+message GetProjectCollaboratorsRequest {
+  string traceId = 1;
+  string projectId = 2;
+}
+
+message GetProjectCollaboratorsResponse {
+  repeated ProjectCollaborator collaborators = 1;
 }

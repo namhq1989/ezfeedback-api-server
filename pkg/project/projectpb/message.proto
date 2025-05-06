@@ -4,8 +4,9 @@ package projectpb;
 
 message Project {
   string id = 1;
-  string status = 2;
-  ProjectSetting setting = 3;
+  string title = 2;
+  string status = 3;
+  ProjectSetting setting = 4;
 }
 
 message ProjectSetting {
@@ -16,4 +17,16 @@ message ProjectCampaign {
   string id = 1;
   string campaignType = 2;
   string status = 3;
+}
+
+message ProjectCollaborator {
+  string id = 1;
+  Collaborator user = 2;
+  string role = 3;
+}
+
+message Collaborator {
+  string id = 1;
+  string name = 2;
+  string email = 3;
 }

@@ -20,6 +20,14 @@ func RegisterServer(_ *appcontext.AppContext, registrar grpc.ServiceRegistrar, h
 	return nil
 }
 
+func (s server) GetProjectById(bgCtx context.Context, req *projectpb.GetProjectByIdRequest) (*projectpb.GetProjectByIdResponse, error) {
+	return s.hub.GetProjectById(appcontext.NewGRPC(bgCtx), req)
+}
+
 func (s server) GetProjectCampaignById(bgCtx context.Context, req *projectpb.GetProjectCampaignByIdRequest) (*projectpb.GetProjectCampaignByIdResponse, error) {
 	return s.hub.GetProjectCampaignByID(appcontext.NewGRPC(bgCtx), req)
+}
+
+func (s server) GetProjectCollaborators(bgCtx context.Context, req *projectpb.GetProjectCollaboratorsRequest) (*projectpb.GetProjectCollaboratorsResponse, error) {
+	return s.hub.GetProjectCollaborators(appcontext.NewGRPC(bgCtx), req)
 }

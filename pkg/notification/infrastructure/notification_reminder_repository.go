@@ -4,6 +4,9 @@ import (
 	"database/sql"
 	"time"
 
+	apperrors "github.com/namhq1989/ezfeedback-api-server/internal/error"
+	"github.com/namhq1989/go-utilities/uuid"
+
 	"github.com/go-jet/jet/v2/postgres"
 	"github.com/namhq1989/ezfeedback-api-server/internal/database"
 	"github.com/namhq1989/ezfeedback-api-server/internal/database/gen/ezfeedback/public/model"
@@ -60,6 +63,34 @@ func (r NotificationReminderRepository) Delete(ctx *appcontext.AppContext, remin
 	stmt := cm.DELETE().WHERE(cm.ID.EQ(postgres.String(reminder.ID)))
 	_, err := stmt.ExecContext(ctx.Context(), r.getDB())
 	return err
+}
+
+func (r NotificationReminderRepository) FindByProjectID(ctx *appcontext.AppContext, projectID string) (*domain.NotificationReminder, error) {
+	if !uuid.IsValidID(projectID) {
+		return nil, apperrors.Project.InvalidProjectID
+	}
+
+	var nr = r.getTable()
+
+	stmt := postgres.SELECT(
+		nr.AllColumns,
+	).
+		FROM(nr).
+		WHERE(nr.ProjectID.EQ(postgres.String(projectID)))
+
+	var doc model.NotificationReminders
+	if err := stmt.QueryContext(ctx.Context(), r.getDB(), &doc); err != nil {
+		if r.db.IsNoRowsError(err) {
+			return nil, nil
+		}
+		return nil, err
+	}
+
+	var (
+		mapper    = mapping.NotificationReminderMapper{}
+		result, _ = mapper.FromModelToDomain(doc)
+	)
+	return result, nil
 }
 
 func (r NotificationReminderRepository) FindAllExisting(ctx *appcontext.AppContext) ([]domain.NotificationReminder, error) {

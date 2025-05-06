@@ -12,7 +12,7 @@ func NewCanCreateProjectHandler() CanCreateProjectHandler {
 }
 
 func (h CanCreateProjectHandler) CanCreateProject(ctx *appcontext.AppContext, req *billingpb.CanCreateProjectRequest) (*billingpb.CanCreateProjectResponse, error) {
-	ctx.SetTraceID(req.TraceId)
+	ctx.SetTraceID(req.GetTraceId())
 	ctx.Logger().Info("new check can create project request", appcontext.Fields{"userId": req.UserId, "totalCreatedProjects": req.TotalCreatedProjects})
 
 	ctx.Logger().Text("done check can create project request")

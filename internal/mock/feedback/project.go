@@ -21,6 +21,7 @@ import (
 type MockProjectHub struct {
 	ctrl     *gomock.Controller
 	recorder *MockProjectHubMockRecorder
+	isgomock struct{}
 }
 
 // MockProjectHubMockRecorder is the mock recorder for MockProjectHub.
@@ -38,6 +39,21 @@ func NewMockProjectHub(ctrl *gomock.Controller) *MockProjectHub {
 // EXPECT returns an object that allows the caller to indicate expected use.
 func (m *MockProjectHub) EXPECT() *MockProjectHubMockRecorder {
 	return m.recorder
+}
+
+// GetProjectByID mocks base method.
+func (m *MockProjectHub) GetProjectByID(ctx *appcontext.AppContext, projectID string) (*domain.Project, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "GetProjectByID", ctx, projectID)
+	ret0, _ := ret[0].(*domain.Project)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// GetProjectByID indicates an expected call of GetProjectByID.
+func (mr *MockProjectHubMockRecorder) GetProjectByID(ctx, projectID any) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetProjectByID", reflect.TypeOf((*MockProjectHub)(nil).GetProjectByID), ctx, projectID)
 }
 
 // GetProjectCampaignByID mocks base method.
