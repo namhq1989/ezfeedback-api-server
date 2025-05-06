@@ -133,7 +133,7 @@ func (f *Feedback) SetIsAnonymous() {
 }
 
 func (f *Feedback) SetCategoryID(categoryID string) error {
-	if len(categoryID) > 0 && !uuid.IsValidID(categoryID) {
+	if categoryID != "" && !uuid.IsValidID(categoryID) {
 		return apperrors.Project.InvalidCategory
 	}
 

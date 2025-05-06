@@ -107,7 +107,7 @@ func (h GetFeedbacksHandler) convertToDto(ctx *appcontext.AppContext, projectID 
 	return result
 }
 
-func (h GetFeedbacksHandler) findCampaign(campaigns []domain.ProjectCampaign, campaignID string) domain.ProjectCampaign {
+func (GetFeedbacksHandler) findCampaign(campaigns []domain.ProjectCampaign, campaignID string) domain.ProjectCampaign {
 	for _, campaign := range campaigns {
 		if campaign.ID == campaignID {
 			return campaign
@@ -119,7 +119,7 @@ func (h GetFeedbacksHandler) findCampaign(campaigns []domain.ProjectCampaign, ca
 	}
 }
 
-func (h GetFeedbacksHandler) findCategory(categories []domain.ProjectCategory, categoryID string) domain.ProjectCategory {
+func (GetFeedbacksHandler) findCategory(categories []domain.ProjectCategory, categoryID string) domain.ProjectCategory {
 	for _, category := range categories {
 		if category.ID == categoryID {
 			return category

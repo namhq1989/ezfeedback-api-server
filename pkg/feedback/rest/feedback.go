@@ -106,12 +106,12 @@ func createFeedbackRateLimiter() echo.MiddlewareFunc {
 			id := ctx.RealIP()
 			return id, nil
 		},
-		ErrorHandler: func(context echo.Context, err error) error {
+		ErrorHandler: func(context echo.Context, _ error) error {
 			return context.JSON(http.StatusInternalServerError, map[string]string{
 				"error": "Rate limiting error occurred",
 			})
 		},
-		DenyHandler: func(context echo.Context, identifier string, err error) error {
+		DenyHandler: func(context echo.Context, _ string, _ error) error {
 			return context.JSON(http.StatusTooManyRequests, map[string]string{
 				"error": "Your feedback is important to us. Please wait a moment before submitting another response",
 			})
