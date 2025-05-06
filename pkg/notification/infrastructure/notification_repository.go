@@ -4,8 +4,6 @@ import (
 	"database/sql"
 	"time"
 
-	"github.com/namhq1989/ezfeedback-api-server/pkg/notification/infrastructure/template"
-
 	"github.com/go-jet/jet/v2/postgres"
 	"github.com/namhq1989/ezfeedback-api-server/internal/database"
 	"github.com/namhq1989/ezfeedback-api-server/internal/database/gen/ezfeedback/public/model"
@@ -13,6 +11,7 @@ import (
 	"github.com/namhq1989/ezfeedback-api-server/internal/utils/manipulation"
 	"github.com/namhq1989/ezfeedback-api-server/pkg/notification/domain"
 	"github.com/namhq1989/ezfeedback-api-server/pkg/notification/infrastructure/mapping"
+	"github.com/namhq1989/ezfeedback-api-server/pkg/notification/infrastructure/template"
 	"github.com/namhq1989/go-utilities/appcontext"
 )
 
@@ -105,6 +104,6 @@ func (r NotificationRepository) CleanupStale(ctx *appcontext.AppContext) error {
 	return err
 }
 
-func (r NotificationRepository) GenerateNewFeedbackContent(_ *appcontext.AppContext, language string, projectTitle string) string {
+func (NotificationRepository) GenerateNewFeedbackContent(_ *appcontext.AppContext, language string, projectTitle string) string {
 	return template.NewFeedbackContent(language, projectTitle)
 }

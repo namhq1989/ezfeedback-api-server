@@ -8,5 +8,5 @@ var newFeedbackContent = map[string]string{
 }
 
 func NewFeedbackContent(language string, projectTitle string) string {
-	return strings.Replace(newFeedbackContent[language], "{{title}}", projectTitle, -1)
+	return strings.ReplaceAll(newFeedbackContent[language], "{{title}}", projectTitle)
 }
