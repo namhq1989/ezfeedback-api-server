@@ -6,7 +6,7 @@ type QueueRepository interface {
 	SendVerificationCodeEmail(ctx *appcontext.AppContext, payload QueueSendVerificationCodeEmailPayload) error
 }
 
-type QueueDeleteExpiredVerificationCodesPayload struct{}
+type QueueCleanupStaleVerificationCodesPayload struct{}
 
 type QueueSendVerificationCodeEmailPayload struct {
 	Email string

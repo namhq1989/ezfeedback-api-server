@@ -13,25 +13,25 @@ import (
 	"go.uber.org/mock/gomock"
 )
 
-type deleteExpiredVerificationCodesTestSuite struct {
+type cleanupStaleVerificationCodesTestSuite struct {
 	suite.Suite
-	handler                        worker.DeleteExpiredVerificationCodesHandler
+	handler                        worker.CleanupStaleVerificationCodesHandler
 	mockCtrl                       *gomock.Controller
 	mockVerificationCodeRepository *mockiam.MockVerificationCodeRepository
 }
 
-func (s *deleteExpiredVerificationCodesTestSuite) SetupSuite() {
+func (s *cleanupStaleVerificationCodesTestSuite) SetupSuite() {
 	s.setupApplication()
 }
 
-func (s *deleteExpiredVerificationCodesTestSuite) setupApplication() {
+func (s *cleanupStaleVerificationCodesTestSuite) setupApplication() {
 	s.mockCtrl = gomock.NewController(s.T())
 	s.mockVerificationCodeRepository = mockiam.NewMockVerificationCodeRepository(s.mockCtrl)
 
-	s.handler = worker.NewDeleteExpiredVerificationCodesHandler(s.mockVerificationCodeRepository)
+	s.handler = worker.NewCleanupStaleVerificationCodesHandler(s.mockVerificationCodeRepository)
 }
 
-func (s *deleteExpiredVerificationCodesTestSuite) TearDownTest() {
+func (s *cleanupStaleVerificationCodesTestSuite) TearDownTest() {
 	s.mockCtrl.Finish()
 }
 
@@ -39,15 +39,15 @@ func (s *deleteExpiredVerificationCodesTestSuite) TearDownTest() {
 // CASES
 //
 
-func (s *deleteExpiredVerificationCodesTestSuite) Test_1_Success() {
+func (s *cleanupStaleVerificationCodesTestSuite) Test_1_Success() {
 	// mock
 	s.mockVerificationCodeRepository.EXPECT().
-		DeleteExpired(gomock.Any()).
+		CleanupStale(gomock.Any()).
 		Return(nil)
 
 	// call
 	ctx := appcontext.NewGRPC(context.Background())
-	err := s.handler.DeleteExpiredVerificationCodes(ctx, domain.QueueDeleteExpiredVerificationCodesPayload{})
+	err := s.handler.CleanupStaleVerificationCodes(ctx, domain.QueueCleanupStaleVerificationCodesPayload{})
 
 	assert.Nil(s.T(), err)
 }
@@ -56,6 +56,6 @@ func (s *deleteExpiredVerificationCodesTestSuite) Test_1_Success() {
 // END OF CASES
 //
 
-func TestDeleteExpiredVerificationCodesTestSuite(t *testing.T) {
-	suite.Run(t, new(deleteExpiredVerificationCodesTestSuite))
+func TestCleanupStaleVerificationCodesTestSuite(t *testing.T) {
+	suite.Run(t, new(cleanupStaleVerificationCodesTestSuite))
 }

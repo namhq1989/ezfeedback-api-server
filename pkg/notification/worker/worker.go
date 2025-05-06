@@ -15,6 +15,7 @@ type (
 		ProcessNotificationReminder(ctx *appcontext.AppContext, payload domain.QueueProcessNotificationReminderPayload) error
 	}
 	Cronjob interface {
+		CleanupStaleNotifications(ctx *appcontext.AppContext, _ domain.QueueCleanupStaleNotificationsPayload) error
 		ScanNotificationReminders(ctx *appcontext.AppContext, _ domain.QueueScanNotificationRemindersPayload) error
 	}
 
@@ -27,6 +28,7 @@ type (
 		ProcessNotificationReminderHandler
 	}
 	cronjobHandlers struct {
+		CleanupStaleNotificationsHandler
 		ScanNotificationRemindersHandler
 	}
 	Worker struct {
@@ -40,6 +42,7 @@ var _ Instance = (*Worker)(nil)
 
 func New(
 	queue queue.Operations,
+	notificationRepository domain.NotificationRepository,
 	notificationReminderRepository domain.NotificationReminderRepository,
 	queueRepository domain.QueueRepository,
 	mailerRepository domain.MailerRepository,
@@ -52,6 +55,7 @@ func New(
 			ProcessNotificationReminderHandler: NewProcessNotificationReminderHandler(notificationReminderRepository, mailerRepository, feedbackHub, projectHub),
 		},
 		cronjobHandlers: cronjobHandlers{
+			CleanupStaleNotificationsHandler: NewCleanupStaleNotificationsHandler(notificationRepository),
 			ScanNotificationRemindersHandler: NewScanNotificationRemindersHandler(notificationReminderRepository, queueRepository),
 		},
 	}
@@ -68,6 +72,9 @@ func (w Worker) Start() {
 	})
 
 	// cronjob
+	server.HandleFunc(w.queue.GenerateTypename(queue.TypeNames.CleanupStaleNotifications), func(bgCtx context.Context, t *asynq.Task) error {
+		return queue.ProcessTask[domain.QueueCleanupStaleNotificationsPayload](bgCtx, t, queue.ParsePayload[domain.QueueCleanupStaleNotificationsPayload], w.CleanupStaleNotifications)
+	})
 	server.HandleFunc(w.queue.GenerateTypename(queue.TypeNames.ScanNotificationReminders), func(bgCtx context.Context, t *asynq.Task) error {
 		return queue.ProcessTask[domain.QueueScanNotificationRemindersPayload](bgCtx, t, queue.ParsePayload[domain.QueueScanNotificationRemindersPayload], w.ScanNotificationReminders)
 	})
@@ -84,6 +91,12 @@ func (w Worker) addCronjob() {
 	var (
 		ctx  = appcontext.NewWorker(context.Background())
 		jobs = []cronjobData{
+			{
+				Task:       w.queue.GenerateTypename(queue.TypeNames.CleanupStaleNotifications),
+				CronSpec:   "0 */1 * * *", // every day
+				Payload:    domain.QueueCleanupStaleNotificationsPayload{},
+				RetryTimes: 3,
+			},
 			{
 				Task: w.queue.GenerateTypename(queue.TypeNames.ScanNotificationReminders),
 				// CronSpec:   "*/10 * * * *", // every 10m

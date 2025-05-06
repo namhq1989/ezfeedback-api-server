@@ -41,6 +41,20 @@ func (m *MockVerificationCodeRepository) EXPECT() *MockVerificationCodeRepositor
 	return m.recorder
 }
 
+// CleanupStale mocks base method.
+func (m *MockVerificationCodeRepository) CleanupStale(ctx *appcontext.AppContext) error {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "CleanupStale", ctx)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// CleanupStale indicates an expected call of CleanupStale.
+func (mr *MockVerificationCodeRepositoryMockRecorder) CleanupStale(ctx any) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "CleanupStale", reflect.TypeOf((*MockVerificationCodeRepository)(nil).CleanupStale), ctx)
+}
+
 // CountTotalSentTodayByIp mocks base method.
 func (m *MockVerificationCodeRepository) CountTotalSentTodayByIp(ctx *appcontext.AppContext, ip string) (int64, error) {
 	m.ctrl.T.Helper()
@@ -68,20 +82,6 @@ func (m *MockVerificationCodeRepository) Create(ctx *appcontext.AppContext, code
 func (mr *MockVerificationCodeRepositoryMockRecorder) Create(ctx, code any) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Create", reflect.TypeOf((*MockVerificationCodeRepository)(nil).Create), ctx, code)
-}
-
-// DeleteExpired mocks base method.
-func (m *MockVerificationCodeRepository) DeleteExpired(ctx *appcontext.AppContext) error {
-	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "DeleteExpired", ctx)
-	ret0, _ := ret[0].(error)
-	return ret0
-}
-
-// DeleteExpired indicates an expected call of DeleteExpired.
-func (mr *MockVerificationCodeRepositoryMockRecorder) DeleteExpired(ctx any) *gomock.Call {
-	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DeleteExpired", reflect.TypeOf((*MockVerificationCodeRepository)(nil).DeleteExpired), ctx)
 }
 
 // Find mocks base method.

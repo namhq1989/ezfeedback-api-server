@@ -1,19 +1,21 @@
 package queue
 
 var TypeNames = struct {
-	DeleteExpiredVerificationCodes string
-	SendVerificationCodeEmail      string
+	CleanupStaleVerificationCodes string
+	SendVerificationCodeEmail     string
 
 	FeedbackCreated string
 
+	CleanupStaleNotifications   string
 	ScanNotificationReminders   string
 	ProcessNotificationReminder string
 }{
-	DeleteExpiredVerificationCodes: "iam.deleteExpiredVerificationCodes",
-	SendVerificationCodeEmail:      "iam.sendVerificationCodeEmail",
+	CleanupStaleVerificationCodes: "iam.cleanupStaleVerificationCodes",
+	SendVerificationCodeEmail:     "iam.sendVerificationCodeEmail",
 
 	FeedbackCreated: "feedback.created",
 
+	CleanupStaleNotifications:   "notification.cleanupStaleNotifications",
 	ScanNotificationReminders:   "notification.scanNotificationReminders",
 	ProcessNotificationReminder: "notification.processNotificationReminder",
 }

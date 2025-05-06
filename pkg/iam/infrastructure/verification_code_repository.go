@@ -121,7 +121,7 @@ func (r VerificationCodeRepository) CountTotalSentTodayByIp(ctx *appcontext.AppC
 	return result.Total, err
 }
 
-func (r VerificationCodeRepository) DeleteExpired(ctx *appcontext.AppContext) error {
+func (r VerificationCodeRepository) CleanupStale(ctx *appcontext.AppContext) error {
 	var (
 		c   = r.getTable()
 		now = manipulation.NowUTC()
