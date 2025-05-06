@@ -9,9 +9,9 @@ import (
 )
 
 const (
-	typenamePrefix = "ezfb_apiServer"
-	queueDefault   = "ezfb_apiServer:default"
-	queueCronjob   = "ezfb_apiServer:cronjob"
+	typenamePrefix = "ezfbapi"
+	queueDefault   = "default"
+	queueCronjob   = "cronjob"
 
 	taskTimeout   time.Duration = 10 * time.Minute
 	taskRetention               = 24 * 7 * time.Hour

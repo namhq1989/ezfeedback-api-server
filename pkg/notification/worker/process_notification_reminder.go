@@ -70,8 +70,13 @@ func (h ProcessNotificationReminderHandler) ProcessNotificationReminder(ctx *app
 		var user = collaborator.User
 		if err = h.mailerRepository.SendNewFeedbackEmail(ctx, user.Email, feedbacks); err != nil {
 			ctx.Logger().Error("failed to send email", err, appcontext.Fields{})
-			return err
+			continue
 		}
+	}
+
+	ctx.Logger().Text("delete notification reminder")
+	if err = h.notificationReminderRepository.Delete(ctx, payload.Reminder); err != nil {
+		ctx.Logger().Error("failed to delete notification reminder", err, appcontext.Fields{})
 	}
 
 	ctx.Logger().Text("done process notification reminder")

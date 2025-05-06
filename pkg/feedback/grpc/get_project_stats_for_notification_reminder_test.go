@@ -18,10 +18,10 @@ import (
 
 type getProjectStatsForNotificationReminderTestSuite struct {
 	suite.Suite
-	handler                grpc.GetProjectStatsForNotificationReminderHandler
-	mockCtrl               *gomock.Controller
-	mockFeedbackRepository *mockfeedback.MockFeedbackRepository
-	mockProjectHub         *mockfeedback.MockProjectHub
+	handler         grpc.GetProjectStatsForNotificationReminderHandler
+	mockCtrl        *gomock.Controller
+	mockFeedbackHub *mockfeedback.MockFeedbackHub
+	mockProjectHub  *mockfeedback.MockProjectHub
 }
 
 func (s *getProjectStatsForNotificationReminderTestSuite) SetupSuite() {
@@ -30,10 +30,10 @@ func (s *getProjectStatsForNotificationReminderTestSuite) SetupSuite() {
 
 func (s *getProjectStatsForNotificationReminderTestSuite) setupApplication() {
 	s.mockCtrl = gomock.NewController(s.T())
-	s.mockFeedbackRepository = mockfeedback.NewMockFeedbackRepository(s.mockCtrl)
+	s.mockFeedbackHub = mockfeedback.NewMockFeedbackHub(s.mockCtrl)
 	s.mockProjectHub = mockfeedback.NewMockProjectHub(s.mockCtrl)
 
-	s.handler = grpc.NewGetProjectStatsForNotificationReminderHandler(s.mockFeedbackRepository, s.mockProjectHub)
+	s.handler = grpc.NewGetProjectStatsForNotificationReminderHandler(s.mockFeedbackHub, s.mockProjectHub)
 }
 
 func (s *getProjectStatsForNotificationReminderTestSuite) TearDownTest() {
@@ -46,11 +46,11 @@ func (s *getProjectStatsForNotificationReminderTestSuite) TearDownTest() {
 
 func (s *getProjectStatsForNotificationReminderTestSuite) Test_1_Success() {
 	// mock
-	s.mockFeedbackRepository.EXPECT().
+	s.mockFeedbackHub.EXPECT().
 		CountFeedbackForProjectSinceTimestamp(gomock.Any(), gomock.Any(), gomock.Any()).
 		Return(int64(5), nil)
 
-	s.mockFeedbackRepository.EXPECT().
+	s.mockFeedbackHub.EXPECT().
 		FindFeedbackForProjectSinceTimestamp(gomock.Any(), gomock.Any(), gomock.Any(), gomock.Any()).
 		Return([]domain.Feedback{
 			{ID: uuid.New()},

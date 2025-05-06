@@ -29,13 +29,20 @@ func (Module) Startup(ctx *appcontext.AppContext, mono monolith.Monolith) error 
 		return err
 	}
 
+	notificationGRPCClient, err := grpcclient.NewNotificationClient(ctx, mono.Config().GRPCPort)
+	if err != nil {
+		return err
+	}
+
 	var (
 		feedbackRepository    = infrastructure.NewFeedbackRepository(mono.Database())
 		queueRepository       = infrastructure.NewQueueRepository(mono.Queue())
 		cachingRepository     = infrastructure.NewCachingRepository(mono.Caching(), mono.Config().IsEnvRelease)
 		externalAPIRepository = infrastructure.NewExternalAPIRepository(mono.ExternalAPI())
+		feedbackHub           = infrastructure.NewFeedbackHub(mono.Database())
 		billingHub            = infrastructure.NewBillingHub(billingGRPCClient)
 		projectHub            = infrastructure.NewProjectHub(projectGRPCClient)
+		notificationHub       = infrastructure.NewNotificationHub(notificationGRPCClient)
 
 		service = shared.NewService(
 			cachingRepository,
@@ -51,7 +58,7 @@ func (Module) Startup(ctx *appcontext.AppContext, mono monolith.Monolith) error 
 		)
 
 		hub = grpc.New(
-			feedbackRepository,
+			feedbackHub,
 			projectHub,
 		)
 	)
@@ -69,6 +76,7 @@ func (Module) Startup(ctx *appcontext.AppContext, mono monolith.Monolith) error 
 	// worker
 	w := worker.New(
 		mono.Queue(),
+		notificationHub,
 	)
 	w.Start()
 

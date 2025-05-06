@@ -1,39 +1,43 @@
-<div style="background-color: oklch(94.19% 0.0079 264.52); border-radius: 0.75rem; padding: 12px; margin-bottom: 10px;">
+<div style="background-color: #e9ecf1; border-radius: 0.75rem; padding: 12px; margin-bottom: 10px;">
     <!-- Header section with feedback type, project name, and email -->
-    <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 4px;">
-        <!-- Left section: Feedback type and project name -->
-        <div style="flex: 1;">
-            <div style="font-size: 13px; margin-bottom: 5px;">
-        <span style="display: inline-block; background-color: {{typeBadgeColor}}; color: {{typeBadgeTextColor}}; font-size: 10px; padding: 2px 6px; border-radius: 4px; font-weight: 500; margin-right: 6px;">
-          {{feedbackType}}
-        </span>
-                <span style="font-weight: 600; color: oklch(43.12% 0.0426 279.51);">{{projectName}}</span>
-            </div>
-        </div>
-        <!-- Right section: Email -->
-        <div>
-            <div style="font-size: 13px; text-align: right;">
+    <table width="100%" cellspacing="0" cellpadding="0" border="0" style="margin-bottom: 8px;">
+        <tr>
+            <!-- Left section: Feedback type and project name -->
+            <td align="left" valign="top" style="font-size: 13px; margin-bottom: 5px;">
+                <span style="display: inline-block; background-color: {{typeBadgeColor}}; color: {{typeBadgeTextColor}}; font-size: 10px; padding: 2px 6px; border-radius: 4px; font-weight: 500; margin-right: 2px;">
+                    {{feedbackType}}
+                </span>
+                <span style="font-weight: 600; color: #4b4e68;">{{projectName}}</span>
+            </td>
+            <!-- Right section: Email -->
+            <td align="right" valign="top" style="font-size: 13px;">
                 {{userIdentification}}
-            </div>
-        </div>
-    </div>
+            </td>
+        </tr>
+    </table>
 
     <!-- Date and rating section -->
-    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
-        <!-- Left: Creation date -->
-        <div style="font-size: 11px;">
-            <span style="color: oklch(40.62% 0.0221 264.29);">{{createdAt}}</span>
-        </div>
-        <!-- Right: Rating -->
-        <div style="font-size: 11px; color: oklch(40.62% 0.0221 264.29);">
-            {{rating}} / {{maxRating}}
-        </div>
-    </div>
+    <table width="100%" cellspacing="0" cellpadding="0" border="0" style="margin-bottom: 20px;">
+        <tr>
+            <!-- Left: Creation date -->
+            <td align="left" style="font-size: 11px; color: #434956;">
+                {{createdAt}}
+            </td>
+            <!-- Right: Rating -->
+            <td align="right" style="font-size: 13px; color: #434956; position: relative; top: -4px;">
+                <span style="font-weight: bold;">{{rating}}</span>/{{maxRating}}
+            </td>
+        </tr>
+    </table>
 
     <!-- Content section -->
     {{#if hasContent}}
-    <div style="color: oklch(38.87% 0.0375 279.56); font-size: 13px; line-height: 1.4;">
-        {{content}}
-    </div>
+    <table width="100%" cellspacing="0" cellpadding="0" border="0">
+        <tr>
+            <td style="color: #404359; font-size: 13px; line-height: 1.4;">
+                {{content}}
+            </td>
+        </tr>
+    </table>
     {{/if}}
 </div>

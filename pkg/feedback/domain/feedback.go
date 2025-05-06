@@ -16,6 +16,9 @@ type FeedbackRepository interface {
 	FindWithFilter(ctx *appcontext.AppContext, filter FeedbackFilter) ([]Feedback, error)
 	CountMonthlyUsageForProject(ctx *appcontext.AppContext, projectID string) (int64, error)
 	CountProjectTotalCreatedTodayByIp(ctx *appcontext.AppContext, projectID, ip string) (int64, error)
+}
+
+type FeedbackHub interface {
 	CountFeedbackForProjectSinceTimestamp(ctx *appcontext.AppContext, projectID string, timestamp time.Time) (int64, error)
 	FindFeedbackForProjectSinceTimestamp(ctx *appcontext.AppContext, projectID string, timestamp time.Time, limit int64) ([]Feedback, error)
 }
@@ -42,7 +45,7 @@ type Feedback struct {
 	UpdatedAt    time.Time
 }
 
-func NewFeedback(projectID, campaignID string, appUserID, email *string, categoryID, content string, rating int32, campaignType, ip, countryCode string) (*Feedback, error) {
+func NewFeedback(projectID, campaignID string, appUserID, email string, categoryID, content string, rating int32, campaignType, ip, countryCode string) (*Feedback, error) {
 	var (
 		now = manipulation.NowUTC()
 	)
@@ -106,19 +109,19 @@ func (f *Feedback) SetCampaignID(campaignID string) error {
 	return nil
 }
 
-func (f *Feedback) SetAppUserID(userID *string) error {
-	f.AppUserID = userID
+func (f *Feedback) SetAppUserID(userID string) error {
+	f.AppUserID = &userID
 	f.SetIsAnonymous()
 	f.SetUpdatedAt()
 	return nil
 }
 
-func (f *Feedback) SetEmail(email *string) error {
-	if email != nil && !validation.IsValidEmail(*email) {
+func (f *Feedback) SetEmail(email string) error {
+	if email != "" && !validation.IsValidEmail(email) {
 		return apperrors.Common.InvalidEmail
 	}
 
-	f.Email = email
+	f.Email = &email
 	f.SetIsAnonymous()
 	f.SetUpdatedAt()
 	return nil

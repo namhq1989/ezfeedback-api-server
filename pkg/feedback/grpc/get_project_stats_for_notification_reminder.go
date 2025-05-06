@@ -1,6 +1,8 @@
 package grpc
 
 import (
+	"time"
+
 	"github.com/namhq1989/ezfeedback-api-server/internal/genproto/feedbackpb"
 	"github.com/namhq1989/ezfeedback-api-server/pkg/feedback/domain"
 	"github.com/namhq1989/go-utilities/appcontext"
@@ -8,14 +10,14 @@ import (
 )
 
 type GetProjectStatsForNotificationReminderHandler struct {
-	feedbackRepository domain.FeedbackRepository
-	projectHub         domain.ProjectHub
+	feedbackHub domain.FeedbackHub
+	projectHub  domain.ProjectHub
 }
 
-func NewGetProjectStatsForNotificationReminderHandler(feedbackRepository domain.FeedbackRepository, projectHub domain.ProjectHub) GetProjectStatsForNotificationReminderHandler {
+func NewGetProjectStatsForNotificationReminderHandler(feedbackHub domain.FeedbackHub, projectHub domain.ProjectHub) GetProjectStatsForNotificationReminderHandler {
 	return GetProjectStatsForNotificationReminderHandler{
-		feedbackRepository: feedbackRepository,
-		projectHub:         projectHub,
+		feedbackHub: feedbackHub,
+		projectHub:  projectHub,
 	}
 }
 
@@ -25,8 +27,11 @@ func (h GetProjectStatsForNotificationReminderHandler) GetProjectStatsForNotific
 		"projectId": req.GetProjectId(), "timestamp": req.GetTimestamp(), "limit": req.GetLimit(),
 	})
 
+	// minus 5 minutes to ensure the feedback creation time behind the timestamp
+	timestamp := req.GetTimestamp().AsTime().Add(-5 * time.Minute)
+
 	ctx.Logger().Text("count total created")
-	totalFeedbacks, err := h.feedbackRepository.CountFeedbackForProjectSinceTimestamp(ctx, req.GetProjectId(), req.GetTimestamp().AsTime())
+	totalFeedbacks, err := h.feedbackHub.CountFeedbackForProjectSinceTimestamp(ctx, req.GetProjectId(), timestamp)
 	if err != nil {
 		ctx.Logger().Error("failed to count total created", err, appcontext.Fields{})
 		return nil, err
@@ -40,7 +45,7 @@ func (h GetProjectStatsForNotificationReminderHandler) GetProjectStatsForNotific
 	}
 
 	ctx.Logger().Text("find feedbacks in db")
-	feedbacks, err := h.feedbackRepository.FindFeedbackForProjectSinceTimestamp(ctx, req.GetProjectId(), req.GetTimestamp().AsTime(), req.GetLimit())
+	feedbacks, err := h.feedbackHub.FindFeedbackForProjectSinceTimestamp(ctx, req.GetProjectId(), timestamp, req.GetLimit())
 	if err != nil {
 		ctx.Logger().Error("failed to find feedbacks in db", err, appcontext.Fields{})
 		return nil, err

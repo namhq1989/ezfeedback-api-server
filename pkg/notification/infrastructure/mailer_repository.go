@@ -69,12 +69,12 @@ func (r MailerRepository) SendNewFeedbackEmail(ctx *appcontext.AppContext, toEma
 
 		// handle user identification (app user id > email > Anonymous)
 		var userIdentification string
-		if item.AppUserID != nil {
-			userIdentification = fmt.Sprintf("<span style=\"color: oklch(43.12%% 0.0426 279.51);\">User: %s</span>", *item.AppUserID)
-		} else if item.Email != nil {
-			userIdentification = fmt.Sprintf("<span style=\"color: oklch(43.12%% 0.0426 279.51);\">%s</span>", *item.Email)
+		if *item.AppUserID != "" {
+			userIdentification = fmt.Sprintf("<span style=\"color: #4b4e68;\">User: %s</span>", *item.AppUserID)
+		} else if *item.Email != "" {
+			userIdentification = fmt.Sprintf("<span style=\"color: #4b4e68;\">%s</span>", *item.Email)
 		} else {
-			userIdentification = "<span style=\"font-style: italic; color: oklch(43.12%% 0.0426 279.51);\">Anonymous</span>"
+			userIdentification = "<span style=\"font-style: italic; color: #4b4e68;\">Anonymous</span>"
 		}
 		itemContent = strings.Replace(itemContent, "{{userIdentification}}", userIdentification, 1)
 
@@ -84,8 +84,8 @@ func (r MailerRepository) SendNewFeedbackEmail(ctx *appcontext.AppContext, toEma
 
 		// set feedback type and badge color
 		itemContent = strings.Replace(itemContent, "{{feedbackType}}", strings.ToUpper(item.CampaignType.String()), 1)
-		itemContent = strings.Replace(itemContent, "{{typeBadgeColor}}", "oklch(83.18% 0.0235 264.44)", 1)
-		itemContent = strings.Replace(itemContent, "{{typeBadgeTextColor}}", "oklch(30.52% 0.0304 263.97)", 1)
+		itemContent = strings.Replace(itemContent, "{{typeBadgeColor}}", "#c0c8d8", 1)
+		itemContent = strings.Replace(itemContent, "{{typeBadgeTextColor}}", "#272f3f", 1)
 
 		// set rating and max rating
 		var maxRating int32

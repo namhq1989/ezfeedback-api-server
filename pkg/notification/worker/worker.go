@@ -85,7 +85,8 @@ func (w Worker) addCronjob() {
 		ctx  = appcontext.NewWorker(context.Background())
 		jobs = []cronjobData{
 			{
-				Task:       w.queue.GenerateTypename(queue.TypeNames.ScanNotificationReminders),
+				Task: w.queue.GenerateTypename(queue.TypeNames.ScanNotificationReminders),
+				// CronSpec:   "*/10 * * * *", // every 10m
 				CronSpec:   "*/1 * * * *", // every 1m
 				Payload:    domain.QueueScanNotificationRemindersPayload{},
 				RetryTimes: 3,

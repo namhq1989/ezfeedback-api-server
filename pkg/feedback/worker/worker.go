@@ -31,11 +31,12 @@ var _ Instance = (*Worker)(nil)
 
 func New(
 	queue queue.Operations,
+	notificationHub domain.NotificationHub,
 ) Worker {
 	return Worker{
 		queue: queue,
 		workerHandlers: workerHandlers{
-			FeedbackCreatedHandler: NewFeedbackCreatedHandler(),
+			FeedbackCreatedHandler: NewFeedbackCreatedHandler(notificationHub),
 		},
 	}
 }

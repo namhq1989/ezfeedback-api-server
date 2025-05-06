@@ -25,12 +25,12 @@ type (
 var _ App = (*Application)(nil)
 
 func New(
-	feedbackRepository domain.FeedbackRepository,
+	feedbackHub domain.FeedbackHub,
 	projectHub domain.ProjectHub,
 ) *Application {
 	return &Application{
 		appHubHandler: appHubHandler{
-			GetProjectStatsForNotificationReminderHandler: NewGetProjectStatsForNotificationReminderHandler(feedbackRepository, projectHub),
+			GetProjectStatsForNotificationReminderHandler: NewGetProjectStatsForNotificationReminderHandler(feedbackHub, projectHub),
 		},
 	}
 }

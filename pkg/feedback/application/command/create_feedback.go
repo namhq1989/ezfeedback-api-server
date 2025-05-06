@@ -106,8 +106,8 @@ func (h CreateFeedbackHandler) CreateFeedback(ctx *appcontext.AppContext, ip, do
 	feedback, err := domain.NewFeedback(
 		campaignData.Project.ID,
 		campaignData.ProjectCampaign.ID,
-		&req.Context.UserID,
-		&req.Email,
+		req.Context.UserID,
+		req.Email,
 		req.CategoryID,
 		req.Content,
 		req.Rating,
