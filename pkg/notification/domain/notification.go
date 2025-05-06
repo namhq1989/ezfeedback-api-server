@@ -11,6 +11,9 @@ import (
 
 type NotificationRepository interface {
 	Create(ctx *appcontext.AppContext, notification Notification) error
+	Update(ctx *appcontext.AppContext, notification Notification) error
+	Delete(ctx *appcontext.AppContext, notification Notification) error
+	FindByID(ctx *appcontext.AppContext, id string) (*Notification, error)
 	FindWithFilter(ctx *appcontext.AppContext, filter NotificationFilter) ([]Notification, error)
 	CountWithFilter(ctx *appcontext.AppContext, filter NotificationFilter) (int64, error)
 	CleanupStale(ctx *appcontext.AppContext) error
@@ -69,4 +72,13 @@ func (n *Notification) SetMetadata(metadata NotificationMetadata) error {
 
 	n.Metadata = metadata
 	return nil
+}
+
+func (n *Notification) MarkAsRead() {
+	n.IsRead = true
+	n.UpdatedAt = manipulation.NowUTC()
+}
+
+func (n *Notification) IsOwner(userID string) bool {
+	return n.UserID == userID
 }

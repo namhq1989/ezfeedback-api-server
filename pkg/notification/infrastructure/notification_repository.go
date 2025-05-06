@@ -4,6 +4,9 @@ import (
 	"database/sql"
 	"time"
 
+	apperrors "github.com/namhq1989/ezfeedback-api-server/internal/error"
+	"github.com/namhq1989/go-utilities/uuid"
+
 	"github.com/go-jet/jet/v2/postgres"
 	"github.com/namhq1989/ezfeedback-api-server/internal/database"
 	"github.com/namhq1989/ezfeedback-api-server/internal/database/gen/ezfeedback/public/model"
@@ -51,6 +54,68 @@ func (r NotificationRepository) Create(ctx *appcontext.AppContext, notification 
 
 	_, err = stmt.ExecContext(ctx.Context(), r.getDB())
 	return err
+}
+
+func (r NotificationRepository) Update(ctx *appcontext.AppContext, notification domain.Notification) error {
+	mapper := mapping.NotificationMapper{}
+	doc, err := mapper.FromDomainToModel(notification)
+	if err != nil {
+		return err
+	}
+
+	stmt := r.getTable().UPDATE(
+		r.getTable().AllColumns,
+	).
+		MODEL(doc).
+		WHERE(
+			r.getTable().ID.EQ(postgres.String(doc.ID)),
+		)
+
+	_, err = stmt.ExecContext(ctx.Context(), r.getDB())
+	if err != nil {
+		if isDuplicated, duplicateErr := r.db.IsDuplicatedError(err); isDuplicated {
+			err = duplicateErr
+		}
+	}
+	return err
+}
+
+func (r NotificationRepository) Delete(ctx *appcontext.AppContext, notification domain.Notification) error {
+	var (
+		n = r.getTable()
+	)
+
+	stmt := n.DELETE().WHERE(n.ID.EQ(postgres.String(notification.ID)))
+	_, err := stmt.ExecContext(ctx.Context(), r.getDB())
+	return err
+}
+
+func (r NotificationRepository) FindByID(ctx *appcontext.AppContext, id string) (*domain.Notification, error) {
+	if !uuid.IsValidID(id) {
+		return nil, apperrors.Notification.InvalidID
+	}
+
+	var n = r.getTable()
+
+	stmt := postgres.SELECT(
+		n.AllColumns,
+	).
+		FROM(n).
+		WHERE(n.ID.EQ(postgres.String(id)))
+
+	var doc model.Notifications
+	if err := stmt.QueryContext(ctx.Context(), r.getDB(), &doc); err != nil {
+		if r.db.IsNoRowsError(err) {
+			return nil, nil
+		}
+		return nil, err
+	}
+
+	var (
+		mapper    = mapping.NotificationMapper{}
+		result, _ = mapper.FromModelToDomain(doc)
+	)
+	return result, nil
 }
 
 func (r NotificationRepository) FindWithFilter(ctx *appcontext.AppContext, filter domain.NotificationFilter) ([]domain.Notification, error) {

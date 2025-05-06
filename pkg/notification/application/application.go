@@ -11,6 +11,8 @@ import (
 type (
 	Commands interface {
 		UpdateUserProjectNotificationSetting(ctx *appcontext.AppContext, performerID string, req dto.UpdateUserProjectNotificationSettingRequest) (*dto.UpdateUserProjectNotificationSettingResponse, error)
+
+		ReadNotification(ctx *appcontext.AppContext, performerID, notificationID string, _ dto.ReadNotificationRequest) (*dto.ReadNotificationResponse, error)
 	}
 	Queries interface {
 		Ping(ctx *appcontext.AppContext, _ dto.PingRequest) (*dto.PingResponse, error)
@@ -26,6 +28,8 @@ type (
 
 	commandHandlers struct {
 		command.UpdateUserProjectNotificationSettingHandler
+
+		command.ReadNotificationHandler
 	}
 	queryHandlers struct {
 		query.PingHandler
@@ -55,6 +59,8 @@ func New(
 				cachingRepository,
 				service,
 			),
+
+			ReadNotificationHandler: command.NewReadNotificationHandler(notificationRepository),
 		},
 		queryHandlers: queryHandlers{
 			PingHandler: query.NewPingHandler(),

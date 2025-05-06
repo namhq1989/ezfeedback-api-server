@@ -61,6 +61,24 @@ func (s server) registerNotificationRoutes() {
 		return validation.ValidateHTTPPayload[dto.CountNotificationsRequest](next)
 	})
 
+	g.PATCH("/:id/read", func(c echo.Context) error {
+		var (
+			ctx            = c.Get("ctx").(*appcontext.AppContext)
+			req            = c.Get("req").(dto.ReadNotificationRequest)
+			performerID    = ctx.GetUserID()
+			notificationID = c.Param("id")
+		)
+
+		resp, err := s.app.ReadNotification(ctx, performerID, notificationID, req)
+		if err != nil {
+			return httprespond.R400(c, err, nil)
+		}
+
+		return httprespond.R200(c, resp)
+	}, s.jwt.RequireSignedIn, func(next echo.HandlerFunc) echo.HandlerFunc {
+		return validation.ValidateHTTPPayload[dto.ReadNotificationRequest](next)
+	})
+
 	g.GET("/project-setting", func(c echo.Context) error {
 		var (
 			ctx         = c.Get("ctx").(*appcontext.AppContext)
