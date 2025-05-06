@@ -6,7 +6,6 @@ import (
 
 	mocknotification "github.com/namhq1989/ezfeedback-api-server/internal/mock/notification"
 	"github.com/namhq1989/ezfeedback-api-server/pkg/notification/application/query"
-	"github.com/namhq1989/ezfeedback-api-server/pkg/notification/domain"
 	"github.com/namhq1989/ezfeedback-api-server/pkg/notification/dto"
 	"github.com/namhq1989/go-utilities/appcontext"
 	"github.com/namhq1989/go-utilities/uuid"
@@ -15,20 +14,20 @@ import (
 	"go.uber.org/mock/gomock"
 )
 
-type getNotificationsTestSuite struct {
+type countNotificationsTestSuite struct {
 	suite.Suite
-	handler                    query.GetNotificationsHandler
+	handler                    query.CountNotificationsHandler
 	mockCtrl                   *gomock.Controller
 	mockNotificationRepository *mocknotification.MockNotificationRepository
 }
 
-func (s *getNotificationsTestSuite) SetupSuite() {
+func (s *countNotificationsTestSuite) SetupSuite() {
 	s.mockCtrl = gomock.NewController(s.T())
 	s.mockNotificationRepository = mocknotification.NewMockNotificationRepository(s.mockCtrl)
-	s.handler = query.NewGetNotificationsHandler(s.mockNotificationRepository)
+	s.handler = query.NewCountNotificationsHandler(s.mockNotificationRepository)
 }
 
-func (s *getNotificationsTestSuite) TearDownTest() {
+func (s *countNotificationsTestSuite) TearDownTest() {
 	s.mockCtrl.Finish()
 }
 
@@ -36,30 +35,23 @@ func (s *getNotificationsTestSuite) TearDownTest() {
 // CASES
 //
 
-func (s *getNotificationsTestSuite) Test_1_Success() {
+func (s *countNotificationsTestSuite) Test_1_Success() {
 	s.mockNotificationRepository.EXPECT().
-		FindWithFilter(gomock.Any(), gomock.Any()).
-		Return([]domain.Notification{
-			{ID: uuid.New()},
-		}, nil)
-
-	s.mockNotificationRepository.EXPECT().
-		GenerateNewFeedbackContent(gomock.Any(), gomock.Any(), gomock.Any()).
-		Return("content").
-		AnyTimes()
+		CountWithFilter(gomock.Any(), gomock.Any()).
+		Return(int64(10), nil)
 
 	ctx := appcontext.NewRest(context.Background())
-	resp, err := s.handler.GetNotifications(ctx, uuid.New(), dto.GetNotificationsRequest{
-		Page: 0,
-	})
+	resp, err := s.handler.CountNotifications(ctx, uuid.New(), dto.CountNotificationsRequest{})
+
 	assert.Nil(s.T(), err)
 	assert.NotNil(s.T(), resp)
+	assert.Equal(s.T(), int64(10), resp.Total)
 }
 
 //
 // END OF CASES
 //
 
-func TestGetNotificationsTestSuite(t *testing.T) {
-	suite.Run(t, new(getNotificationsTestSuite))
+func TestCountNotificationsTestSuite(t *testing.T) {
+	suite.Run(t, new(countNotificationsTestSuite))
 }

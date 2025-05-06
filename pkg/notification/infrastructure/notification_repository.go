@@ -93,6 +93,23 @@ func (r NotificationRepository) FindWithFilter(ctx *appcontext.AppContext, filte
 	return result, nil
 }
 
+func (r NotificationRepository) CountWithFilter(ctx *appcontext.AppContext, filter domain.NotificationFilter) (int64, error) {
+	var (
+		n         = r.getTable()
+		whereStmt = n.UserID.EQ(postgres.String(filter.UserID))
+	)
+
+	stmt := postgres.SELECT(
+		postgres.COUNT(n.ID).AS("count_result.total"),
+	).
+		FROM(n).
+		WHERE(whereStmt)
+
+	var result = database.CountResult{}
+	err := stmt.QueryContext(ctx.Context(), r.getDB(), &result)
+	return result.Total, err
+}
+
 func (r NotificationRepository) CleanupStale(ctx *appcontext.AppContext) error {
 	var (
 		n  = r.getTable()

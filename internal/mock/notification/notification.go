@@ -21,7 +21,6 @@ import (
 type MockNotificationRepository struct {
 	ctrl     *gomock.Controller
 	recorder *MockNotificationRepositoryMockRecorder
-	isgomock struct{}
 }
 
 // MockNotificationRepositoryMockRecorder is the mock recorder for MockNotificationRepository.
@@ -53,6 +52,21 @@ func (m *MockNotificationRepository) CleanupStale(ctx *appcontext.AppContext) er
 func (mr *MockNotificationRepositoryMockRecorder) CleanupStale(ctx any) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "CleanupStale", reflect.TypeOf((*MockNotificationRepository)(nil).CleanupStale), ctx)
+}
+
+// CountWithFilter mocks base method.
+func (m *MockNotificationRepository) CountWithFilter(ctx *appcontext.AppContext, filter domain.NotificationFilter) (int64, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "CountWithFilter", ctx, filter)
+	ret0, _ := ret[0].(int64)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// CountWithFilter indicates an expected call of CountWithFilter.
+func (mr *MockNotificationRepositoryMockRecorder) CountWithFilter(ctx, filter any) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "CountWithFilter", reflect.TypeOf((*MockNotificationRepository)(nil).CountWithFilter), ctx, filter)
 }
 
 // Create mocks base method.

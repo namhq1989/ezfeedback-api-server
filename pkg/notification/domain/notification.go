@@ -12,6 +12,7 @@ import (
 type NotificationRepository interface {
 	Create(ctx *appcontext.AppContext, notification Notification) error
 	FindWithFilter(ctx *appcontext.AppContext, filter NotificationFilter) ([]Notification, error)
+	CountWithFilter(ctx *appcontext.AppContext, filter NotificationFilter) (int64, error)
 	CleanupStale(ctx *appcontext.AppContext) error
 
 	GenerateNewFeedbackContent(_ *appcontext.AppContext, language string, projectTitle string) string

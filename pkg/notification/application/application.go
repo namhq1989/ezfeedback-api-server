@@ -16,6 +16,7 @@ type (
 		Ping(ctx *appcontext.AppContext, _ dto.PingRequest) (*dto.PingResponse, error)
 
 		GetNotifications(ctx *appcontext.AppContext, performerID string, req dto.GetNotificationsRequest) (*dto.GetNotificationResponse, error)
+		CountNotifications(ctx *appcontext.AppContext, performerID string, req dto.CountNotificationsRequest) (*dto.CountNotificationResponse, error)
 		GetUserProjectNotificationSetting(ctx *appcontext.AppContext, performerID string, req dto.GetUserProjectNotificationSettingRequest) (*dto.GetUserProjectNotificationSettingResponse, error)
 	}
 	Instance interface {
@@ -30,6 +31,7 @@ type (
 		query.PingHandler
 
 		query.GetNotificationsHandler
+		query.CountNotificationsHandler
 		query.GetUserProjectNotificationSettingHandler
 	}
 	Application struct {
@@ -58,6 +60,7 @@ func New(
 			PingHandler: query.NewPingHandler(),
 
 			GetNotificationsHandler:                  query.NewGetNotificationsHandler(notificationRepository),
+			CountNotificationsHandler:                query.NewCountNotificationsHandler(notificationRepository),
 			GetUserProjectNotificationSettingHandler: query.NewGetUserProjectNotificationSettingHandler(service),
 		},
 	}
