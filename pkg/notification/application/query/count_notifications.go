@@ -26,7 +26,7 @@ func NewCountNotificationsHandler(notificationRepository domain.NotificationRepo
 // @param    payload query    dto.CountNotificationsRequest true "Query"
 // @success  200     {object} dto.CountNotificationResponse
 // @router   /api/notification/count [get]
-func (h CountNotificationsHandler) CountNotifications(ctx *appcontext.AppContext, performerID string, req dto.CountNotificationsRequest) (*dto.CountNotificationResponse, error) {
+func (h CountNotificationsHandler) CountNotifications(ctx *appcontext.AppContext, performerID string, _ dto.CountNotificationsRequest) (*dto.CountNotificationResponse, error) {
 	ctx.Logger().Info("new count notifications request", appcontext.Fields{"performerID": performerID})
 
 	ctx.Logger().Text("create new filter")
