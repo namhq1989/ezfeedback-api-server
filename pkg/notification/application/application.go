@@ -13,6 +13,7 @@ type (
 		UpdateUserProjectNotificationSetting(ctx *appcontext.AppContext, performerID string, req dto.UpdateUserProjectNotificationSettingRequest) (*dto.UpdateUserProjectNotificationSettingResponse, error)
 
 		ReadNotification(ctx *appcontext.AppContext, performerID, notificationID string, _ dto.ReadNotificationRequest) (*dto.ReadNotificationResponse, error)
+		DeleteNotification(ctx *appcontext.AppContext, performerID, notificationID string, _ dto.DeleteNotificationRequest) (*dto.DeleteNotificationResponse, error)
 	}
 	Queries interface {
 		Ping(ctx *appcontext.AppContext, _ dto.PingRequest) (*dto.PingResponse, error)
@@ -30,6 +31,7 @@ type (
 		command.UpdateUserProjectNotificationSettingHandler
 
 		command.ReadNotificationHandler
+		command.DeleteNotificationHandler
 	}
 	queryHandlers struct {
 		query.PingHandler
@@ -60,7 +62,8 @@ func New(
 				service,
 			),
 
-			ReadNotificationHandler: command.NewReadNotificationHandler(notificationRepository),
+			ReadNotificationHandler:   command.NewReadNotificationHandler(notificationRepository),
+			DeleteNotificationHandler: command.NewDeleteNotificationHandler(notificationRepository),
 		},
 		queryHandlers: queryHandlers{
 			PingHandler: query.NewPingHandler(),
