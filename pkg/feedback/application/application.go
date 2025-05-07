@@ -14,6 +14,7 @@ type (
 		ChangeFeedbackState(ctx *appcontext.AppContext, performerID, feedbackID string, req dto.ChangeFeedbackStateRequest) (*dto.ChangeFeedbackStateResponse, error)
 
 		CreateFeedbackReply(ctx *appcontext.AppContext, performerID, feedbackID string, req dto.CreateFeedbackReplyRequest) (*dto.CreateFeedbackReplyResponse, error)
+		UpdateFeedbackReply(ctx *appcontext.AppContext, performerID, feedbackID, replyID string, req dto.UpdateFeedbackReplyRequest) (*dto.UpdateFeedbackReplyResponse, error)
 	}
 	Queries interface {
 		Ping(ctx *appcontext.AppContext, _ dto.PingRequest) (*dto.PingResponse, error)
@@ -31,6 +32,7 @@ type (
 		command.ChangeFeedbackStateHandler
 
 		command.CreateFeedbackReplyHandler
+		command.UpdateFeedbackReplyHandler
 	}
 	queryHandlers struct {
 		query.PingHandler
@@ -74,6 +76,9 @@ func New(
 				feedbackReplyRepository,
 				feedbackRepository,
 				service,
+			),
+			UpdateFeedbackReplyHandler: command.NewUpdateFeedbackReplyHandler(
+				feedbackReplyRepository,
 			),
 		},
 		queryHandlers: queryHandlers{

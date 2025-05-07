@@ -79,6 +79,15 @@ func (r *FeedbackReply) SetContent(content string) error {
 	return nil
 }
 
+func (r *FeedbackReply) MarkAsEdited() {
+	r.IsEdited = true
+	r.SetUpdatedAt()
+}
+
 func (r *FeedbackReply) SetUpdatedAt() {
 	r.UpdatedAt = manipulation.NowUTC()
+}
+
+func (r *FeedbackReply) IsBelongToFeedback(feedbackID string) bool {
+	return r.FeedbackID == feedbackID
 }
