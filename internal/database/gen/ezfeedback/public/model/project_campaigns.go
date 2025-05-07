@@ -21,4 +21,5 @@ type ProjectCampaigns struct {
 	SettingWidgetPosition string
 	CreatedAt             time.Time
 	UpdatedAt             time.Time
+	StatsTotalFeedbacks   int32
 }

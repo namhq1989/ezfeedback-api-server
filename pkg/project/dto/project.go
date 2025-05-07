@@ -22,7 +22,7 @@ func (ProjectBrief) FromDomain(project domain.Project) ProjectBrief {
 		Slug:   project.Slug,
 		Status: project.Status.String(),
 		Stats: ProjectStats{
-			TotalFeedback: 10,
+			TotalFeedbacks: project.StatsTotalFeedbacks,
 		},
 	}
 }
@@ -42,7 +42,7 @@ type Project struct {
 }
 
 type ProjectStats struct {
-	TotalFeedback int `json:"totalFeedback"`
+	TotalFeedbacks int32 `json:"totalFeedbacks"`
 }
 
 func (Project) FromDomain(project domain.Project, setting domain.ProjectSetting, campaigns []domain.ProjectCampaign, categories []domain.ProjectCategory) Project {
@@ -73,7 +73,7 @@ func (Project) FromDomain(project domain.Project, setting domain.ProjectSetting,
 		Campaigns:   campns,
 		Setting:     ProjectSetting{}.FromDomain(setting),
 		Stats: ProjectStats{
-			TotalFeedback: 10,
+			TotalFeedbacks: project.StatsTotalFeedbacks,
 		},
 		CreatedAt: httprespond.NewTimeResponse(project.CreatedAt),
 		UpdatedAt: httprespond.NewTimeResponse(project.UpdatedAt),

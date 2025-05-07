@@ -22,14 +22,15 @@ const (
 )
 
 type Project struct {
-	ID          string
-	UserID      string
-	Title       string
-	Description string
-	Slug        string
-	Status      Status
-	CreatedAt   time.Time
-	UpdatedAt   time.Time
+	ID                  string
+	UserID              string
+	Title               string
+	Description         string
+	Slug                string
+	Status              Status
+	StatsTotalFeedbacks int32
+	CreatedAt           time.Time
+	UpdatedAt           time.Time
 }
 
 func NewProject(userID, title, description string) (*Project, error) {
@@ -97,6 +98,10 @@ func (p *Project) SetStatus(status string) error {
 	p.Status = dStatus
 	p.SetUpdatedAt()
 	return nil
+}
+
+func (p *Project) AdjustStatsTotalFeedbacks(value int32) {
+	p.StatsTotalFeedbacks += value
 }
 
 func (p *Project) SetUpdatedAt() {

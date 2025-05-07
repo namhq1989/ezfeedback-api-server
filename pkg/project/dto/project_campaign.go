@@ -19,7 +19,7 @@ type ProjectCampaign struct {
 }
 
 type ProjectCampaignStats struct {
-	TotalFeedback int `json:"totalFeedback"`
+	TotalFeedbacks int32 `json:"totalFeedbacks"`
 }
 
 func (ProjectCampaign) FromDomain(campaign domain.ProjectCampaign, categories []domain.ProjectCategory) ProjectCampaign {
@@ -38,7 +38,7 @@ func (ProjectCampaign) FromDomain(campaign domain.ProjectCampaign, categories []
 		CreatedAt:             httprespond.NewTimeResponse(campaign.CreatedAt),
 		UpdatedAt:             httprespond.NewTimeResponse(campaign.UpdatedAt),
 		Stats: ProjectCampaignStats{
-			TotalFeedback: 10,
+			TotalFeedbacks: campaign.StatsTotalFeedbacks,
 		},
 		Categories: cats,
 	}

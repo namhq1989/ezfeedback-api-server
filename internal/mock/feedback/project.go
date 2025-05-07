@@ -100,3 +100,17 @@ func (mr *MockProjectHubMockRecorder) GetProjectCategories(ctx, projectID any) *
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetProjectCategories", reflect.TypeOf((*MockProjectHub)(nil).GetProjectCategories), ctx, projectID)
 }
+
+// OnFeedbackCreated mocks base method.
+func (m *MockProjectHub) OnFeedbackCreated(ctx *appcontext.AppContext, projectID, campaignID string) error {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "OnFeedbackCreated", ctx, projectID, campaignID)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// OnFeedbackCreated indicates an expected call of OnFeedbackCreated.
+func (mr *MockProjectHubMockRecorder) OnFeedbackCreated(ctx, projectID, campaignID any) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "OnFeedbackCreated", reflect.TypeOf((*MockProjectHub)(nil).OnFeedbackCreated), ctx, projectID, campaignID)
+}

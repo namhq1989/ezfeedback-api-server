@@ -8,6 +8,7 @@ import (
 	"github.com/namhq1989/ezfeedback-api-server/pkg/project/infrastructure"
 	"github.com/namhq1989/ezfeedback-api-server/pkg/project/rest"
 	"github.com/namhq1989/ezfeedback-api-server/pkg/project/shared"
+	"github.com/namhq1989/ezfeedback-api-server/pkg/project/worker"
 	"github.com/namhq1989/go-utilities/appcontext"
 )
 
@@ -36,6 +37,7 @@ func (Module) Startup(ctx *appcontext.AppContext, mono monolith.Monolith) error 
 		projectCampaignCategoryRepository = infrastructure.NewProjectCampaignCategoryRepository(mono.Database())
 		projectCollaboratorRepository     = infrastructure.NewProjectCollaboratorRepository(mono.Database())
 		cachingRepository                 = infrastructure.NewCachingRepository(mono.Caching(), mono.Config().IsEnvRelease)
+		queueRepository                   = infrastructure.NewQueueRepository(mono.Queue())
 		billingHub                        = infrastructure.NewBillingHub(billingGRPCClient)
 		iamHub                            = infrastructure.NewIAMHub(iamGRPCClient)
 		projectCampaignHub                = infrastructure.NewProjectCampaignHub(mono.Database())
@@ -61,6 +63,7 @@ func (Module) Startup(ctx *appcontext.AppContext, mono monolith.Monolith) error 
 		)
 
 		hub = grpc.New(
+			queueRepository,
 			projectCampaignHub,
 			iamHub,
 			service,
@@ -76,6 +79,15 @@ func (Module) Startup(ctx *appcontext.AppContext, mono monolith.Monolith) error 
 	if err = grpc.RegisterServer(ctx, mono.RPC(), hub); err != nil {
 		return err
 	}
+
+	// worker
+	w := worker.New(
+		mono.Queue(),
+		projectRepository,
+		projectCampaignRepository,
+		cachingRepository,
+	)
+	w.Start()
 
 	return nil
 }

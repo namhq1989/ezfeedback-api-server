@@ -17,6 +17,7 @@ func (ProjectCampaignMapper) FromModelToDomain(campaign model.ProjectCampaigns) 
 		CampaignType:          domain.ToProjectCampaignType(campaign.CampaignType.String()),
 		Status:                domain.ToStatus(campaign.Status.String()),
 		SettingWidgetPosition: campaign.SettingWidgetPosition,
+		StatsTotalFeedbacks:   campaign.StatsTotalFeedbacks,
 		CreatedAt:             campaign.CreatedAt,
 		UpdatedAt:             campaign.UpdatedAt,
 	}
@@ -33,6 +34,7 @@ func (ProjectCampaignMapper) FromDomainToModel(campaign domain.ProjectCampaign) 
 		CampaignType:          model.CampaignType(campaign.CampaignType.String()),
 		Status:                model.Status(campaign.Status.String()),
 		SettingWidgetPosition: campaign.SettingWidgetPosition,
+		StatsTotalFeedbacks:   campaign.StatsTotalFeedbacks,
 		CreatedAt:             campaign.CreatedAt,
 		UpdatedAt:             campaign.UpdatedAt,
 	}

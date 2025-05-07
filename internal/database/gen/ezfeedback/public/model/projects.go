@@ -12,12 +12,13 @@ import (
 )
 
 type Projects struct {
-	ID          string `sql:"primary_key"`
-	UserID      string
-	Title       string
-	Description string
-	Slug        string
-	Status      Status
-	CreatedAt   time.Time
-	UpdatedAt   time.Time
+	ID                  string `sql:"primary_key"`
+	UserID              string
+	Title               string
+	Description         string
+	Slug                string
+	Status              Status
+	CreatedAt           time.Time
+	UpdatedAt           time.Time
+	StatsTotalFeedbacks int32
 }

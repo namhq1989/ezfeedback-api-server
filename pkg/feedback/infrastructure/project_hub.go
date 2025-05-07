@@ -121,3 +121,12 @@ func (r ProjectHub) GetProjectCampaigns(ctx *appcontext.AppContext, projectID st
 
 	return result, nil
 }
+
+func (r ProjectHub) OnFeedbackCreated(ctx *appcontext.AppContext, projectID, campaignID string) error {
+	_, err := r.client.OnFeedbackCreated(ctx.Context(), &projectpb.OnFeedbackCreatedRequest{
+		TraceId:    ctx.GetTraceID(),
+		ProjectId:  projectID,
+		CampaignId: campaignID,
+	})
+	return err
+}

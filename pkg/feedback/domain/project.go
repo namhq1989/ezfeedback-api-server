@@ -9,6 +9,7 @@ type ProjectHub interface {
 	GetProjectCampaignByID(ctx *appcontext.AppContext, campaignID string) (*ProjectCampaignHubData, error)
 	GetProjectCategories(ctx *appcontext.AppContext, projectID string) ([]ProjectCategory, error)
 	GetProjectCampaigns(ctx *appcontext.AppContext, projectID string) ([]ProjectCampaign, error)
+	OnFeedbackCreated(ctx *appcontext.AppContext, projectID, campaignID string) error
 }
 
 type ProjectCampaignHubData struct {
