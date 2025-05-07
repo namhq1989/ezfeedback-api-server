@@ -71,12 +71,13 @@ func New(
 	projectCampaignRepository domain.ProjectCampaignRepository,
 	projectCampaignCategoryRepository domain.ProjectCampaignCategoryRepository,
 	cachingRepository domain.CachingRepository,
+	queueRepository domain.QueueRepository,
 	billingHub domain.BillingHub,
 	service domain.Service,
 ) *Application {
 	return &Application{
 		commandHandlers: commandHandlers{
-			CreateProjectHandler: command.NewCreateProjectHandler(projectRepository, projectSettingRepository, cachingRepository, billingHub),
+			CreateProjectHandler: command.NewCreateProjectHandler(projectRepository, projectSettingRepository, cachingRepository, queueRepository, billingHub),
 			UpdateProjectHandler: command.NewUpdateProjectHandler(projectRepository, projectSettingRepository, cachingRepository),
 			ChangeProjectStatusHandler: command.NewChangeProjectStatusHandler(
 				projectRepository,

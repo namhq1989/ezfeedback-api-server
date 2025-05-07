@@ -21,7 +21,6 @@ import (
 type MockIAMHub struct {
 	ctrl     *gomock.Controller
 	recorder *MockIAMHubMockRecorder
-	isgomock struct{}
 }
 
 // MockIAMHubMockRecorder is the mock recorder for MockIAMHub.

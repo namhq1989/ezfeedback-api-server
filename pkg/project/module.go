@@ -58,6 +58,7 @@ func (Module) Startup(ctx *appcontext.AppContext, mono monolith.Monolith) error 
 			projectCampaignRepository,
 			projectCampaignCategoryRepository,
 			cachingRepository,
+			queueRepository,
 			billingHub,
 			service,
 		)
@@ -85,6 +86,7 @@ func (Module) Startup(ctx *appcontext.AppContext, mono monolith.Monolith) error 
 		mono.Queue(),
 		projectRepository,
 		projectCampaignRepository,
+		projectCollaboratorRepository,
 		cachingRepository,
 	)
 	w.Start()

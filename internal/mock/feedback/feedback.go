@@ -22,7 +22,6 @@ import (
 type MockFeedbackRepository struct {
 	ctrl     *gomock.Controller
 	recorder *MockFeedbackRepositoryMockRecorder
-	isgomock struct{}
 }
 
 // MockFeedbackRepositoryMockRecorder is the mock recorder for MockFeedbackRepository.
@@ -149,7 +148,6 @@ func (mr *MockFeedbackRepositoryMockRecorder) Update(ctx, feedback any) *gomock.
 type MockFeedbackHub struct {
 	ctrl     *gomock.Controller
 	recorder *MockFeedbackHubMockRecorder
-	isgomock struct{}
 }
 
 // MockFeedbackHubMockRecorder is the mock recorder for MockFeedbackHub.

@@ -11,6 +11,7 @@ type CreateProjectHandler struct {
 	projectRepository        domain.ProjectRepository
 	projectSettingRepository domain.ProjectSettingRepository
 	cachingRepository        domain.CachingRepository
+	queueRepository          domain.QueueRepository
 	billingHub               domain.BillingHub
 }
 
@@ -18,12 +19,14 @@ func NewCreateProjectHandler(
 	projectRepository domain.ProjectRepository,
 	projectSettingRepository domain.ProjectSettingRepository,
 	cachingRepository domain.CachingRepository,
+	queueRepository domain.QueueRepository,
 	billingHub domain.BillingHub,
 ) CreateProjectHandler {
 	return CreateProjectHandler{
 		projectRepository:        projectRepository,
 		projectSettingRepository: projectSettingRepository,
 		cachingRepository:        cachingRepository,
+		queueRepository:          queueRepository,
 		billingHub:               billingHub,
 	}
 }
@@ -82,6 +85,14 @@ func (h CreateProjectHandler) CreateProject(ctx *appcontext.AppContext, performe
 	ctx.Logger().Text("delete caching data")
 	if err = h.cachingRepository.DeleteApiGetProjectsByUserID(ctx, performerID); err != nil {
 		ctx.Logger().Error("failed to delete caching data", err, appcontext.Fields{})
+	}
+
+	ctx.Logger().Text("add task to queue")
+	if err = h.queueRepository.OnProjectCreated(ctx, domain.QueueOnProjectCreatedPayload{
+		UserID:    performerID,
+		ProjectID: project.ID,
+	}); err != nil {
+		ctx.Logger().Error("failed to add task to queue", err, appcontext.Fields{})
 	}
 
 	ctx.Logger().Text("done create project request")

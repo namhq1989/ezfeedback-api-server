@@ -4,6 +4,7 @@ var TypeNames = struct {
 	CleanupStaleVerificationCodes string
 	SendVerificationCodeEmail     string
 
+	OnProjectCreated  string
 	OnFeedbackCreated string
 
 	FeedbackCreated string
@@ -15,6 +16,7 @@ var TypeNames = struct {
 	CleanupStaleVerificationCodes: "iam.cleanupStaleVerificationCodes",
 	SendVerificationCodeEmail:     "iam.sendVerificationCodeEmail",
 
+	OnProjectCreated:  "project.onProjectCreated",
 	OnFeedbackCreated: "project.onFeedbackCreated",
 
 	FeedbackCreated: "feedback.created",
