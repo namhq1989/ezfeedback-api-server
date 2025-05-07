@@ -21,6 +21,7 @@ import (
 type MockProjectCampaignRepository struct {
 	ctrl     *gomock.Controller
 	recorder *MockProjectCampaignRepositoryMockRecorder
+	isgomock struct{}
 }
 
 // MockProjectCampaignRepositoryMockRecorder is the mock recorder for MockProjectCampaignRepository.
@@ -117,6 +118,7 @@ func (mr *MockProjectCampaignRepositoryMockRecorder) Update(ctx, campaign any) *
 type MockProjectCampaignHub struct {
 	ctrl     *gomock.Controller
 	recorder *MockProjectCampaignHubMockRecorder
+	isgomock struct{}
 }
 
 // MockProjectCampaignHubMockRecorder is the mock recorder for MockProjectCampaignHub.

@@ -45,12 +45,14 @@ func (Module) Startup(ctx *appcontext.AppContext, mono monolith.Monolith) error 
 		notificationHub       = infrastructure.NewNotificationHub(notificationGRPCClient)
 
 		service = shared.NewService(
+			feedbackRepository,
 			cachingRepository,
 			externalAPIRepository,
 		)
 
 		app = application.New(
 			feedbackRepository,
+			cachingRepository,
 			queueRepository,
 			billingHub,
 			projectHub,

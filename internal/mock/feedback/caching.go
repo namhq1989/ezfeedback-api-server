@@ -21,6 +21,7 @@ import (
 type MockCachingRepository struct {
 	ctrl     *gomock.Controller
 	recorder *MockCachingRepositoryMockRecorder
+	isgomock struct{}
 }
 
 // MockCachingRepositoryMockRecorder is the mock recorder for MockCachingRepository.
@@ -40,6 +41,35 @@ func (m *MockCachingRepository) EXPECT() *MockCachingRepositoryMockRecorder {
 	return m.recorder
 }
 
+// DeleteFeedbackByID mocks base method.
+func (m *MockCachingRepository) DeleteFeedbackByID(ctx *appcontext.AppContext, id string) error {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "DeleteFeedbackByID", ctx, id)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// DeleteFeedbackByID indicates an expected call of DeleteFeedbackByID.
+func (mr *MockCachingRepositoryMockRecorder) DeleteFeedbackByID(ctx, id any) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DeleteFeedbackByID", reflect.TypeOf((*MockCachingRepository)(nil).DeleteFeedbackByID), ctx, id)
+}
+
+// GetFeedbackByID mocks base method.
+func (m *MockCachingRepository) GetFeedbackByID(ctx *appcontext.AppContext, id string) (*domain.Feedback, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "GetFeedbackByID", ctx, id)
+	ret0, _ := ret[0].(*domain.Feedback)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// GetFeedbackByID indicates an expected call of GetFeedbackByID.
+func (mr *MockCachingRepositoryMockRecorder) GetFeedbackByID(ctx, id any) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetFeedbackByID", reflect.TypeOf((*MockCachingRepository)(nil).GetFeedbackByID), ctx, id)
+}
+
 // GetIpLocationData mocks base method.
 func (m *MockCachingRepository) GetIpLocationData(ctx *appcontext.AppContext, ip string) (*domain.IpLocationData, error) {
 	m.ctrl.T.Helper()
@@ -53,6 +83,20 @@ func (m *MockCachingRepository) GetIpLocationData(ctx *appcontext.AppContext, ip
 func (mr *MockCachingRepositoryMockRecorder) GetIpLocationData(ctx, ip any) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetIpLocationData", reflect.TypeOf((*MockCachingRepository)(nil).GetIpLocationData), ctx, ip)
+}
+
+// SetFeedbackByID mocks base method.
+func (m *MockCachingRepository) SetFeedbackByID(ctx *appcontext.AppContext, id string, feedback domain.Feedback) error {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "SetFeedbackByID", ctx, id, feedback)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// SetFeedbackByID indicates an expected call of SetFeedbackByID.
+func (mr *MockCachingRepositoryMockRecorder) SetFeedbackByID(ctx, id, feedback any) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "SetFeedbackByID", reflect.TypeOf((*MockCachingRepository)(nil).SetFeedbackByID), ctx, id, feedback)
 }
 
 // SetIpLocationData mocks base method.

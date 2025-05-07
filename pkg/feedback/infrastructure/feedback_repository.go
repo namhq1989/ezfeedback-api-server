@@ -75,6 +75,34 @@ func (r FeedbackRepository) Update(ctx *appcontext.AppContext, feedback domain.F
 	return err
 }
 
+func (r FeedbackRepository) FindByID(ctx *appcontext.AppContext, feedbackID string) (*domain.Feedback, error) {
+	if !uuid.IsValidID(feedbackID) {
+		return nil, apperrors.Feedback.InvalidFeedbackID
+	}
+
+	var f = r.getTable()
+
+	stmt := postgres.SELECT(
+		f.AllColumns,
+	).
+		FROM(f).
+		WHERE(f.ID.EQ(postgres.String(feedbackID)))
+
+	var doc model.Feedbacks
+	if err := stmt.QueryContext(ctx.Context(), r.getDB(), &doc); err != nil {
+		if r.db.IsNoRowsError(err) {
+			return nil, nil
+		}
+		return nil, err
+	}
+
+	var (
+		mapper    = mapping.FeedbackMapper{}
+		result, _ = mapper.FromModelToDomain(doc)
+	)
+	return result, nil
+}
+
 func (r FeedbackRepository) FindWithFilter(ctx *appcontext.AppContext, filter domain.FeedbackFilter) ([]domain.Feedback, error) {
 	var (
 		f         = r.getTable()
