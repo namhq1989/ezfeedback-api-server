@@ -16,6 +16,10 @@ func NewQueueRepository(queue queue.Operations) QueueRepository {
 	}
 }
 
+func (r QueueRepository) OnProjectCreated(ctx *appcontext.AppContext, payload domain.QueueOnProjectCreatedPayload) error {
+	return queue.EnqueueTask(ctx, r.queue, queue.TypeNames.OnProjectCreated, payload, 3)
+}
+
 func (r QueueRepository) OnFeedbackCreated(ctx *appcontext.AppContext, payload domain.QueueOnFeedbackCreatedPayload) error {
 	return queue.EnqueueTask(ctx, r.queue, queue.TypeNames.OnFeedbackCreated, payload, 3)
 }

@@ -21,7 +21,6 @@ import (
 type MockCachingRepository struct {
 	ctrl     *gomock.Controller
 	recorder *MockCachingRepositoryMockRecorder
-	isgomock struct{}
 }
 
 // MockCachingRepositoryMockRecorder is the mock recorder for MockCachingRepository.

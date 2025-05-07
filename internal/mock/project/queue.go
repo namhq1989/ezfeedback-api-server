@@ -21,7 +21,6 @@ import (
 type MockQueueRepository struct {
 	ctrl     *gomock.Controller
 	recorder *MockQueueRepositoryMockRecorder
-	isgomock struct{}
 }
 
 // MockQueueRepositoryMockRecorder is the mock recorder for MockQueueRepository.
@@ -53,4 +52,18 @@ func (m *MockQueueRepository) OnFeedbackCreated(ctx *appcontext.AppContext, payl
 func (mr *MockQueueRepositoryMockRecorder) OnFeedbackCreated(ctx, payload any) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "OnFeedbackCreated", reflect.TypeOf((*MockQueueRepository)(nil).OnFeedbackCreated), ctx, payload)
+}
+
+// OnProjectCreated mocks base method.
+func (m *MockQueueRepository) OnProjectCreated(ctx *appcontext.AppContext, payload domain.QueueOnProjectCreatedPayload) error {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "OnProjectCreated", ctx, payload)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// OnProjectCreated indicates an expected call of OnProjectCreated.
+func (mr *MockQueueRepositoryMockRecorder) OnProjectCreated(ctx, payload any) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "OnProjectCreated", reflect.TypeOf((*MockQueueRepository)(nil).OnProjectCreated), ctx, payload)
 }
