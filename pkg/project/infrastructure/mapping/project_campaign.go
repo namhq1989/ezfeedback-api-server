@@ -1,6 +1,7 @@
 package mapping
 
 import (
+	"github.com/goccy/go-json"
 	"github.com/lib/pq"
 	"github.com/namhq1989/ezfeedback-api-server/internal/database/gen/ezfeedback/public/model"
 	"github.com/namhq1989/ezfeedback-api-server/pkg/project/domain"
@@ -10,16 +11,20 @@ type ProjectCampaignMapper struct{}
 
 func (ProjectCampaignMapper) FromModelToDomain(campaign model.ProjectCampaigns) (*domain.ProjectCampaign, error) {
 	var result = &domain.ProjectCampaign{
-		ID:                    campaign.ID,
-		ProjectID:             campaign.ProjectID,
-		Name:                  campaign.Name,
-		Description:           campaign.Description,
-		CampaignType:          domain.ToProjectCampaignType(campaign.CampaignType.String()),
-		Status:                domain.ToStatus(campaign.Status.String()),
-		SettingWidgetPosition: campaign.SettingWidgetPosition,
-		StatsTotalFeedbacks:   campaign.StatsTotalFeedbacks,
-		CreatedAt:             campaign.CreatedAt,
-		UpdatedAt:             campaign.UpdatedAt,
+		ID:                  campaign.ID,
+		ProjectID:           campaign.ProjectID,
+		Name:                campaign.Name,
+		CampaignType:        domain.ToProjectCampaignType(campaign.CampaignType.String()),
+		Status:              domain.ToStatus(campaign.Status.String()),
+		StatsTotalFeedbacks: campaign.StatsTotalFeedbacks,
+		CreatedAt:           campaign.CreatedAt,
+		UpdatedAt:           campaign.UpdatedAt,
+	}
+
+	if campaign.Settings != "" {
+		if err := json.Unmarshal([]byte(campaign.Settings), &result.Settings); err != nil {
+			return nil, err
+		}
 	}
 
 	return result, nil
@@ -27,16 +32,21 @@ func (ProjectCampaignMapper) FromModelToDomain(campaign model.ProjectCampaigns) 
 
 func (ProjectCampaignMapper) FromDomainToModel(campaign domain.ProjectCampaign) (*model.ProjectCampaigns, error) {
 	var result = &model.ProjectCampaigns{
-		ID:                    campaign.ID,
-		ProjectID:             campaign.ProjectID,
-		Name:                  campaign.Name,
-		Description:           campaign.Description,
-		CampaignType:          model.CampaignType(campaign.CampaignType.String()),
-		Status:                model.Status(campaign.Status.String()),
-		SettingWidgetPosition: campaign.SettingWidgetPosition,
-		StatsTotalFeedbacks:   campaign.StatsTotalFeedbacks,
-		CreatedAt:             campaign.CreatedAt,
-		UpdatedAt:             campaign.UpdatedAt,
+		ID:                  campaign.ID,
+		ProjectID:           campaign.ProjectID,
+		Name:                campaign.Name,
+		CampaignType:        model.CampaignType(campaign.CampaignType.String()),
+		Status:              model.Status(campaign.Status.String()),
+		Settings:            "",
+		StatsTotalFeedbacks: campaign.StatsTotalFeedbacks,
+		CreatedAt:           campaign.CreatedAt,
+		UpdatedAt:           campaign.UpdatedAt,
+	}
+
+	if settingsBytes, err := json.Marshal(campaign.Settings); err != nil {
+		return nil, err
+	} else {
+		result.Settings = string(settingsBytes)
 	}
 
 	return result, nil

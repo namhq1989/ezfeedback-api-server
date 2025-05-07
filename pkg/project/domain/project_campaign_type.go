@@ -17,6 +17,18 @@ func (s ProjectCampaignType) IsValid() bool {
 	return s != ProjectCampaignTypeUnknown
 }
 
+func (s ProjectCampaignType) IsFeedback() bool {
+	return s == ProjectCampaignTypeFeedback
+}
+
+func (s ProjectCampaignType) IsNPS() bool {
+	return s == ProjectCampaignTypeNPS
+}
+
+func (s ProjectCampaignType) IsCSAT() bool {
+	return s == ProjectCampaignTypeCSAT
+}
+
 func ToProjectCampaignType(s string) ProjectCampaignType {
 	switch s {
 	case ProjectCampaignTypeFeedback.String():

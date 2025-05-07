@@ -179,7 +179,7 @@ func (h CreateFeedbackHandler) validateData(ctx *appcontext.AppContext, domainNa
 			return apperrors.Feedback.InvalidRating
 		}
 	} else if campaignData.ProjectCampaign.CampaignType.IsCSAT() {
-		if req.Rating < 1 || req.Rating > 10 {
+		if req.Rating < 1 || req.Rating > 5 {
 			ctx.Logger().ErrorText("campaign 'csat' but invalid rating")
 			return apperrors.Feedback.InvalidRating
 		}

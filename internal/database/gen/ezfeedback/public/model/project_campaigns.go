@@ -12,14 +12,13 @@ import (
 )
 
 type ProjectCampaigns struct {
-	ID                    string `sql:"primary_key"`
-	ProjectID             string
-	Name                  string
-	Description           string
-	CampaignType          CampaignType
-	Status                Status
-	SettingWidgetPosition string
-	CreatedAt             time.Time
-	UpdatedAt             time.Time
-	StatsTotalFeedbacks   int32
+	ID                  string `sql:"primary_key"`
+	ProjectID           string
+	Name                string
+	CampaignType        CampaignType
+	Status              Status
+	CreatedAt           time.Time
+	UpdatedAt           time.Time
+	StatsTotalFeedbacks int32
+	Settings            string
 }

@@ -6,16 +6,15 @@ import (
 )
 
 type ProjectCampaign struct {
-	ID                    string                    `json:"id"`
-	Name                  string                    `json:"name"`
-	Description           string                    `json:"description"`
-	CampaignType          string                    `json:"campaignType"`
-	Status                string                    `json:"status"`
-	SettingWidgetPosition string                    `json:"settingWidgetPosition"`
-	CreatedAt             *httprespond.TimeResponse `json:"createdAt"`
-	UpdatedAt             *httprespond.TimeResponse `json:"updatedAt"`
-	Stats                 ProjectCampaignStats      `json:"stats"`
-	Categories            []ProjectCategory         `json:"categories"`
+	ID           string                    `json:"id"`
+	Name         string                    `json:"name"`
+	CampaignType string                    `json:"campaignType"`
+	Status       string                    `json:"status"`
+	Settings     ProjectCampaignSetting    `json:"settings"`
+	CreatedAt    *httprespond.TimeResponse `json:"createdAt"`
+	UpdatedAt    *httprespond.TimeResponse `json:"updatedAt"`
+	Stats        ProjectCampaignStats      `json:"stats"`
+	Categories   []ProjectCategory         `json:"categories"`
 }
 
 type ProjectCampaignStats struct {
@@ -29,14 +28,13 @@ func (ProjectCampaign) FromDomain(campaign domain.ProjectCampaign, categories []
 	}
 
 	return ProjectCampaign{
-		ID:                    campaign.ID,
-		Name:                  campaign.Name,
-		Description:           campaign.Description,
-		CampaignType:          campaign.CampaignType.String(),
-		Status:                campaign.Status.String(),
-		SettingWidgetPosition: campaign.SettingWidgetPosition,
-		CreatedAt:             httprespond.NewTimeResponse(campaign.CreatedAt),
-		UpdatedAt:             httprespond.NewTimeResponse(campaign.UpdatedAt),
+		ID:           campaign.ID,
+		Name:         campaign.Name,
+		CampaignType: campaign.CampaignType.String(),
+		Status:       campaign.Status.String(),
+		Settings:     ProjectCampaignSetting{}.FromDomain(campaign.Settings),
+		CreatedAt:    httprespond.NewTimeResponse(campaign.CreatedAt),
+		UpdatedAt:    httprespond.NewTimeResponse(campaign.UpdatedAt),
 		Stats: ProjectCampaignStats{
 			TotalFeedbacks: campaign.StatsTotalFeedbacks,
 		},

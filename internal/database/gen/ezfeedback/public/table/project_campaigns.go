@@ -17,16 +17,15 @@ type projectCampaignsTable struct {
 	postgres.Table
 
 	// Columns
-	ID                    postgres.ColumnString
-	ProjectID             postgres.ColumnString
-	Name                  postgres.ColumnString
-	Description           postgres.ColumnString
-	CampaignType          postgres.ColumnString
-	Status                postgres.ColumnString
-	SettingWidgetPosition postgres.ColumnString
-	CreatedAt             postgres.ColumnTimestampz
-	UpdatedAt             postgres.ColumnTimestampz
-	StatsTotalFeedbacks   postgres.ColumnInteger
+	ID                  postgres.ColumnString
+	ProjectID           postgres.ColumnString
+	Name                postgres.ColumnString
+	CampaignType        postgres.ColumnString
+	Status              postgres.ColumnString
+	CreatedAt           postgres.ColumnTimestampz
+	UpdatedAt           postgres.ColumnTimestampz
+	StatsTotalFeedbacks postgres.ColumnInteger
+	Settings            postgres.ColumnString
 
 	AllColumns     postgres.ColumnList
 	MutableColumns postgres.ColumnList
@@ -67,34 +66,32 @@ func newProjectCampaignsTable(schemaName, tableName, alias string) *ProjectCampa
 
 func newProjectCampaignsTableImpl(schemaName, tableName, alias string) projectCampaignsTable {
 	var (
-		IDColumn                    = postgres.StringColumn("id")
-		ProjectIDColumn             = postgres.StringColumn("project_id")
-		NameColumn                  = postgres.StringColumn("name")
-		DescriptionColumn           = postgres.StringColumn("description")
-		CampaignTypeColumn          = postgres.StringColumn("campaign_type")
-		StatusColumn                = postgres.StringColumn("status")
-		SettingWidgetPositionColumn = postgres.StringColumn("setting_widget_position")
-		CreatedAtColumn             = postgres.TimestampzColumn("created_at")
-		UpdatedAtColumn             = postgres.TimestampzColumn("updated_at")
-		StatsTotalFeedbacksColumn   = postgres.IntegerColumn("stats_total_feedbacks")
-		allColumns                  = postgres.ColumnList{IDColumn, ProjectIDColumn, NameColumn, DescriptionColumn, CampaignTypeColumn, StatusColumn, SettingWidgetPositionColumn, CreatedAtColumn, UpdatedAtColumn, StatsTotalFeedbacksColumn}
-		mutableColumns              = postgres.ColumnList{ProjectIDColumn, NameColumn, DescriptionColumn, CampaignTypeColumn, StatusColumn, SettingWidgetPositionColumn, CreatedAtColumn, UpdatedAtColumn, StatsTotalFeedbacksColumn}
+		IDColumn                  = postgres.StringColumn("id")
+		ProjectIDColumn           = postgres.StringColumn("project_id")
+		NameColumn                = postgres.StringColumn("name")
+		CampaignTypeColumn        = postgres.StringColumn("campaign_type")
+		StatusColumn              = postgres.StringColumn("status")
+		CreatedAtColumn           = postgres.TimestampzColumn("created_at")
+		UpdatedAtColumn           = postgres.TimestampzColumn("updated_at")
+		StatsTotalFeedbacksColumn = postgres.IntegerColumn("stats_total_feedbacks")
+		SettingsColumn            = postgres.StringColumn("settings")
+		allColumns                = postgres.ColumnList{IDColumn, ProjectIDColumn, NameColumn, CampaignTypeColumn, StatusColumn, CreatedAtColumn, UpdatedAtColumn, StatsTotalFeedbacksColumn, SettingsColumn}
+		mutableColumns            = postgres.ColumnList{ProjectIDColumn, NameColumn, CampaignTypeColumn, StatusColumn, CreatedAtColumn, UpdatedAtColumn, StatsTotalFeedbacksColumn, SettingsColumn}
 	)
 
 	return projectCampaignsTable{
 		Table: postgres.NewTable(schemaName, tableName, alias, allColumns...),
 
 		//Columns
-		ID:                    IDColumn,
-		ProjectID:             ProjectIDColumn,
-		Name:                  NameColumn,
-		Description:           DescriptionColumn,
-		CampaignType:          CampaignTypeColumn,
-		Status:                StatusColumn,
-		SettingWidgetPosition: SettingWidgetPositionColumn,
-		CreatedAt:             CreatedAtColumn,
-		UpdatedAt:             UpdatedAtColumn,
-		StatsTotalFeedbacks:   StatsTotalFeedbacksColumn,
+		ID:                  IDColumn,
+		ProjectID:           ProjectIDColumn,
+		Name:                NameColumn,
+		CampaignType:        CampaignTypeColumn,
+		Status:              StatusColumn,
+		CreatedAt:           CreatedAtColumn,
+		UpdatedAt:           UpdatedAtColumn,
+		StatsTotalFeedbacks: StatsTotalFeedbacksColumn,
+		Settings:            SettingsColumn,
 
 		AllColumns:     allColumns,
 		MutableColumns: mutableColumns,
