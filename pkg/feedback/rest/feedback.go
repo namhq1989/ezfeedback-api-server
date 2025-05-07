@@ -106,6 +106,24 @@ func (s server) registerFeedbackRoutes() {
 	}, s.jwt.RequireSignedIn, func(next echo.HandlerFunc) echo.HandlerFunc {
 		return validation.ValidateHTTPPayload[dto.ChangeFeedbackStateRequest](next)
 	})
+
+	g.POST("/:id/reply", func(c echo.Context) error {
+		var (
+			ctx         = c.Get("ctx").(*appcontext.AppContext)
+			req         = c.Get("req").(dto.CreateFeedbackReplyRequest)
+			performerID = ctx.GetUserID()
+			feedbackID  = c.Param("id")
+		)
+
+		resp, err := s.app.CreateFeedbackReply(ctx, performerID, feedbackID, req)
+		if err != nil {
+			return httprespond.R400(c, err, nil)
+		}
+
+		return httprespond.R200(c, resp)
+	}, s.jwt.RequireSignedIn, func(next echo.HandlerFunc) echo.HandlerFunc {
+		return validation.ValidateHTTPPayload[dto.CreateFeedbackReplyRequest](next)
+	})
 }
 
 func createFeedbackRateLimiter() echo.MiddlewareFunc {

@@ -35,14 +35,15 @@ func (Module) Startup(ctx *appcontext.AppContext, mono monolith.Monolith) error 
 	}
 
 	var (
-		feedbackRepository    = infrastructure.NewFeedbackRepository(mono.Database())
-		queueRepository       = infrastructure.NewQueueRepository(mono.Queue())
-		cachingRepository     = infrastructure.NewCachingRepository(mono.Caching(), mono.Config().IsEnvRelease)
-		externalAPIRepository = infrastructure.NewExternalAPIRepository(mono.ExternalAPI())
-		feedbackHub           = infrastructure.NewFeedbackHub(mono.Database())
-		billingHub            = infrastructure.NewBillingHub(billingGRPCClient)
-		projectHub            = infrastructure.NewProjectHub(projectGRPCClient)
-		notificationHub       = infrastructure.NewNotificationHub(notificationGRPCClient)
+		feedbackRepository      = infrastructure.NewFeedbackRepository(mono.Database())
+		feedbackReplyRepository = infrastructure.NewFeedbackReplyRepository(mono.Database())
+		queueRepository         = infrastructure.NewQueueRepository(mono.Queue())
+		cachingRepository       = infrastructure.NewCachingRepository(mono.Caching(), mono.Config().IsEnvRelease)
+		externalAPIRepository   = infrastructure.NewExternalAPIRepository(mono.ExternalAPI())
+		feedbackHub             = infrastructure.NewFeedbackHub(mono.Database())
+		billingHub              = infrastructure.NewBillingHub(billingGRPCClient)
+		projectHub              = infrastructure.NewProjectHub(projectGRPCClient)
+		notificationHub         = infrastructure.NewNotificationHub(notificationGRPCClient)
 
 		service = shared.NewService(
 			feedbackRepository,
@@ -52,6 +53,7 @@ func (Module) Startup(ctx *appcontext.AppContext, mono monolith.Monolith) error 
 
 		app = application.New(
 			feedbackRepository,
+			feedbackReplyRepository,
 			cachingRepository,
 			queueRepository,
 			billingHub,

@@ -30,21 +30,22 @@ var (
 )
 
 type Feedback struct {
-	ID           string
-	ProjectID    string
-	CampaignID   string
-	AppUserID    *string
-	Email        *string
-	CategoryID   string
-	Content      string
-	Rating       int32
-	IsAnonymous  bool
-	State        FeedbackState
-	CampaignType ProjectCampaignType
-	Ip           string
-	CountryCode  string
-	CreatedAt    time.Time
-	UpdatedAt    time.Time
+	ID                string
+	ProjectID         string
+	CampaignID        string
+	AppUserID         *string
+	Email             *string
+	CategoryID        string
+	Content           string
+	Rating            int32
+	IsAnonymous       bool
+	State             FeedbackState
+	CampaignType      ProjectCampaignType
+	Ip                string
+	CountryCode       string
+	StatsTotalReplies int32
+	CreatedAt         time.Time
+	UpdatedAt         time.Time
 }
 
 func NewFeedback(projectID, campaignID string, appUserID, email string, categoryID, content string, rating int32, campaignType, ip, countryCode string) (*Feedback, error) {
@@ -52,10 +53,11 @@ func NewFeedback(projectID, campaignID string, appUserID, email string, category
 		now = manipulation.NowUTC()
 	)
 	var f = &Feedback{
-		ID:        uuid.New(),
-		State:     FeedbackStateNew,
-		CreatedAt: now,
-		UpdatedAt: now,
+		ID:                uuid.New(),
+		State:             FeedbackStateNew,
+		StatsTotalReplies: 0,
+		CreatedAt:         now,
+		UpdatedAt:         now,
 	}
 
 	if err := f.SetProjectID(projectID); err != nil {
@@ -200,6 +202,14 @@ func (f *Feedback) SetCountryCode(countryCode string) error {
 	f.CountryCode = countryCode
 	f.SetUpdatedAt()
 	return nil
+}
+
+func (f *Feedback) AdjustStatsTotalReplies(value int32) {
+	f.StatsTotalReplies += value
+	if f.StatsTotalReplies < 0 {
+		f.StatsTotalReplies = 0
+	}
+	f.SetUpdatedAt()
 }
 
 func (f *Feedback) SetUpdatedAt() {

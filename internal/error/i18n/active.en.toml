@@ -57,6 +57,7 @@ feedback_invalid_content = "Invalid content"
 feedback_invalid_rating = "Invalid rating"
 feedback_invalid_state = "Invalid state"
 feedback_daily_limit_exceeded = "You've reached the daily feedback limit for this project. Please try again tomorrow"
+feedback_invalid_reply = "Invalid reply"
 
 # billing
 billing_project_limit_exceeded = "Your account has reached the maximum number of projects allowed. Please upgrade your plan to create more projects"

@@ -17,22 +17,23 @@ type feedbacksTable struct {
 	postgres.Table
 
 	// Columns
-	ID           postgres.ColumnString
-	ProjectID    postgres.ColumnString
-	CampaignID   postgres.ColumnString
-	AppUserID    postgres.ColumnString
-	Email        postgres.ColumnString
-	CategoryID   postgres.ColumnString
-	Content      postgres.ColumnString
-	Rating       postgres.ColumnInteger
-	IsAnonymous  postgres.ColumnBool
-	State        postgres.ColumnString
-	CampaignType postgres.ColumnString
-	IP           postgres.ColumnString
-	CountryCode  postgres.ColumnString
-	CreatedAt    postgres.ColumnTimestampz
-	UpdatedAt    postgres.ColumnTimestampz
-	SearchVector postgres.ColumnString
+	ID                postgres.ColumnString
+	ProjectID         postgres.ColumnString
+	CampaignID        postgres.ColumnString
+	AppUserID         postgres.ColumnString
+	Email             postgres.ColumnString
+	CategoryID        postgres.ColumnString
+	Content           postgres.ColumnString
+	Rating            postgres.ColumnInteger
+	IsAnonymous       postgres.ColumnBool
+	State             postgres.ColumnString
+	CampaignType      postgres.ColumnString
+	IP                postgres.ColumnString
+	CountryCode       postgres.ColumnString
+	CreatedAt         postgres.ColumnTimestampz
+	UpdatedAt         postgres.ColumnTimestampz
+	SearchVector      postgres.ColumnString
+	StatsTotalReplies postgres.ColumnInteger
 
 	AllColumns     postgres.ColumnList
 	MutableColumns postgres.ColumnList
@@ -73,46 +74,48 @@ func newFeedbacksTable(schemaName, tableName, alias string) *FeedbacksTable {
 
 func newFeedbacksTableImpl(schemaName, tableName, alias string) feedbacksTable {
 	var (
-		IDColumn           = postgres.StringColumn("id")
-		ProjectIDColumn    = postgres.StringColumn("project_id")
-		CampaignIDColumn   = postgres.StringColumn("campaign_id")
-		AppUserIDColumn    = postgres.StringColumn("app_user_id")
-		EmailColumn        = postgres.StringColumn("email")
-		CategoryIDColumn   = postgres.StringColumn("category_id")
-		ContentColumn      = postgres.StringColumn("content")
-		RatingColumn       = postgres.IntegerColumn("rating")
-		IsAnonymousColumn  = postgres.BoolColumn("is_anonymous")
-		StateColumn        = postgres.StringColumn("state")
-		CampaignTypeColumn = postgres.StringColumn("campaign_type")
-		IPColumn           = postgres.StringColumn("ip")
-		CountryCodeColumn  = postgres.StringColumn("country_code")
-		CreatedAtColumn    = postgres.TimestampzColumn("created_at")
-		UpdatedAtColumn    = postgres.TimestampzColumn("updated_at")
-		SearchVectorColumn = postgres.StringColumn("search_vector")
-		allColumns         = postgres.ColumnList{IDColumn, ProjectIDColumn, CampaignIDColumn, AppUserIDColumn, EmailColumn, CategoryIDColumn, ContentColumn, RatingColumn, IsAnonymousColumn, StateColumn, CampaignTypeColumn, IPColumn, CountryCodeColumn, CreatedAtColumn, UpdatedAtColumn, SearchVectorColumn}
-		mutableColumns     = postgres.ColumnList{ProjectIDColumn, CampaignIDColumn, AppUserIDColumn, EmailColumn, CategoryIDColumn, ContentColumn, RatingColumn, IsAnonymousColumn, StateColumn, CampaignTypeColumn, IPColumn, CountryCodeColumn, CreatedAtColumn, UpdatedAtColumn, SearchVectorColumn}
+		IDColumn                = postgres.StringColumn("id")
+		ProjectIDColumn         = postgres.StringColumn("project_id")
+		CampaignIDColumn        = postgres.StringColumn("campaign_id")
+		AppUserIDColumn         = postgres.StringColumn("app_user_id")
+		EmailColumn             = postgres.StringColumn("email")
+		CategoryIDColumn        = postgres.StringColumn("category_id")
+		ContentColumn           = postgres.StringColumn("content")
+		RatingColumn            = postgres.IntegerColumn("rating")
+		IsAnonymousColumn       = postgres.BoolColumn("is_anonymous")
+		StateColumn             = postgres.StringColumn("state")
+		CampaignTypeColumn      = postgres.StringColumn("campaign_type")
+		IPColumn                = postgres.StringColumn("ip")
+		CountryCodeColumn       = postgres.StringColumn("country_code")
+		CreatedAtColumn         = postgres.TimestampzColumn("created_at")
+		UpdatedAtColumn         = postgres.TimestampzColumn("updated_at")
+		SearchVectorColumn      = postgres.StringColumn("search_vector")
+		StatsTotalRepliesColumn = postgres.IntegerColumn("stats_total_replies")
+		allColumns              = postgres.ColumnList{IDColumn, ProjectIDColumn, CampaignIDColumn, AppUserIDColumn, EmailColumn, CategoryIDColumn, ContentColumn, RatingColumn, IsAnonymousColumn, StateColumn, CampaignTypeColumn, IPColumn, CountryCodeColumn, CreatedAtColumn, UpdatedAtColumn, SearchVectorColumn, StatsTotalRepliesColumn}
+		mutableColumns          = postgres.ColumnList{ProjectIDColumn, CampaignIDColumn, AppUserIDColumn, EmailColumn, CategoryIDColumn, ContentColumn, RatingColumn, IsAnonymousColumn, StateColumn, CampaignTypeColumn, IPColumn, CountryCodeColumn, CreatedAtColumn, UpdatedAtColumn, SearchVectorColumn, StatsTotalRepliesColumn}
 	)
 
 	return feedbacksTable{
 		Table: postgres.NewTable(schemaName, tableName, alias, allColumns...),
 
 		//Columns
-		ID:           IDColumn,
-		ProjectID:    ProjectIDColumn,
-		CampaignID:   CampaignIDColumn,
-		AppUserID:    AppUserIDColumn,
-		Email:        EmailColumn,
-		CategoryID:   CategoryIDColumn,
-		Content:      ContentColumn,
-		Rating:       RatingColumn,
-		IsAnonymous:  IsAnonymousColumn,
-		State:        StateColumn,
-		CampaignType: CampaignTypeColumn,
-		IP:           IPColumn,
-		CountryCode:  CountryCodeColumn,
-		CreatedAt:    CreatedAtColumn,
-		UpdatedAt:    UpdatedAtColumn,
-		SearchVector: SearchVectorColumn,
+		ID:                IDColumn,
+		ProjectID:         ProjectIDColumn,
+		CampaignID:        CampaignIDColumn,
+		AppUserID:         AppUserIDColumn,
+		Email:             EmailColumn,
+		CategoryID:        CategoryIDColumn,
+		Content:           ContentColumn,
+		Rating:            RatingColumn,
+		IsAnonymous:       IsAnonymousColumn,
+		State:             StateColumn,
+		CampaignType:      CampaignTypeColumn,
+		IP:                IPColumn,
+		CountryCode:       CountryCodeColumn,
+		CreatedAt:         CreatedAtColumn,
+		UpdatedAt:         UpdatedAtColumn,
+		SearchVector:      SearchVectorColumn,
+		StatsTotalReplies: StatsTotalRepliesColumn,
 
 		AllColumns:     allColumns,
 		MutableColumns: mutableColumns,
