@@ -137,7 +137,7 @@ func (h CreateFeedbackHandler) CreateFeedback(ctx *appcontext.AppContext, ip, do
 	return &dto.CreateFeedbackResponse{}, nil
 }
 
-func (h CreateFeedbackHandler) validateData(ctx *appcontext.AppContext, domainName string, req dto.CreateFeedbackRequest, campaignData domain.ProjectCampaignHubData) error {
+func (CreateFeedbackHandler) validateData(ctx *appcontext.AppContext, domainName string, req dto.CreateFeedbackRequest, campaignData domain.ProjectCampaignHubData) error {
 	if campaignData.ProjectCampaign.Status.IsInactive() {
 		ctx.Logger().ErrorText("campaign is inactive")
 		return apperrors.Project.InvalidCampaign
@@ -153,13 +153,13 @@ func (h CreateFeedbackHandler) validateData(ctx *appcontext.AppContext, domainNa
 		return apperrors.Project.ProjectNotFound
 	}
 
-	if len(req.Email) > 0 && !validation.IsValidEmail(req.Email) {
+	if req.Email != "" && !validation.IsValidEmail(req.Email) {
 		ctx.Logger().ErrorText("invalid email")
 		return apperrors.Common.InvalidEmail
 	}
 
 	if campaignData.ProjectCampaign.CampaignType.IsFeedback() {
-		if len(req.Content) <= 0 || len(req.Content) > 2000 {
+		if req.Content == "" || len(req.Content) > 2000 {
 			ctx.Logger().ErrorText("campaign 'feedback' but invalid content")
 			return apperrors.Feedback.InvalidContent
 		}
