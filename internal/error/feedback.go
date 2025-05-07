@@ -9,6 +9,7 @@ var Feedback = struct {
 	InvalidRating      error
 	InvalidState       error
 	DailyLimitExceeded error
+	InvalidReply       error
 }{
 	InvalidFeedbackID:  errors.New("feedback_invalid_id"),
 	FeedbackNotFound:   errors.New("feedback_not_found"),
@@ -16,4 +17,5 @@ var Feedback = struct {
 	InvalidRating:      errors.New("feedback_invalid_rating"),
 	InvalidState:       errors.New("feedback_invalid_state"),
 	DailyLimitExceeded: errors.New("feedback_daily_limit_exceeded"),
+	InvalidReply:       errors.New("feedback_invalid_reply"),
 }

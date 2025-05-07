@@ -5,8 +5,17 @@ import (
 
 	apperrors "github.com/namhq1989/ezfeedback-api-server/internal/error"
 	"github.com/namhq1989/ezfeedback-api-server/internal/utils/manipulation"
+	"github.com/namhq1989/go-utilities/appcontext"
 	"github.com/namhq1989/go-utilities/uuid"
 )
+
+type FeedbackReplyRepository interface {
+	Create(ctx *appcontext.AppContext, reply FeedbackReply) error
+	Update(ctx *appcontext.AppContext, reply FeedbackReply) error
+	Delete(ctx *appcontext.AppContext, reply FeedbackReply) error
+	FindByID(ctx *appcontext.AppContext, replyID string) (*FeedbackReply, error)
+	FindWithFilter(ctx *appcontext.AppContext, filter FeedbackReplyFilter) ([]FeedbackReply, error)
+}
 
 type FeedbackReply struct {
 	ID         string
@@ -61,7 +70,7 @@ func (r *FeedbackReply) SetUserID(userID string) error {
 }
 
 func (r *FeedbackReply) SetContent(content string) error {
-	if len(content) > 2000 {
+	if content == "" || len(content) > 2000 {
 		return apperrors.Feedback.InvalidContent
 	}
 
@@ -70,6 +79,15 @@ func (r *FeedbackReply) SetContent(content string) error {
 	return nil
 }
 
+func (r *FeedbackReply) MarkAsEdited() {
+	r.IsEdited = true
+	r.SetUpdatedAt()
+}
+
 func (r *FeedbackReply) SetUpdatedAt() {
 	r.UpdatedAt = manipulation.NowUTC()
+}
+
+func (r *FeedbackReply) IsBelongToFeedback(feedbackID string) bool {
+	return r.FeedbackID == feedbackID
 }

@@ -18,7 +18,12 @@ type Feedback struct {
 	CampaignType string                    `json:"campaignType"`
 	Ip           string                    `json:"ip"`
 	CountryCode  string                    `json:"countryCode"`
+	Stats        FeedbackStats             `json:"stats"`
 	CreatedAt    *httprespond.TimeResponse `json:"createdAt"`
+}
+
+type FeedbackStats struct {
+	TotalReplies int32 `json:"totalReplies"`
 }
 
 func (Feedback) FromDomain(feedback domain.Feedback, campaign domain.ProjectCampaign, category domain.ProjectCategory) Feedback {
@@ -45,6 +50,9 @@ func (Feedback) FromDomain(feedback domain.Feedback, campaign domain.ProjectCamp
 		CampaignType: feedback.CampaignType.String(),
 		Ip:           feedback.Ip,
 		CountryCode:  feedback.CountryCode,
-		CreatedAt:    httprespond.NewTimeResponse(feedback.CreatedAt),
+		Stats: FeedbackStats{
+			TotalReplies: feedback.StatsTotalReplies,
+		},
+		CreatedAt: httprespond.NewTimeResponse(feedback.CreatedAt),
 	}
 }

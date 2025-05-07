@@ -164,6 +164,7 @@ CREATE TABLE feedbacks (
                            ip VARCHAR(45) NOT NULL,
                            country_code VARCHAR(2) NOT NULL,
                            search_vector tsvector NOT NULL,
+                           stats_total_replies INTEGER DEFAULT 0 NOT NULL,
                            created_at TIMESTAMPTZ DEFAULT NOW() NOT NULL,
                            updated_at TIMESTAMPTZ DEFAULT NOW() NOT NULL
 );

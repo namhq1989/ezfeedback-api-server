@@ -12,20 +12,21 @@ import (
 )
 
 type Feedbacks struct {
-	ID           string `sql:"primary_key"`
-	ProjectID    string
-	CampaignID   string
-	AppUserID    *string
-	Email        *string
-	CategoryID   string
-	Content      string
-	Rating       int32
-	IsAnonymous  bool
-	State        FeedbackState
-	CampaignType CampaignType
-	IP           string
-	CountryCode  string
-	CreatedAt    time.Time
-	UpdatedAt    time.Time
-	SearchVector string
+	ID                string `sql:"primary_key"`
+	ProjectID         string
+	CampaignID        string
+	AppUserID         *string
+	Email             *string
+	CategoryID        string
+	Content           string
+	Rating            int32
+	IsAnonymous       bool
+	State             FeedbackState
+	CampaignType      CampaignType
+	IP                string
+	CountryCode       string
+	CreatedAt         time.Time
+	UpdatedAt         time.Time
+	SearchVector      string
+	StatsTotalReplies int32
 }

@@ -106,6 +106,7 @@ func (r FeedbackRepository) FindByID(ctx *appcontext.AppContext, feedbackID stri
 func (r FeedbackRepository) FindWithFilter(ctx *appcontext.AppContext, filter domain.FeedbackFilter) ([]domain.Feedback, error) {
 	var (
 		f         = r.getTable()
+		offset    = filter.Limit * filter.Page
 		whereStmt = f.ProjectID.EQ(postgres.String(filter.ProjectID))
 	)
 
@@ -132,11 +133,13 @@ func (r FeedbackRepository) FindWithFilter(ctx *appcontext.AppContext, filter do
 	}
 
 	stmt := postgres.SELECT(
-		f.ID, f.CampaignID, f.AppUserID, f.Email, f.CategoryID, f.Content,
+		f.ID, f.CampaignID, f.AppUserID, f.Email, f.CategoryID, f.Content, f.StatsTotalReplies,
 		f.Rating, f.IsAnonymous, f.State, f.CampaignType, f.IP, f.CountryCode, f.CreatedAt,
 	).
 		FROM(f).
 		WHERE(whereStmt).
+		LIMIT(filter.Limit).
+		OFFSET(offset).
 		ORDER_BY(f.CreatedAt.DESC())
 
 	var (

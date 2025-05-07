@@ -106,6 +106,80 @@ func (s server) registerFeedbackRoutes() {
 	}, s.jwt.RequireSignedIn, func(next echo.HandlerFunc) echo.HandlerFunc {
 		return validation.ValidateHTTPPayload[dto.ChangeFeedbackStateRequest](next)
 	})
+
+	g.GET("/:id/reply", func(c echo.Context) error {
+		var (
+			ctx         = c.Get("ctx").(*appcontext.AppContext)
+			req         = c.Get("req").(dto.GetFeedbackRepliesRequest)
+			performerID = ctx.GetUserID()
+			feedbackID  = c.Param("id")
+		)
+
+		resp, err := s.app.GetFeedbackReplies(ctx, performerID, feedbackID, req)
+		if err != nil {
+			return httprespond.R400(c, err, nil)
+		}
+
+		return httprespond.R200(c, resp)
+	}, s.jwt.RequireSignedIn, func(next echo.HandlerFunc) echo.HandlerFunc {
+		return validation.ValidateHTTPPayload[dto.GetFeedbackRepliesRequest](next)
+	})
+
+	g.POST("/:id/reply", func(c echo.Context) error {
+		var (
+			ctx         = c.Get("ctx").(*appcontext.AppContext)
+			req         = c.Get("req").(dto.CreateFeedbackReplyRequest)
+			performerID = ctx.GetUserID()
+			feedbackID  = c.Param("id")
+		)
+
+		resp, err := s.app.CreateFeedbackReply(ctx, performerID, feedbackID, req)
+		if err != nil {
+			return httprespond.R400(c, err, nil)
+		}
+
+		return httprespond.R200(c, resp)
+	}, s.jwt.RequireSignedIn, func(next echo.HandlerFunc) echo.HandlerFunc {
+		return validation.ValidateHTTPPayload[dto.CreateFeedbackReplyRequest](next)
+	})
+
+	g.PUT("/:feedbackId/reply/:replyId", func(c echo.Context) error {
+		var (
+			ctx         = c.Get("ctx").(*appcontext.AppContext)
+			req         = c.Get("req").(dto.UpdateFeedbackReplyRequest)
+			performerID = ctx.GetUserID()
+			feedbackID  = c.Param("feedbackId")
+			replyID     = c.Param("replyId")
+		)
+
+		resp, err := s.app.UpdateFeedbackReply(ctx, performerID, feedbackID, replyID, req)
+		if err != nil {
+			return httprespond.R400(c, err, nil)
+		}
+
+		return httprespond.R200(c, resp)
+	}, s.jwt.RequireSignedIn, func(next echo.HandlerFunc) echo.HandlerFunc {
+		return validation.ValidateHTTPPayload[dto.UpdateFeedbackReplyRequest](next)
+	})
+
+	g.DELETE("/:feedbackId/reply/:replyId", func(c echo.Context) error {
+		var (
+			ctx         = c.Get("ctx").(*appcontext.AppContext)
+			req         = c.Get("req").(dto.DeleteFeedbackReplyRequest)
+			performerID = ctx.GetUserID()
+			feedbackID  = c.Param("feedbackId")
+			replyID     = c.Param("replyId")
+		)
+
+		resp, err := s.app.DeleteFeedbackReply(ctx, performerID, feedbackID, replyID, req)
+		if err != nil {
+			return httprespond.R400(c, err, nil)
+		}
+
+		return httprespond.R200(c, resp)
+	}, s.jwt.RequireSignedIn, func(next echo.HandlerFunc) echo.HandlerFunc {
+		return validation.ValidateHTTPPayload[dto.DeleteFeedbackReplyRequest](next)
+	})
 }
 
 func createFeedbackRateLimiter() echo.MiddlewareFunc {
