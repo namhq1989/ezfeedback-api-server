@@ -16,20 +16,24 @@ import (
 	"go.uber.org/mock/gomock"
 )
 
-type updateFeedbackReplyTestSuite struct {
+type deleteFeedbackReplyTestSuite struct {
 	suite.Suite
-	handler                     command.UpdateFeedbackReplyHandler
+	handler                     command.DeleteFeedbackReplyHandler
 	mockCtrl                    *gomock.Controller
+	mockFeedbackRepository      *mockfeedback.MockFeedbackRepository
 	mockFeedbackReplyRepository *mockfeedback.MockFeedbackReplyRepository
+	mockService                 *mockfeedback.MockService
 }
 
-func (s *updateFeedbackReplyTestSuite) SetupSuite() {
+func (s *deleteFeedbackReplyTestSuite) SetupSuite() {
 	s.mockCtrl = gomock.NewController(s.T())
+	s.mockFeedbackRepository = mockfeedback.NewMockFeedbackRepository(s.mockCtrl)
 	s.mockFeedbackReplyRepository = mockfeedback.NewMockFeedbackReplyRepository(s.mockCtrl)
-	s.handler = command.NewUpdateFeedbackReplyHandler(s.mockFeedbackReplyRepository)
+	s.mockService = mockfeedback.NewMockService(s.mockCtrl)
+	s.handler = command.NewDeleteFeedbackReplyHandler(s.mockFeedbackReplyRepository, s.mockFeedbackRepository, s.mockService)
 }
 
-func (s *updateFeedbackReplyTestSuite) TearDownTest() {
+func (s *deleteFeedbackReplyTestSuite) TearDownTest() {
 	s.mockCtrl.Finish()
 }
 
@@ -37,62 +41,53 @@ func (s *updateFeedbackReplyTestSuite) TearDownTest() {
 // CASES
 //
 
-func (s *updateFeedbackReplyTestSuite) Test_1_Success() {
+func (s *deleteFeedbackReplyTestSuite) Test_1_Success() {
 	var feedbackID = uuid.New()
+
+	s.mockService.EXPECT().
+		GetFeedbackByID(gomock.Any(), gomock.Any()).
+		Return(&domain.Feedback{ID: feedbackID}, nil)
 
 	s.mockFeedbackReplyRepository.EXPECT().
 		FindByID(gomock.Any(), gomock.Any()).
 		Return(&domain.FeedbackReply{ID: uuid.New(), FeedbackID: feedbackID}, nil)
 
 	s.mockFeedbackReplyRepository.EXPECT().
+		Delete(gomock.Any(), gomock.Any()).
+		Return(nil)
+
+	s.mockFeedbackRepository.EXPECT().
 		Update(gomock.Any(), gomock.Any()).
 		Return(nil)
 
 	ctx := appcontext.NewRest(context.Background())
-	resp, err := s.handler.UpdateFeedbackReply(ctx, uuid.New(), feedbackID, uuid.New(), dto.UpdateFeedbackReplyRequest{
-		Content: "Updated content",
-	})
+	resp, err := s.handler.DeleteFeedbackReply(ctx, uuid.New(), feedbackID, uuid.New(), dto.DeleteFeedbackReplyRequest{})
 
 	assert.Nil(s.T(), err)
 	assert.NotNil(s.T(), resp)
 }
 
-func (s *updateFeedbackReplyTestSuite) Test_2_Fail_NotBelongToFeedback() {
+func (s *deleteFeedbackReplyTestSuite) Test_2_Fail_NotBelongToFeedback() {
+	s.mockService.EXPECT().
+		GetFeedbackByID(gomock.Any(), gomock.Any()).
+		Return(&domain.Feedback{ID: uuid.New()}, nil)
+
 	s.mockFeedbackReplyRepository.EXPECT().
 		FindByID(gomock.Any(), gomock.Any()).
 		Return(&domain.FeedbackReply{ID: uuid.New()}, nil)
 
 	ctx := appcontext.NewRest(context.Background())
-	resp, err := s.handler.UpdateFeedbackReply(ctx, uuid.New(), uuid.New(), uuid.New(), dto.UpdateFeedbackReplyRequest{
-		Content: "Updated content",
-	})
+	resp, err := s.handler.DeleteFeedbackReply(ctx, uuid.New(), uuid.New(), uuid.New(), dto.DeleteFeedbackReplyRequest{})
 
 	assert.NotNil(s.T(), err)
 	assert.Nil(s.T(), resp)
 	assert.Equal(s.T(), apperrors.Feedback.InvalidReply, err)
 }
 
-func (s *updateFeedbackReplyTestSuite) Test_2_Fail_InvalidContent() {
-	var feedbackID = uuid.New()
-
-	s.mockFeedbackReplyRepository.EXPECT().
-		FindByID(gomock.Any(), gomock.Any()).
-		Return(&domain.FeedbackReply{ID: uuid.New(), FeedbackID: feedbackID}, nil)
-
-	ctx := appcontext.NewRest(context.Background())
-	resp, err := s.handler.UpdateFeedbackReply(ctx, uuid.New(), feedbackID, uuid.New(), dto.UpdateFeedbackReplyRequest{
-		Content: "",
-	})
-
-	assert.NotNil(s.T(), err)
-	assert.Nil(s.T(), resp)
-	assert.Equal(s.T(), apperrors.Feedback.InvalidContent, err)
-}
-
 //
 // END OF CASES
 //
 
-func TestUpdateFeedbackReplyTestSuite(t *testing.T) {
-	suite.Run(t, new(updateFeedbackReplyTestSuite))
+func TestDeleteFeedbackReplyTestSuite(t *testing.T) {
+	suite.Run(t, new(deleteFeedbackReplyTestSuite))
 }
