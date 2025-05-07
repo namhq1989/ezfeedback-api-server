@@ -61,7 +61,7 @@ func (h GetFeedbacksHandler) GetFeedbacks(ctx *appcontext.AppContext, performerI
 	}
 
 	if len(feedbacks) == 0 {
-		ctx.Logger().Text("no feedbacks found")
+		ctx.Logger().Text("no feedbacks found, respond")
 		return &dto.GetFeedbacksResponse{
 			Feedbacks: make([]dto.Feedback, 0),
 		}, nil

@@ -120,7 +120,7 @@ func (r FeedbackReplyRepository) FindWithFilter(ctx *appcontext.AppContext, filt
 	)
 
 	stmt := postgres.SELECT(
-		fr.ID, fr.UserID, fr.Content, fr.IsEdited, fr.CreatedAt,
+		fr.ID, fr.UserID, fr.Content, fr.IsEdited, fr.CreatedAt, fr.UpdatedAt,
 	).
 		FROM(fr).
 		WHERE(whereStmt).

@@ -34,6 +34,11 @@ func (Module) Startup(ctx *appcontext.AppContext, mono monolith.Monolith) error 
 		return err
 	}
 
+	iamGRPCClient, err := grpcclient.NewIAMClient(ctx, mono.Config().GRPCPort)
+	if err != nil {
+		return err
+	}
+
 	var (
 		feedbackRepository      = infrastructure.NewFeedbackRepository(mono.Database())
 		feedbackReplyRepository = infrastructure.NewFeedbackReplyRepository(mono.Database())
@@ -44,6 +49,7 @@ func (Module) Startup(ctx *appcontext.AppContext, mono monolith.Monolith) error 
 		billingHub              = infrastructure.NewBillingHub(billingGRPCClient)
 		projectHub              = infrastructure.NewProjectHub(projectGRPCClient)
 		notificationHub         = infrastructure.NewNotificationHub(notificationGRPCClient)
+		iamHub                  = infrastructure.NewIAMHub(iamGRPCClient)
 
 		service = shared.NewService(
 			feedbackRepository,
@@ -58,6 +64,7 @@ func (Module) Startup(ctx *appcontext.AppContext, mono monolith.Monolith) error 
 			queueRepository,
 			billingHub,
 			projectHub,
+			iamHub,
 			service,
 		)
 
