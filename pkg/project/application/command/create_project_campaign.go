@@ -39,7 +39,8 @@ func NewCreateProjectCampaignHandler(
 func (h CreateProjectCampaignHandler) CreateProjectCampaign(ctx *appcontext.AppContext, performerID, projectID string, req dto.CreateProjectCampaignRequest) (*dto.CreateProjectCampaignResponse, error) {
 	ctx.Logger().Info("new create project campaign request", appcontext.Fields{
 		"performerID": performerID, "projectID": projectID, "name": req.Name,
-		"description": req.Description, "campaignType": req.CampaignType, "widgetPosition": req.WidgetPosition,
+		"campaignType": req.CampaignType, "widgetPosition": req.Settings.WidgetPosition,
+		"allowAnonymous": req.Settings.AllowAnonymous, "enableRating": req.Settings.EnableRating, "followUpQuestion": req.Settings.FollowUpQuestion,
 	})
 
 	ctx.Logger().Text("find project in db")
@@ -58,7 +59,12 @@ func (h CreateProjectCampaignHandler) CreateProjectCampaign(ctx *appcontext.AppC
 	}
 
 	ctx.Logger().Text("create project campaign model")
-	campaign, err := domain.NewProjectCampaign(projectID, req.Name, req.Description, req.CampaignType, req.WidgetPosition)
+	campaign, err := domain.NewProjectCampaign(projectID, req.Name, req.CampaignType, domain.ProjectCampaignSetting{
+		WidgetPosition:   req.Settings.WidgetPosition,
+		AllowAnonymous:   req.Settings.AllowAnonymous,
+		EnableRating:     req.Settings.EnableRating,
+		FollowUpQuestion: req.Settings.FollowUpQuestion,
+	})
 	if err != nil {
 		ctx.Logger().Error("failed to create project campaign model", err, appcontext.Fields{})
 		return nil, err

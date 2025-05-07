@@ -128,10 +128,9 @@ CREATE TABLE project_campaigns (
                                    id TEXT PRIMARY KEY,
                                    project_id TEXT NOT NULL REFERENCES projects(id) ON DELETE CASCADE,
                                    name VARCHAR(255) NOT NULL,
-                                   description TEXT DEFAULT '' NOT NULL,
                                    campaign_type campaign_type NOT NULL,
                                    status status NOT NULL,
-                                   setting_widget_position VARCHAR(30) NOT NULL,
+                                   settings JSONB DEFAULT '{}'::JSONB NOT NULL,
                                    stats_total_feedbacks INTEGER DEFAULT 0 NOT NULL,
                                    created_at TIMESTAMPTZ DEFAULT NOW() NOT NULL,
                                    updated_at TIMESTAMPTZ DEFAULT NOW() NOT NULL

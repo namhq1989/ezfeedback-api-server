@@ -26,21 +26,20 @@ type ProjectCampaignHub interface {
 }
 
 type ProjectCampaign struct {
-	ID                    string
-	ProjectID             string
-	Name                  string
-	Description           string
-	CampaignType          ProjectCampaignType
-	Status                Status
-	SettingWidgetPosition string
-	StatsTotalFeedbacks   int32
-	CreatedAt             time.Time
-	UpdatedAt             time.Time
+	ID                  string
+	ProjectID           string
+	Name                string
+	CampaignType        ProjectCampaignType
+	Status              Status
+	Settings            ProjectCampaignSetting
+	StatsTotalFeedbacks int32
+	CreatedAt           time.Time
+	UpdatedAt           time.Time
 
 	Categories []string
 }
 
-func NewProjectCampaign(projectID, name, description, campaignType, widgetPosition string) (*ProjectCampaign, error) {
+func NewProjectCampaign(projectID, name, campaignType string, settings ProjectCampaignSetting) (*ProjectCampaign, error) {
 	var (
 		now = manipulation.NowUTC()
 	)
@@ -59,13 +58,10 @@ func NewProjectCampaign(projectID, name, description, campaignType, widgetPositi
 	if err := c.SetName(name); err != nil {
 		return nil, err
 	}
-	if err := c.SetDescription(description); err != nil {
-		return nil, err
-	}
 	if err := c.SetCampaignType(campaignType); err != nil {
 		return nil, err
 	}
-	if err := c.SetSettingWidgetPosition(widgetPosition); err != nil {
+	if err := c.SetSettings(settings); err != nil {
 		return nil, err
 	}
 
@@ -87,16 +83,6 @@ func (c *ProjectCampaign) SetName(name string) error {
 	}
 
 	c.Name = name
-	c.SetUpdatedAt()
-	return nil
-}
-
-func (c *ProjectCampaign) SetDescription(description string) error {
-	if len(description) > 2000 {
-		return apperrors.Common.InvalidDescription
-	}
-
-	c.Description = description
 	c.SetUpdatedAt()
 	return nil
 }
@@ -123,10 +109,23 @@ func (c *ProjectCampaign) SetStatus(status string) error {
 	return nil
 }
 
-func (c *ProjectCampaign) SetSettingWidgetPosition(settingWidgetPosition string) error {
-	if settingWidgetPosition != "" {
-		c.SettingWidgetPosition = settingWidgetPosition
-		c.SetUpdatedAt()
+func (c *ProjectCampaign) SetSettings(settings ProjectCampaignSetting) error {
+	c.Settings = ProjectCampaignSetting{
+		WidgetPosition:   settings.WidgetPosition,
+		AllowAnonymous:   settings.AllowAnonymous,
+		EnableRating:     settings.EnableRating,
+		FollowUpQuestion: settings.FollowUpQuestion,
+	}
+
+	if c.CampaignType.IsFeedback() {
+		c.Settings.MinRating = 1
+		c.Settings.MaxRating = 5
+	} else if c.CampaignType.IsCSAT() {
+		c.Settings.MinRating = 1
+		c.Settings.MaxRating = 5
+	} else if c.CampaignType.IsNPS() {
+		c.Settings.MinRating = 1
+		c.Settings.MaxRating = 10
 	}
 
 	return nil

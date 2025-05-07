@@ -1,10 +1,9 @@
 package dto
 
 type CreateProjectCampaignRequest struct {
-	Name           string `json:"name" validate:"required" message:"invalid_name"`
-	Description    string `json:"description"`
-	CampaignType   string `json:"campaignType"`
-	WidgetPosition string `json:"widgetPosition"`
+	Name         string                 `json:"name" validate:"required" message:"invalid_name"`
+	CampaignType string                 `json:"campaignType"`
+	Settings     ProjectCampaignSetting `json:"settings"`
 }
 
 type CreateProjectCampaignResponse struct {

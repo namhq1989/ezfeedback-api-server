@@ -40,7 +40,8 @@ func NewUpdateProjectCampaignHandler(
 func (h UpdateProjectCampaignHandler) UpdateProjectCampaign(ctx *appcontext.AppContext, performerID, projectID, campaignID string, req dto.UpdateProjectCampaignRequest) (*dto.UpdateProjectCampaignResponse, error) {
 	ctx.Logger().Info("new update project campaign request", appcontext.Fields{
 		"performerID": performerID, "projectID": projectID, "campaignID": campaignID,
-		"name": req.Name, "description": req.Description, "widgetPosition": req.WidgetPosition,
+		"name": req.Name, "widgetPosition": req.Settings.WidgetPosition,
+		"allowAnonymous": req.Settings.AllowAnonymous, "enableRating": req.Settings.EnableRating, "followUpQuestion": req.Settings.FollowUpQuestion,
 	})
 
 	ctx.Logger().Text("find project campaign in db")
@@ -59,12 +60,13 @@ func (h UpdateProjectCampaignHandler) UpdateProjectCampaign(ctx *appcontext.AppC
 		ctx.Logger().Error("failed to set project campaign name", err, appcontext.Fields{})
 		return nil, err
 	}
-	if err = campaign.SetDescription(req.Description); err != nil {
-		ctx.Logger().Error("failed to set project campaign description", err, appcontext.Fields{})
-		return nil, err
-	}
-	if err = campaign.SetSettingWidgetPosition(req.WidgetPosition); err != nil {
-		ctx.Logger().Error("failed to set project campaign widget position", err, appcontext.Fields{})
+	if err = campaign.SetSettings(domain.ProjectCampaignSetting{
+		WidgetPosition:   req.Settings.WidgetPosition,
+		AllowAnonymous:   req.Settings.AllowAnonymous,
+		EnableRating:     req.Settings.EnableRating,
+		FollowUpQuestion: req.Settings.FollowUpQuestion,
+	}); err != nil {
+		ctx.Logger().Error("failed to set project campaign settings", err, appcontext.Fields{})
 		return nil, err
 	}
 

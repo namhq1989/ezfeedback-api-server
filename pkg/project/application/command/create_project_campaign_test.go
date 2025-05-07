@@ -65,10 +65,11 @@ func (s *createProjectCampaignTestSuite) Test_1_Success() {
 
 	ctx := appcontext.NewRest(context.Background())
 	resp, err := s.handler.CreateProjectCampaign(ctx, performerID, projectID, dto.CreateProjectCampaignRequest{
-		Name:           "Campaign 1",
-		Description:    "Campaign description",
-		CampaignType:   domain.ProjectCampaignTypeFeedback.String(),
-		WidgetPosition: "bottom-right",
+		Name:         "Campaign 1",
+		CampaignType: domain.ProjectCampaignTypeFeedback.String(),
+		Settings: dto.ProjectCampaignSetting{
+			WidgetPosition: "bottom-right",
+		},
 	})
 	assert.Nil(s.T(), err)
 	assert.NotNil(s.T(), resp)
@@ -83,7 +84,6 @@ func (s *createProjectCampaignTestSuite) Test_2_Fail_ProjectNotFound() {
 	ctx := appcontext.NewRest(context.Background())
 	resp, err := s.handler.CreateProjectCampaign(ctx, uuid.New(), uuid.New(), dto.CreateProjectCampaignRequest{
 		Name:         "Campaign 1",
-		Description:  "Campaign description",
 		CampaignType: domain.ProjectCampaignTypeFeedback.String(),
 	})
 	assert.Nil(s.T(), resp)
@@ -99,7 +99,6 @@ func (s *createProjectCampaignTestSuite) Test_2_Fail_NotOwner() {
 	ctx := appcontext.NewRest(context.Background())
 	resp, err := s.handler.CreateProjectCampaign(ctx, uuid.New(), projectID, dto.CreateProjectCampaignRequest{
 		Name:         "Campaign 1",
-		Description:  "Campaign description",
 		CampaignType: domain.ProjectCampaignTypeFeedback.String(),
 	})
 	assert.Nil(s.T(), resp)
@@ -118,7 +117,6 @@ func (s *createProjectCampaignTestSuite) Test_3_Fail_InvalidName() {
 	ctx := appcontext.NewRest(context.Background())
 	resp, err := s.handler.CreateProjectCampaign(ctx, performerID, projectID, dto.CreateProjectCampaignRequest{
 		Name:         "a",
-		Description:  "Campaign description",
 		CampaignType: domain.ProjectCampaignTypeFeedback.String(),
 	})
 	assert.Nil(s.T(), resp)
@@ -137,7 +135,6 @@ func (s *createProjectCampaignTestSuite) Test_4_Fail_InvalidCampaignType() {
 	ctx := appcontext.NewRest(context.Background())
 	resp, err := s.handler.CreateProjectCampaign(ctx, performerID, projectID, dto.CreateProjectCampaignRequest{
 		Name:         "Campaign 1",
-		Description:  "Campaign description",
 		CampaignType: "invalid_type",
 	})
 	assert.Nil(s.T(), resp)
