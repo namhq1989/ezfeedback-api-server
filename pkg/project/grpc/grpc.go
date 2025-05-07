@@ -39,3 +39,7 @@ func (s server) GetProjectCategories(bgCtx context.Context, req *projectpb.GetPr
 func (s server) GetProjectCampaigns(bgCtx context.Context, req *projectpb.GetProjectCampaignsRequest) (*projectpb.GetProjectCampaignsResponse, error) {
 	return s.hub.GetProjectCampaigns(appcontext.NewGRPC(bgCtx), req)
 }
+
+func (s server) OnFeedbackCreated(bgCtx context.Context, req *projectpb.OnFeedbackCreatedRequest) (*projectpb.OnFeedbackCreatedResponse, error) {
+	return s.hub.OnFeedbackCreated(appcontext.NewGRPC(bgCtx), req)
+}

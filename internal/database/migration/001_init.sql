@@ -72,6 +72,7 @@ CREATE TABLE projects (
                           description TEXT DEFAULT '' NOT NULL,
                           slug VARCHAR(255) UNIQUE NOT NULL,
                           status status NOT NULL,
+                          stats_total_feedbacks INTEGER DEFAULT 0 NOT NULL,
                           created_at TIMESTAMPTZ DEFAULT NOW() NOT NULL,
                           updated_at TIMESTAMPTZ DEFAULT NOW() NOT NULL
 );
@@ -131,6 +132,7 @@ CREATE TABLE project_campaigns (
                                    campaign_type campaign_type NOT NULL,
                                    status status NOT NULL,
                                    setting_widget_position VARCHAR(30) NOT NULL,
+                                   stats_total_feedbacks INTEGER DEFAULT 0 NOT NULL,
                                    created_at TIMESTAMPTZ DEFAULT NOW() NOT NULL,
                                    updated_at TIMESTAMPTZ DEFAULT NOW() NOT NULL
 );

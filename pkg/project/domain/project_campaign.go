@@ -33,6 +33,7 @@ type ProjectCampaign struct {
 	CampaignType          ProjectCampaignType
 	Status                Status
 	SettingWidgetPosition string
+	StatsTotalFeedbacks   int32
 	CreatedAt             time.Time
 	UpdatedAt             time.Time
 
@@ -45,10 +46,11 @@ func NewProjectCampaign(projectID, name, description, campaignType, widgetPositi
 	)
 
 	var c = &ProjectCampaign{
-		ID:        uuid.New(),
-		Status:    StatusActive,
-		CreatedAt: now,
-		UpdatedAt: now,
+		ID:                  uuid.New(),
+		Status:              StatusActive,
+		StatsTotalFeedbacks: 0,
+		CreatedAt:           now,
+		UpdatedAt:           now,
 	}
 
 	if err := c.SetProjectID(projectID); err != nil {
@@ -128,6 +130,10 @@ func (c *ProjectCampaign) SetSettingWidgetPosition(settingWidgetPosition string)
 	}
 
 	return nil
+}
+
+func (c *ProjectCampaign) AdjustStatsTotalFeedbacks(value int32) {
+	c.StatsTotalFeedbacks += value
 }
 
 func (c *ProjectCampaign) SetUpdatedAt() {

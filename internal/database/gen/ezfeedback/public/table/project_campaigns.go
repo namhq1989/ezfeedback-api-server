@@ -26,6 +26,7 @@ type projectCampaignsTable struct {
 	SettingWidgetPosition postgres.ColumnString
 	CreatedAt             postgres.ColumnTimestampz
 	UpdatedAt             postgres.ColumnTimestampz
+	StatsTotalFeedbacks   postgres.ColumnInteger
 
 	AllColumns     postgres.ColumnList
 	MutableColumns postgres.ColumnList
@@ -75,8 +76,9 @@ func newProjectCampaignsTableImpl(schemaName, tableName, alias string) projectCa
 		SettingWidgetPositionColumn = postgres.StringColumn("setting_widget_position")
 		CreatedAtColumn             = postgres.TimestampzColumn("created_at")
 		UpdatedAtColumn             = postgres.TimestampzColumn("updated_at")
-		allColumns                  = postgres.ColumnList{IDColumn, ProjectIDColumn, NameColumn, DescriptionColumn, CampaignTypeColumn, StatusColumn, SettingWidgetPositionColumn, CreatedAtColumn, UpdatedAtColumn}
-		mutableColumns              = postgres.ColumnList{ProjectIDColumn, NameColumn, DescriptionColumn, CampaignTypeColumn, StatusColumn, SettingWidgetPositionColumn, CreatedAtColumn, UpdatedAtColumn}
+		StatsTotalFeedbacksColumn   = postgres.IntegerColumn("stats_total_feedbacks")
+		allColumns                  = postgres.ColumnList{IDColumn, ProjectIDColumn, NameColumn, DescriptionColumn, CampaignTypeColumn, StatusColumn, SettingWidgetPositionColumn, CreatedAtColumn, UpdatedAtColumn, StatsTotalFeedbacksColumn}
+		mutableColumns              = postgres.ColumnList{ProjectIDColumn, NameColumn, DescriptionColumn, CampaignTypeColumn, StatusColumn, SettingWidgetPositionColumn, CreatedAtColumn, UpdatedAtColumn, StatsTotalFeedbacksColumn}
 	)
 
 	return projectCampaignsTable{
@@ -92,6 +94,7 @@ func newProjectCampaignsTableImpl(schemaName, tableName, alias string) projectCa
 		SettingWidgetPosition: SettingWidgetPositionColumn,
 		CreatedAt:             CreatedAtColumn,
 		UpdatedAt:             UpdatedAtColumn,
+		StatsTotalFeedbacks:   StatsTotalFeedbacksColumn,
 
 		AllColumns:     allColumns,
 		MutableColumns: mutableColumns,

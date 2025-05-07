@@ -45,6 +45,10 @@ func (s *feedbackCreatedTestSuite) TearDownTest() {
 func (s *feedbackCreatedTestSuite) Test_1_Success() {
 	// mock
 	s.mockProjectHub.EXPECT().
+		OnFeedbackCreated(gomock.Any(), gomock.Any(), gomock.Any()).
+		Return(nil)
+
+	s.mockProjectHub.EXPECT().
 		GetProjectByID(gomock.Any(), gomock.Any(), gomock.Any()).
 		Return(&domain.Project{
 			ID:     uuid.New(),

@@ -13,6 +13,8 @@ type (
 		GetProjectCollaborators(ctx *appcontext.AppContext, req *projectpb.GetProjectCollaboratorsRequest) (*projectpb.GetProjectCollaboratorsResponse, error)
 		GetProjectCategories(ctx *appcontext.AppContext, req *projectpb.GetProjectCategoriesRequest) (*projectpb.GetProjectCategoriesResponse, error)
 		GetProjectCampaigns(ctx *appcontext.AppContext, req *projectpb.GetProjectCampaignsRequest) (*projectpb.GetProjectCampaignsResponse, error)
+
+		OnFeedbackCreated(ctx *appcontext.AppContext, req *projectpb.OnFeedbackCreatedRequest) (*projectpb.OnFeedbackCreatedResponse, error)
 	}
 	App interface {
 		Hubs
@@ -24,6 +26,8 @@ type (
 		GetProjectCollaboratorsHandler
 		GetProjectCategoriesHandler
 		GetProjectCampaignsHandler
+
+		OnFeedbackCreatedHandler
 	}
 	Application struct {
 		appHubHandler
@@ -33,6 +37,7 @@ type (
 var _ App = (*Application)(nil)
 
 func New(
+	queueRepository domain.QueueRepository,
 	projectCampaignHub domain.ProjectCampaignHub,
 	iamHub domain.IAMHub,
 	service domain.Service,
@@ -44,6 +49,8 @@ func New(
 			GetProjectCollaboratorsHandler: NewGetProjectCollaboratorsHandler(iamHub, service),
 			GetProjectCategoriesHandler:    NewGetProjectCategoriesHandler(service),
 			GetProjectCampaignsHandler:     NewGetProjectCampaignsHandler(service),
+
+			OnFeedbackCreatedHandler: NewOnFeedbackCreatedHandler(queueRepository),
 		},
 	}
 }

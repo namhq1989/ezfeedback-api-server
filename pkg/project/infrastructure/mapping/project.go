@@ -9,14 +9,15 @@ type ProjectMapper struct{}
 
 func (ProjectMapper) FromModelToDomain(project model.Projects) (*domain.Project, error) {
 	var result = &domain.Project{
-		ID:          project.ID,
-		UserID:      project.UserID,
-		Title:       project.Title,
-		Description: project.Description,
-		Slug:        project.Slug,
-		Status:      domain.ToStatus(project.Status.String()),
-		CreatedAt:   project.CreatedAt,
-		UpdatedAt:   project.UpdatedAt,
+		ID:                  project.ID,
+		UserID:              project.UserID,
+		Title:               project.Title,
+		Description:         project.Description,
+		Slug:                project.Slug,
+		Status:              domain.ToStatus(project.Status.String()),
+		StatsTotalFeedbacks: project.StatsTotalFeedbacks,
+		CreatedAt:           project.CreatedAt,
+		UpdatedAt:           project.UpdatedAt,
 	}
 
 	return result, nil
@@ -24,14 +25,15 @@ func (ProjectMapper) FromModelToDomain(project model.Projects) (*domain.Project,
 
 func (ProjectMapper) FromDomainToModel(project domain.Project) (*model.Projects, error) {
 	var result = &model.Projects{
-		ID:          project.ID,
-		UserID:      project.UserID,
-		Title:       project.Title,
-		Description: project.Description,
-		Slug:        project.Slug,
-		Status:      model.Status(project.Status.String()),
-		CreatedAt:   project.CreatedAt,
-		UpdatedAt:   project.UpdatedAt,
+		ID:                  project.ID,
+		UserID:              project.UserID,
+		Title:               project.Title,
+		Description:         project.Description,
+		Slug:                project.Slug,
+		Status:              model.Status(project.Status.String()),
+		StatsTotalFeedbacks: project.StatsTotalFeedbacks,
+		CreatedAt:           project.CreatedAt,
+		UpdatedAt:           project.UpdatedAt,
 	}
 
 	return result, nil

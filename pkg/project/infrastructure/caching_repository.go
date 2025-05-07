@@ -35,7 +35,7 @@ func NewCachingRepository(caching *caching.Caching, isEnvRelease bool) CachingRe
 			projectCampaignsByProjectIDCachingTime:     12 * time.Hour,
 			projectCollaboratorsByProjectIDCachingTime: 12 * time.Hour,
 
-			apiGetProjectsByUserIDCachingTime: 12 * time.Hour,
+			apiGetProjectsByUserIDCachingTime: 10 * time.Minute,
 			apiGetProjectByIDCachingTime:      12 * time.Hour,
 		}
 	} else {

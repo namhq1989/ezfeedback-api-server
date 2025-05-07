@@ -27,6 +27,11 @@ func (h FeedbackCreatedHandler) FeedbackCreated(ctx *appcontext.AppContext, payl
 	ctx.SetContext(spanCtx)
 	defer span.End()
 
+	ctx.Logger().Text("update project stats")
+	if err := h.projectHub.OnFeedbackCreated(ctx, payload.Feedback.ProjectID, payload.Feedback.CampaignID); err != nil {
+		ctx.Logger().Error("failed to update project stats", err, appcontext.Fields{})
+	}
+
 	ctx.Logger().Text("find project data via grpc")
 	project, err := h.projectHub.GetProjectByID(ctx, payload.Feedback.ProjectID, "")
 	if err != nil {

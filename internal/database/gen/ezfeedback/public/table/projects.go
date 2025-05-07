@@ -17,14 +17,15 @@ type projectsTable struct {
 	postgres.Table
 
 	// Columns
-	ID          postgres.ColumnString
-	UserID      postgres.ColumnString
-	Title       postgres.ColumnString
-	Description postgres.ColumnString
-	Slug        postgres.ColumnString
-	Status      postgres.ColumnString
-	CreatedAt   postgres.ColumnTimestampz
-	UpdatedAt   postgres.ColumnTimestampz
+	ID                  postgres.ColumnString
+	UserID              postgres.ColumnString
+	Title               postgres.ColumnString
+	Description         postgres.ColumnString
+	Slug                postgres.ColumnString
+	Status              postgres.ColumnString
+	CreatedAt           postgres.ColumnTimestampz
+	UpdatedAt           postgres.ColumnTimestampz
+	StatsTotalFeedbacks postgres.ColumnInteger
 
 	AllColumns     postgres.ColumnList
 	MutableColumns postgres.ColumnList
@@ -65,30 +66,32 @@ func newProjectsTable(schemaName, tableName, alias string) *ProjectsTable {
 
 func newProjectsTableImpl(schemaName, tableName, alias string) projectsTable {
 	var (
-		IDColumn          = postgres.StringColumn("id")
-		UserIDColumn      = postgres.StringColumn("user_id")
-		TitleColumn       = postgres.StringColumn("title")
-		DescriptionColumn = postgres.StringColumn("description")
-		SlugColumn        = postgres.StringColumn("slug")
-		StatusColumn      = postgres.StringColumn("status")
-		CreatedAtColumn   = postgres.TimestampzColumn("created_at")
-		UpdatedAtColumn   = postgres.TimestampzColumn("updated_at")
-		allColumns        = postgres.ColumnList{IDColumn, UserIDColumn, TitleColumn, DescriptionColumn, SlugColumn, StatusColumn, CreatedAtColumn, UpdatedAtColumn}
-		mutableColumns    = postgres.ColumnList{UserIDColumn, TitleColumn, DescriptionColumn, SlugColumn, StatusColumn, CreatedAtColumn, UpdatedAtColumn}
+		IDColumn                  = postgres.StringColumn("id")
+		UserIDColumn              = postgres.StringColumn("user_id")
+		TitleColumn               = postgres.StringColumn("title")
+		DescriptionColumn         = postgres.StringColumn("description")
+		SlugColumn                = postgres.StringColumn("slug")
+		StatusColumn              = postgres.StringColumn("status")
+		CreatedAtColumn           = postgres.TimestampzColumn("created_at")
+		UpdatedAtColumn           = postgres.TimestampzColumn("updated_at")
+		StatsTotalFeedbacksColumn = postgres.IntegerColumn("stats_total_feedbacks")
+		allColumns                = postgres.ColumnList{IDColumn, UserIDColumn, TitleColumn, DescriptionColumn, SlugColumn, StatusColumn, CreatedAtColumn, UpdatedAtColumn, StatsTotalFeedbacksColumn}
+		mutableColumns            = postgres.ColumnList{UserIDColumn, TitleColumn, DescriptionColumn, SlugColumn, StatusColumn, CreatedAtColumn, UpdatedAtColumn, StatsTotalFeedbacksColumn}
 	)
 
 	return projectsTable{
 		Table: postgres.NewTable(schemaName, tableName, alias, allColumns...),
 
 		//Columns
-		ID:          IDColumn,
-		UserID:      UserIDColumn,
-		Title:       TitleColumn,
-		Description: DescriptionColumn,
-		Slug:        SlugColumn,
-		Status:      StatusColumn,
-		CreatedAt:   CreatedAtColumn,
-		UpdatedAt:   UpdatedAtColumn,
+		ID:                  IDColumn,
+		UserID:              UserIDColumn,
+		Title:               TitleColumn,
+		Description:         DescriptionColumn,
+		Slug:                SlugColumn,
+		Status:              StatusColumn,
+		CreatedAt:           CreatedAtColumn,
+		UpdatedAt:           UpdatedAtColumn,
+		StatsTotalFeedbacks: StatsTotalFeedbacksColumn,
 
 		AllColumns:     allColumns,
 		MutableColumns: mutableColumns,

@@ -10,6 +10,7 @@ service ProjectService {
   rpc GetProjectCollaborators(GetProjectCollaboratorsRequest) returns (GetProjectCollaboratorsResponse) {}
   rpc GetProjectCategories(GetProjectCategoriesRequest) returns (GetProjectCategoriesResponse) {}
   rpc GetProjectCampaigns(GetProjectCampaignsRequest) returns (GetProjectCampaignsResponse) {}
+  rpc OnFeedbackCreated(OnFeedbackCreatedRequest) returns (OnFeedbackCreatedResponse) {}
 }
 
 //
@@ -78,3 +79,15 @@ message GetProjectCampaignsRequest {
 message GetProjectCampaignsResponse {
   repeated ProjectCampaign campaigns = 1;
 }
+
+//
+// ON FEEDBACK CREATED
+//
+
+message OnFeedbackCreatedRequest {
+  string traceId = 1;
+  string projectId = 2;
+  string campaignId = 3;
+}
+
+message OnFeedbackCreatedResponse {}

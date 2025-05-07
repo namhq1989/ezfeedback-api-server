@@ -24,6 +24,7 @@ const (
 	ProjectService_GetProjectCollaborators_FullMethodName = "/projectpb.ProjectService/GetProjectCollaborators"
 	ProjectService_GetProjectCategories_FullMethodName    = "/projectpb.ProjectService/GetProjectCategories"
 	ProjectService_GetProjectCampaigns_FullMethodName     = "/projectpb.ProjectService/GetProjectCampaigns"
+	ProjectService_OnFeedbackCreated_FullMethodName       = "/projectpb.ProjectService/OnFeedbackCreated"
 )
 
 // ProjectServiceClient is the client API for ProjectService service.
@@ -35,6 +36,7 @@ type ProjectServiceClient interface {
 	GetProjectCollaborators(ctx context.Context, in *GetProjectCollaboratorsRequest, opts ...grpc.CallOption) (*GetProjectCollaboratorsResponse, error)
 	GetProjectCategories(ctx context.Context, in *GetProjectCategoriesRequest, opts ...grpc.CallOption) (*GetProjectCategoriesResponse, error)
 	GetProjectCampaigns(ctx context.Context, in *GetProjectCampaignsRequest, opts ...grpc.CallOption) (*GetProjectCampaignsResponse, error)
+	OnFeedbackCreated(ctx context.Context, in *OnFeedbackCreatedRequest, opts ...grpc.CallOption) (*OnFeedbackCreatedResponse, error)
 }
 
 type projectServiceClient struct {
@@ -95,6 +97,16 @@ func (c *projectServiceClient) GetProjectCampaigns(ctx context.Context, in *GetP
 	return out, nil
 }
 
+func (c *projectServiceClient) OnFeedbackCreated(ctx context.Context, in *OnFeedbackCreatedRequest, opts ...grpc.CallOption) (*OnFeedbackCreatedResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(OnFeedbackCreatedResponse)
+	err := c.cc.Invoke(ctx, ProjectService_OnFeedbackCreated_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // ProjectServiceServer is the server API for ProjectService service.
 // All implementations should embed UnimplementedProjectServiceServer
 // for forward compatibility.
@@ -104,6 +116,7 @@ type ProjectServiceServer interface {
 	GetProjectCollaborators(context.Context, *GetProjectCollaboratorsRequest) (*GetProjectCollaboratorsResponse, error)
 	GetProjectCategories(context.Context, *GetProjectCategoriesRequest) (*GetProjectCategoriesResponse, error)
 	GetProjectCampaigns(context.Context, *GetProjectCampaignsRequest) (*GetProjectCampaignsResponse, error)
+	OnFeedbackCreated(context.Context, *OnFeedbackCreatedRequest) (*OnFeedbackCreatedResponse, error)
 }
 
 // UnimplementedProjectServiceServer should be embedded to have
@@ -127,6 +140,9 @@ func (UnimplementedProjectServiceServer) GetProjectCategories(context.Context, *
 }
 func (UnimplementedProjectServiceServer) GetProjectCampaigns(context.Context, *GetProjectCampaignsRequest) (*GetProjectCampaignsResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetProjectCampaigns not implemented")
+}
+func (UnimplementedProjectServiceServer) OnFeedbackCreated(context.Context, *OnFeedbackCreatedRequest) (*OnFeedbackCreatedResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method OnFeedbackCreated not implemented")
 }
 func (UnimplementedProjectServiceServer) testEmbeddedByValue() {}
 
@@ -238,6 +254,24 @@ func _ProjectService_GetProjectCampaigns_Handler(srv interface{}, ctx context.Co
 	return interceptor(ctx, in, info, handler)
 }
 
+func _ProjectService_OnFeedbackCreated_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(OnFeedbackCreatedRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(ProjectServiceServer).OnFeedbackCreated(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: ProjectService_OnFeedbackCreated_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(ProjectServiceServer).OnFeedbackCreated(ctx, req.(*OnFeedbackCreatedRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // ProjectService_ServiceDesc is the grpc.ServiceDesc for ProjectService service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -264,6 +298,10 @@ var ProjectService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "GetProjectCampaigns",
 			Handler:    _ProjectService_GetProjectCampaigns_Handler,
+		},
+		{
+			MethodName: "OnFeedbackCreated",
+			Handler:    _ProjectService_OnFeedbackCreated_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},
