@@ -21,6 +21,7 @@ import (
 type MockService struct {
 	ctrl     *gomock.Controller
 	recorder *MockServiceMockRecorder
+	isgomock struct{}
 }
 
 // MockServiceMockRecorder is the mock recorder for MockService.
@@ -38,6 +39,21 @@ func NewMockService(ctrl *gomock.Controller) *MockService {
 // EXPECT returns an object that allows the caller to indicate expected use.
 func (m *MockService) EXPECT() *MockServiceMockRecorder {
 	return m.recorder
+}
+
+// GetFeedbackByID mocks base method.
+func (m *MockService) GetFeedbackByID(ctx *appcontext.AppContext, feedbackID string) (*domain.Feedback, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "GetFeedbackByID", ctx, feedbackID)
+	ret0, _ := ret[0].(*domain.Feedback)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// GetFeedbackByID indicates an expected call of GetFeedbackByID.
+func (mr *MockServiceMockRecorder) GetFeedbackByID(ctx, feedbackID any) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetFeedbackByID", reflect.TypeOf((*MockService)(nil).GetFeedbackByID), ctx, feedbackID)
 }
 
 // GetIpLocationData mocks base method.

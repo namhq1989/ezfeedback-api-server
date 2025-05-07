@@ -88,6 +88,24 @@ func (s server) registerFeedbackRoutes() {
 	}, createFeedbackRateLimiter(), func(next echo.HandlerFunc) echo.HandlerFunc {
 		return validation.ValidateHTTPPayload[dto.CreateFeedbackRequest](next)
 	})
+
+	g.PATCH("/:id/state", func(c echo.Context) error {
+		var (
+			ctx         = c.Get("ctx").(*appcontext.AppContext)
+			req         = c.Get("req").(dto.ChangeFeedbackStateRequest)
+			performerID = ctx.GetUserID()
+			feedbackID  = c.Param("id")
+		)
+
+		resp, err := s.app.ChangeFeedbackState(ctx, performerID, feedbackID, req)
+		if err != nil {
+			return httprespond.R400(c, err, nil)
+		}
+
+		return httprespond.R200(c, resp)
+	}, s.jwt.RequireSignedIn, func(next echo.HandlerFunc) echo.HandlerFunc {
+		return validation.ValidateHTTPPayload[dto.ChangeFeedbackStateRequest](next)
+	})
 }
 
 func createFeedbackRateLimiter() echo.MiddlewareFunc {

@@ -10,15 +10,12 @@ import (
 	"github.com/namhq1989/go-utilities/appcontext"
 )
 
-// TODO:
-// - set domain caching repository
-// - set domain external api repository
-
 type CachingRepository struct {
 	caching caching.Operations
 
 	domain                    string
 	ipLocationDataCachingTime time.Duration
+	feedbackByIDCachingTime   time.Duration
 }
 
 func NewCachingRepository(caching *caching.Caching, isEnvRelease bool) CachingRepository {
@@ -27,14 +24,16 @@ func NewCachingRepository(caching *caching.Caching, isEnvRelease bool) CachingRe
 			caching:                   caching,
 			domain:                    "feedback",
 			ipLocationDataCachingTime: 12 * time.Hour,
+			feedbackByIDCachingTime:   12 * time.Hour,
 		}
 	} else {
-		// cachingTime := 1 * time.Minute
+		cachingTime := 1 * time.Minute
 
 		return CachingRepository{
 			caching:                   caching,
 			domain:                    "feedback",
 			ipLocationDataCachingTime: 12 * time.Hour,
+			feedbackByIDCachingTime:   cachingTime,
 		}
 	}
 }
@@ -67,4 +66,40 @@ func (r CachingRepository) SetIpLocationData(ctx *appcontext.AppContext, ip stri
 
 func (r CachingRepository) generateIpLocationDataKey(ip string) string {
 	return r.caching.GenerateKey(r.domain, fmt.Sprintf("ip:%s:locationData", ip))
+}
+
+//
+// GET FEEDBACK BY ID
+//
+
+func (r CachingRepository) GetFeedbackByID(ctx *appcontext.AppContext, id string) (*domain.Feedback, error) {
+	key := r.generateFeedbackByIDKey(id)
+
+	dataStr, err := r.caching.Get(ctx, key)
+	if err != nil {
+		return nil, err
+	}
+
+	var result *domain.Feedback
+	if err = json.Unmarshal([]byte(dataStr), &result); err != nil {
+		return nil, nil
+	}
+
+	return result, nil
+}
+
+func (r CachingRepository) SetFeedbackByID(ctx *appcontext.AppContext, id string, feedback domain.Feedback) error {
+	key := r.generateFeedbackByIDKey(id)
+	r.caching.SetTTL(ctx, key, feedback, r.feedbackByIDCachingTime)
+	return nil
+}
+
+func (r CachingRepository) DeleteFeedbackByID(ctx *appcontext.AppContext, id string) error {
+	key := r.generateFeedbackByIDKey(id)
+	_, err := r.caching.Del(ctx, key)
+	return err
+}
+
+func (r CachingRepository) generateFeedbackByIDKey(id string) string {
+	return r.caching.GenerateKey(r.domain, fmt.Sprintf("feedback:%s", id))
 }

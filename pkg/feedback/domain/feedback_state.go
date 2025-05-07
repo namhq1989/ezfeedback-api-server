@@ -20,6 +20,11 @@ func (s FeedbackState) IsValid() bool {
 	return s != FeedbackStateUnknown
 }
 
+func (s FeedbackState) IsEqual(state string) bool {
+	dState := ToFeedbackState(state)
+	return s == dState
+}
+
 func ToFeedbackState(s string) FeedbackState {
 	switch s {
 	case FeedbackStateNew.String():

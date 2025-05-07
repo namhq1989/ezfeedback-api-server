@@ -13,6 +13,7 @@ import (
 type FeedbackRepository interface {
 	Create(ctx *appcontext.AppContext, feedback Feedback) error
 	Update(ctx *appcontext.AppContext, feedback Feedback) error
+	FindByID(ctx *appcontext.AppContext, feedbackID string) (*Feedback, error)
 	FindWithFilter(ctx *appcontext.AppContext, filter FeedbackFilter) ([]Feedback, error)
 	CountWithFilter(ctx *appcontext.AppContext, filter FeedbackFilter) (int64, error)
 	CountMonthlyUsageForProject(ctx *appcontext.AppContext, projectID string) (int64, error)

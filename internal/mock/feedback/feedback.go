@@ -22,6 +22,7 @@ import (
 type MockFeedbackRepository struct {
 	ctrl     *gomock.Controller
 	recorder *MockFeedbackRepositoryMockRecorder
+	isgomock struct{}
 }
 
 // MockFeedbackRepositoryMockRecorder is the mock recorder for MockFeedbackRepository.
@@ -100,6 +101,21 @@ func (mr *MockFeedbackRepositoryMockRecorder) Create(ctx, feedback any) *gomock.
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Create", reflect.TypeOf((*MockFeedbackRepository)(nil).Create), ctx, feedback)
 }
 
+// FindByID mocks base method.
+func (m *MockFeedbackRepository) FindByID(ctx *appcontext.AppContext, feedbackID string) (*domain.Feedback, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "FindByID", ctx, feedbackID)
+	ret0, _ := ret[0].(*domain.Feedback)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// FindByID indicates an expected call of FindByID.
+func (mr *MockFeedbackRepositoryMockRecorder) FindByID(ctx, feedbackID any) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "FindByID", reflect.TypeOf((*MockFeedbackRepository)(nil).FindByID), ctx, feedbackID)
+}
+
 // FindWithFilter mocks base method.
 func (m *MockFeedbackRepository) FindWithFilter(ctx *appcontext.AppContext, filter domain.FeedbackFilter) ([]domain.Feedback, error) {
 	m.ctrl.T.Helper()
@@ -133,6 +149,7 @@ func (mr *MockFeedbackRepositoryMockRecorder) Update(ctx, feedback any) *gomock.
 type MockFeedbackHub struct {
 	ctrl     *gomock.Controller
 	recorder *MockFeedbackHubMockRecorder
+	isgomock struct{}
 }
 
 // MockFeedbackHubMockRecorder is the mock recorder for MockFeedbackHub.
