@@ -34,8 +34,8 @@ func NewChangeProjectCategoryStatusHandler(
 // @produce  json
 // @param    projectId  	 path     string true "Project id"
 // @param    categoryId  	 path     string true "Category id"
-// @param    payload body    dto.UpdateProjectCategoryRequest true "Body"
-// @success  200     {object} dto.UpdateProjectCategoryResponse
+// @param    payload body    dto.ChangeProjectCategoryStatusRequest true "Body"
+// @success  200     {object} dto.ChangeProjectCategoryStatusResponse
 // @router   /api/project/{projectId}/category/{categoryId}/status [patch]
 func (h ChangeProjectCategoryStatusHandler) ChangeProjectCategoryStatus(ctx *appcontext.AppContext, performerID, projectID, categoryID string, req dto.ChangeProjectCategoryStatusRequest) (*dto.ChangeProjectCategoryStatusResponse, error) {
 	ctx.Logger().Info("new change project category status request", appcontext.Fields{
