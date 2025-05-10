@@ -225,29 +225,24 @@ CREATE TABLE feedback_votes (
 CREATE INDEX idx_feedback_votes_feedback_id ON feedback_votes(feedback_id);
 CREATE INDEX idx_feedback_votes_user_id ON feedback_votes(user_id);
 
--- Create user invitations table
-CREATE TABLE user_invitations (
-                                  id TEXT PRIMARY KEY,
-                                  email VARCHAR(255) NOT NULL,
-                                  inviter_id TEXT NOT NULL REFERENCES users(id) ON DELETE CASCADE,
-                                  project_id TEXT NOT NULL REFERENCES projects(id) ON DELETE CASCADE,
-                                  role project_role NOT NULL,
-                                  status invitation_status NOT NULL,
-                                  expires_at TIMESTAMPTZ NOT NULL,
-                                  created_at TIMESTAMPTZ DEFAULT NOW() NOT NULL,
-                                  updated_at TIMESTAMPTZ DEFAULT NOW() NOT NULL
+-- Create project_invitations table
+CREATE TABLE project_invitations (
+                                     id TEXT PRIMARY KEY,
+                                     email VARCHAR(255) NOT NULL,
+                                     inviter_id TEXT NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+                                     project_id TEXT NOT NULL REFERENCES projects(id) ON DELETE CASCADE,
+                                     role project_role NOT NULL,
+                                     status invitation_status NOT NULL,
+                                     expires_at TIMESTAMPTZ NOT NULL,
+                                     created_at TIMESTAMPTZ DEFAULT NOW() NOT NULL,
+                                     updated_at TIMESTAMPTZ DEFAULT NOW() NOT NULL
 );
 
--- Composite indexes for common query patterns
-CREATE INDEX idx_user_invitations_email_status ON user_invitations(email, status);
-CREATE INDEX idx_user_invitations_project_status ON user_invitations(project_id, status);
-CREATE INDEX idx_user_invitations_project_email_created ON user_invitations(project_id, email, created_at DESC);
-
--- Status + expiration for background jobs
-CREATE INDEX idx_user_invitations_status_expires ON user_invitations(status, expires_at);
-
--- Partial index for pending invitations
-CREATE INDEX idx_user_invitations_pending ON user_invitations(email, project_id) WHERE status = 'pending';
+CREATE INDEX idx_project_invitations_project_id ON project_invitations(project_id);
+CREATE INDEX idx_project_invitations_project_status ON project_invitations(project_id, status);
+CREATE INDEX idx_project_invitations_project_email ON project_invitations(project_id, email);
+CREATE INDEX idx_project_invitations_expires_at ON project_invitations(expires_at);
+CREATE INDEX idx_project_invitations_pending ON project_invitations(email, project_id) WHERE status = 'pending';
 
 -- =============================================
 -- Notification

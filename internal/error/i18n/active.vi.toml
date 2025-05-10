@@ -49,6 +49,7 @@ project_campaign_type_limit_exceeded = "Loại nhận xét này đã đạt đ�
 project_invalid_domain = "Domain không hợp lệ"
 project_invalid_primary_color = "Màu chính không hợp lệ"
 project_invalid_collaborator = "Thành viên của dự án không hợp lệ"
+project_invalid_invitation = "Lời mời dự án không hợp lệ"
 
 # feedback
 feedback_invalid_id = "ID phản hồi không hợp lệ"

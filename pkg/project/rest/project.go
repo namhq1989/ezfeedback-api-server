@@ -115,6 +115,24 @@ func (s server) registerProjectRoutes() {
 		return validation.ValidateHTTPPayload[dto.ChangeProjectStatusRequest](next)
 	})
 
+	g.GET("/:id/collaborators", func(c echo.Context) error {
+		var (
+			ctx         = c.Get("ctx").(*appcontext.AppContext)
+			req         = c.Get("req").(dto.GetProjectCollaboratorsRequest)
+			performerID = ctx.GetUserID()
+			projectID   = c.Param("id")
+		)
+
+		resp, err := s.app.GetProjectCollaborators(ctx, performerID, projectID, req)
+		if err != nil {
+			return httprespond.R400(c, err, nil)
+		}
+
+		return httprespond.R200(c, resp)
+	}, s.jwt.RequireSignedIn, func(next echo.HandlerFunc) echo.HandlerFunc {
+		return validation.ValidateHTTPPayload[dto.GetProjectCollaboratorsRequest](next)
+	})
+
 	g.POST("/:id/category", func(c echo.Context) error {
 		var (
 			ctx         = c.Get("ctx").(*appcontext.AppContext)

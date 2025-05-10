@@ -7,27 +7,27 @@ import (
 
 type ProjectCollaboratorMapper struct{}
 
-func (ProjectCollaboratorMapper) FromModelToDomain(projectCollaborator model.ProjectCollaborators) (*domain.ProjectCollaborator, error) {
+func (ProjectCollaboratorMapper) FromModelToDomain(collaborator model.ProjectCollaborators) (*domain.ProjectCollaborator, error) {
 	var result = &domain.ProjectCollaborator{
-		ID:        projectCollaborator.ID,
-		ProjectID: projectCollaborator.ProjectID,
-		UserID:    projectCollaborator.UserID,
-		Role:      domain.ToProjectRole(projectCollaborator.Role.String()),
-		CreatedAt: projectCollaborator.CreatedAt,
-		UpdatedAt: projectCollaborator.UpdatedAt,
+		ID:        collaborator.ID,
+		ProjectID: collaborator.ProjectID,
+		UserID:    collaborator.UserID,
+		Role:      domain.ToProjectRole(collaborator.Role.String()),
+		CreatedAt: collaborator.CreatedAt,
+		UpdatedAt: collaborator.UpdatedAt,
 	}
 
 	return result, nil
 }
 
-func (ProjectCollaboratorMapper) FromDomainToModel(projectCollaborator domain.ProjectCollaborator) (*model.ProjectCollaborators, error) {
+func (ProjectCollaboratorMapper) FromDomainToModel(collaborator domain.ProjectCollaborator) (*model.ProjectCollaborators, error) {
 	var result = &model.ProjectCollaborators{
-		ID:        projectCollaborator.ID,
-		ProjectID: projectCollaborator.ProjectID,
-		UserID:    projectCollaborator.UserID,
-		Role:      model.ProjectRole(projectCollaborator.Role.String()),
-		CreatedAt: projectCollaborator.CreatedAt,
-		UpdatedAt: projectCollaborator.UpdatedAt,
+		ID:        collaborator.ID,
+		ProjectID: collaborator.ProjectID,
+		UserID:    collaborator.UserID,
+		Role:      model.ProjectRole(collaborator.Role.String()),
+		CreatedAt: collaborator.CreatedAt,
+		UpdatedAt: collaborator.UpdatedAt,
 	}
 
 	return result, nil

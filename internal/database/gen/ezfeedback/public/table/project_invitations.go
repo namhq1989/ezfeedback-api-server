@@ -11,9 +11,9 @@ import (
 	"github.com/go-jet/jet/v2/postgres"
 )
 
-var UserInvitations = newUserInvitationsTable("public", "user_invitations", "")
+var ProjectInvitations = newProjectInvitationsTable("public", "project_invitations", "")
 
-type userInvitationsTable struct {
+type projectInvitationsTable struct {
 	postgres.Table
 
 	// Columns
@@ -31,40 +31,40 @@ type userInvitationsTable struct {
 	MutableColumns postgres.ColumnList
 }
 
-type UserInvitationsTable struct {
-	userInvitationsTable
+type ProjectInvitationsTable struct {
+	projectInvitationsTable
 
-	EXCLUDED userInvitationsTable
+	EXCLUDED projectInvitationsTable
 }
 
-// AS creates new UserInvitationsTable with assigned alias
-func (a UserInvitationsTable) AS(alias string) *UserInvitationsTable {
-	return newUserInvitationsTable(a.SchemaName(), a.TableName(), alias)
+// AS creates new ProjectInvitationsTable with assigned alias
+func (a ProjectInvitationsTable) AS(alias string) *ProjectInvitationsTable {
+	return newProjectInvitationsTable(a.SchemaName(), a.TableName(), alias)
 }
 
-// Schema creates new UserInvitationsTable with assigned schema name
-func (a UserInvitationsTable) FromSchema(schemaName string) *UserInvitationsTable {
-	return newUserInvitationsTable(schemaName, a.TableName(), a.Alias())
+// Schema creates new ProjectInvitationsTable with assigned schema name
+func (a ProjectInvitationsTable) FromSchema(schemaName string) *ProjectInvitationsTable {
+	return newProjectInvitationsTable(schemaName, a.TableName(), a.Alias())
 }
 
-// WithPrefix creates new UserInvitationsTable with assigned table prefix
-func (a UserInvitationsTable) WithPrefix(prefix string) *UserInvitationsTable {
-	return newUserInvitationsTable(a.SchemaName(), prefix+a.TableName(), a.TableName())
+// WithPrefix creates new ProjectInvitationsTable with assigned table prefix
+func (a ProjectInvitationsTable) WithPrefix(prefix string) *ProjectInvitationsTable {
+	return newProjectInvitationsTable(a.SchemaName(), prefix+a.TableName(), a.TableName())
 }
 
-// WithSuffix creates new UserInvitationsTable with assigned table suffix
-func (a UserInvitationsTable) WithSuffix(suffix string) *UserInvitationsTable {
-	return newUserInvitationsTable(a.SchemaName(), a.TableName()+suffix, a.TableName())
+// WithSuffix creates new ProjectInvitationsTable with assigned table suffix
+func (a ProjectInvitationsTable) WithSuffix(suffix string) *ProjectInvitationsTable {
+	return newProjectInvitationsTable(a.SchemaName(), a.TableName()+suffix, a.TableName())
 }
 
-func newUserInvitationsTable(schemaName, tableName, alias string) *UserInvitationsTable {
-	return &UserInvitationsTable{
-		userInvitationsTable: newUserInvitationsTableImpl(schemaName, tableName, alias),
-		EXCLUDED:             newUserInvitationsTableImpl("", "excluded", ""),
+func newProjectInvitationsTable(schemaName, tableName, alias string) *ProjectInvitationsTable {
+	return &ProjectInvitationsTable{
+		projectInvitationsTable: newProjectInvitationsTableImpl(schemaName, tableName, alias),
+		EXCLUDED:                newProjectInvitationsTableImpl("", "excluded", ""),
 	}
 }
 
-func newUserInvitationsTableImpl(schemaName, tableName, alias string) userInvitationsTable {
+func newProjectInvitationsTableImpl(schemaName, tableName, alias string) projectInvitationsTable {
 	var (
 		IDColumn        = postgres.StringColumn("id")
 		EmailColumn     = postgres.StringColumn("email")
@@ -79,7 +79,7 @@ func newUserInvitationsTableImpl(schemaName, tableName, alias string) userInvita
 		mutableColumns  = postgres.ColumnList{EmailColumn, InviterIDColumn, ProjectIDColumn, RoleColumn, StatusColumn, ExpiresAtColumn, CreatedAtColumn, UpdatedAtColumn}
 	)
 
-	return userInvitationsTable{
+	return projectInvitationsTable{
 		Table: postgres.NewTable(schemaName, tableName, alias, allColumns...),
 
 		//Columns

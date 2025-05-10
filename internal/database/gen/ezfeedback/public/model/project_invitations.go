@@ -11,7 +11,7 @@ import (
 	"time"
 )
 
-type UserInvitations struct {
+type ProjectInvitations struct {
 	ID        string `sql:"primary_key"`
 	Email     string
 	InviterID string

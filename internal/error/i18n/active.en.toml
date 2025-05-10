@@ -49,6 +49,7 @@ project_campaign_type_limit_exceeded = "Your project has reached the maximum num
 project_invalid_domain = "Invalid domain"
 project_invalid_primary_color = "Invalid primary color"
 project_invalid_collaborator = "Invalid collaborator"
+project_invalid_invitation = "Invalid invitation"
 
 # feedback
 feedback_invalid_id = "Invalid feedback id"

@@ -62,6 +62,7 @@ tasks:
       - mockgen -source=pkg/project/domain/project_campaign.go -destination=internal/mock/project/project_campaign.go -package=mockproject
       - mockgen -source=pkg/project/domain/project_campaign_category.go -destination=internal/mock/project/project_campaign_category.go -package=mockproject
       - mockgen -source=pkg/project/domain/project_collaborator.go -destination=internal/mock/project/project_collaborator.go -package=mockproject
+      - mockgen -source=pkg/project/domain/project_invitation.go -destination=internal/mock/project/project_invitation.go -package=mockproject
       - mockgen -source=pkg/project/domain/caching.go -destination=internal/mock/project/caching.go -package=mockproject
       - mockgen -source=pkg/project/domain/queue.go -destination=internal/mock/project/queue.go -package=mockproject
       - mockgen -source=pkg/project/domain/billing.go -destination=internal/mock/project/billing.go -package=mockproject
