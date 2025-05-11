@@ -60,6 +60,7 @@ func (Module) Startup(ctx *appcontext.AppContext, mono monolith.Monolith) error 
 			cachingRepository,
 			queueRepository,
 			billingHub,
+			iamHub,
 			service,
 		)
 

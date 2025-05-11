@@ -74,7 +74,7 @@ func (s *getProjectByIDTestSuite) Test_1_Success_FromCache() {
 	assert.NotNil(s.T(), resp)
 }
 
-func (s *getProjectByIDTestSuite) Test_2_Success_FromDB() {
+func (s *getProjectByIDTestSuite) Test_1_Success_FromDB() {
 	// mock data
 	s.mockCachingRepository.EXPECT().
 		GetApiGetProjectByID(gomock.Any(), gomock.Any()).

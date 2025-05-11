@@ -45,7 +45,12 @@ type ProjectStats struct {
 	TotalFeedbacks int32 `json:"totalFeedbacks"`
 }
 
-func (Project) FromDomain(project domain.Project, setting domain.ProjectSetting, campaigns []domain.ProjectCampaign, categories []domain.ProjectCategory) Project {
+func (Project) FromDomain(
+	project domain.Project,
+	setting domain.ProjectSetting,
+	campaigns []domain.ProjectCampaign,
+	categories []domain.ProjectCategory,
+) Project {
 	var cats = make([]ProjectCategory, len(categories))
 	for i, category := range categories {
 		cats[i] = ProjectCategory{}.FromDomain(category)

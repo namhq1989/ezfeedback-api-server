@@ -1,80 +1,96 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>EasyFeedback</title>
-  <link
-          href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700&display=swap"
-          rel="stylesheet"
-  />
-  <style></style>
-</head>
-<body
-        style="
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>EasyFeedback</title>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700&display=swap"
+      rel="stylesheet"
+    />
+  </head>
+  <body
+    style="
       font-family: 'Inter', sans-serif;
       font-size: 12px;
-      background-color: #f4f4f4;
+      background-color: #e2e4e9;
       margin: 0;
-      padding: 20px;
-      color: #000;
+      padding: 10px;
+      color: #4b4e68;
     "
->
-<div style="max-width: 375px; margin: auto">
-  <div style="background-color: white; padding: 30px">
-    <img
+  >
+    <div style="max-width: 600px; margin: auto">
+      <div
+        style="
+          background-color: #ffffff;
+          padding: 20px;
+          border-radius: 0.75rem 0.75rem 0 0;
+        "
+      >
+        <center>
+          <img
             src="https://ez.bapbi.app/logo.png"
             alt="Easy Feedback"
-            height="40"
-    />
-    <div style="height: 20px"></div>
+            height="100"
+          />
+        </center>
+        <div style="height: 30px"></div>
 
-    <div style="font-weight: 600; color: #000">Hi there,</div>
+        <div style="font-weight: 600; color: #4b4e68">Hi there,</div>
 
-    <div style="height: 20px"></div>
+        <div style="height: 10px"></div>
 
-    <div>
-      The email address <span style="font-weight: 600">{{toEmail}}</span> is being used to sign in to the EasyFeedback application.
+        <div>Your one-time verification code (OTP) is:</div>
+
+        <div style="height: 30px"></div>
+
+        <div
+          style="
+            background-color: #e8ebfd;
+            border-radius: 0.75rem;
+            padding: 15px;
+            text-align: center;
+            font-size: 18px;
+            font-weight: 700;
+          "
+        >
+          {{code}}
+        </div>
+
+        <div style="height: 30px"></div>
+        <div>
+          This OTP will expire after 15 minutes. Please make sure you enter it
+          correctly and promptly to complete your sign-in.
+        </div>
+
+        <div style="height: 10px"></div>
+        <div>
+          <span style="font-weight: 600">If you did not request this code</span
+          >, please ignore this email and do not take any action.
+        </div>
+
+        <div style="height: 10px"></div>
+        <div>
+          If you need assistance, don't hesitate to contact us at
+          <span style="font-weight: 600; color: #8839ef"
+            >support@easyfeedback.com</span
+          >
+        </div>
+        <div style="height: 30px"></div>
+        <div>Have a great day!</div>
+
+        <div style="height: 10px"></div>
+        <div>Regards,</div>
+        <div style="height: 5px"></div>
+        <div style="font-weight: 600">EasyFeedback Team</div>
+      </div>
+      <div
+        style="
+          background-color: #8839ef;
+          height: 18px;
+          border-radius: 0 0 0.75rem 0.75rem;
+        "
+      ></div>
     </div>
-    <div style="height: 20px"></div>
-
-    <div>
-      Your one-time verification code (OTP) is:
-    </div>
-
-    <div style="height: 20px"></div>
-
-
-    <div style="background-color: #E8EBFD;border-radius: 10px; padding: 15px; text-align: center;font-size: 18px;font-weight: 700;">
-      {{code}}
-    </div>
-
-    <div style="height: 20px"></div>
-    <div>
-      This OTP will expire after 15 minutes. Please make sure you enter it correctly and promptly to complete your sign-in.
-    </div>
-
-    <div style="height: 20px"></div>
-    <div>
-      <span style="font-weight: 600">If you did not request this code</span>, please ignore this email and do not take any action.
-    </div>
-
-    <div style="height: 20px"></div>
-    <div>
-      If you need assistance, don't hesitate to contact us at <span style="font-weight: 600;color: #3478f6;">support@easyfeedback.com</span>
-    </div>
-    <div style="height: 20px"></div>
-    <div>
-      Have a great day!
-    </div>
-
-    <div style="height: 20px"></div>
-    <div>Regards,</div>
-    <div style="height: 20px"></div>
-
-    <div style="font-weight: 600;">EasyFeedback Team</div>
-  </div>
-  <div style="background-color: #1434cb; height: 18px"></div>
-</div>
-</body>
+  </body>
 </html>

@@ -29,6 +29,7 @@ type (
 
 		GetProjects(ctx *appcontext.AppContext, performerID string, _ dto.GetProjectsRequest) (*dto.GetProjectsResponse, error)
 		GetProjectByID(ctx *appcontext.AppContext, performerID, projectID string, _ dto.GetProjectByIDRequest) (*dto.GetProjectByIDResponse, error)
+		GetProjectCollaborators(ctx *appcontext.AppContext, performerID, projectID string, _ dto.GetProjectCollaboratorsRequest) (*dto.GetProjectCollaboratorsResponse, error)
 	}
 	Instance interface {
 		Commands
@@ -55,6 +56,7 @@ type (
 
 		query.GetProjectsHandler
 		query.GetProjectByIDHandler
+		query.GetProjectCollaboratorsHandler
 	}
 	Application struct {
 		commandHandlers
@@ -73,6 +75,7 @@ func New(
 	cachingRepository domain.CachingRepository,
 	queueRepository domain.QueueRepository,
 	billingHub domain.BillingHub,
+	iamHub domain.IAMHub,
 	service domain.Service,
 ) *Application {
 	return &Application{
@@ -134,6 +137,7 @@ func New(
 				cachingRepository,
 				service,
 			),
+			GetProjectCollaboratorsHandler: query.NewGetProjectCollaboratorsHandler(iamHub, service),
 		},
 	}
 }
