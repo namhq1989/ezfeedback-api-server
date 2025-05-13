@@ -111,11 +111,11 @@ func (r FeedbackRepository) FindWithFilter(ctx *appcontext.AppContext, filter do
 	)
 
 	if filter.CampaignType.IsValid() {
-		whereStmt = whereStmt.AND(f.CampaignType.EQ(postgres.String(filter.CampaignType.String())))
+		whereStmt = whereStmt.AND(f.CampaignType.EQ(postgres.NewEnumValue(filter.CampaignType.String())))
 	}
 
 	if filter.Keyword != "" {
-		whereStmt = whereStmt.AND(postgres.RawBool("s.search_vector @@ to_tsquery($keyword)", postgres.RawArgs{
+		whereStmt = whereStmt.AND(postgres.RawBool("feedbacks.search_vector @@ to_tsquery($keyword)", postgres.RawArgs{
 			"$keyword": filter.Keyword,
 		}))
 	}
@@ -173,11 +173,11 @@ func (r FeedbackRepository) CountWithFilter(ctx *appcontext.AppContext, filter d
 	)
 
 	if filter.CampaignType.IsValid() {
-		whereStmt = whereStmt.AND(f.CampaignType.EQ(postgres.String(filter.CampaignType.String())))
+		whereStmt = whereStmt.AND(f.CampaignType.EQ(postgres.NewEnumValue(filter.CampaignType.String())))
 	}
 
 	if filter.Keyword != "" {
-		whereStmt = whereStmt.AND(postgres.RawBool("s.search_vector @@ to_tsquery($keyword)", postgres.RawArgs{
+		whereStmt = whereStmt.AND(postgres.RawBool("feedbacks.search_vector @@ to_tsquery($keyword)", postgres.RawArgs{
 			"$keyword": filter.Keyword,
 		}))
 	}

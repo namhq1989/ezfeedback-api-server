@@ -6,7 +6,7 @@ import (
 )
 
 const (
-	feedbackQueryLimit int64 = 20
+	feedbackQueryLimit int64 = 10
 )
 
 type FeedbackFilter struct {
