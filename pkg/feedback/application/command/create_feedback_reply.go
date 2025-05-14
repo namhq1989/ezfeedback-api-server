@@ -10,17 +10,20 @@ import (
 type CreateFeedbackReplyHandler struct {
 	feedbackReplyRepository domain.FeedbackReplyRepository
 	feedbackRepository      domain.FeedbackRepository
+	cachingRepository       domain.CachingRepository
 	service                 domain.Service
 }
 
 func NewCreateFeedbackReplyHandler(
 	feedbackReplyRepository domain.FeedbackReplyRepository,
 	feedbackRepository domain.FeedbackRepository,
+	cachingRepository domain.CachingRepository,
 	service domain.Service,
 ) CreateFeedbackReplyHandler {
 	return CreateFeedbackReplyHandler{
 		feedbackReplyRepository: feedbackReplyRepository,
 		feedbackRepository:      feedbackRepository,
+		cachingRepository:       cachingRepository,
 		service:                 service,
 	}
 }
@@ -72,8 +75,15 @@ func (h CreateFeedbackReplyHandler) CreateFeedbackReply(ctx *appcontext.AppConte
 	if err = h.feedbackRepository.Update(ctx, *feedback); err != nil {
 		ctx.Logger().Error("failed to update feedback in db", err, appcontext.Fields{})
 		return nil, err
+	} else {
+		ctx.Logger().Text("set feedback in caching")
+		if err = h.cachingRepository.SetFeedbackByID(ctx, feedback.ID, *feedback); err != nil {
+			ctx.Logger().Error("failed to set feedback in caching", err, appcontext.Fields{})
+		}
 	}
 
 	ctx.Logger().Text("done create feedback reply")
-	return &dto.CreateFeedbackReplyResponse{}, nil
+	return &dto.CreateFeedbackReplyResponse{
+		ID: reply.ID,
+	}, nil
 }

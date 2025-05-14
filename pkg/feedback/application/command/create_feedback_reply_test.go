@@ -22,6 +22,7 @@ type createFeedbackReplyTestSuite struct {
 	mockCtrl                    *gomock.Controller
 	mockFeedbackRepository      *mockfeedback.MockFeedbackRepository
 	mockFeedbackReplyRepository *mockfeedback.MockFeedbackReplyRepository
+	mockCachingRepository       *mockfeedback.MockCachingRepository
 	mockService                 *mockfeedback.MockService
 }
 
@@ -29,8 +30,9 @@ func (s *createFeedbackReplyTestSuite) SetupSuite() {
 	s.mockCtrl = gomock.NewController(s.T())
 	s.mockFeedbackRepository = mockfeedback.NewMockFeedbackRepository(s.mockCtrl)
 	s.mockFeedbackReplyRepository = mockfeedback.NewMockFeedbackReplyRepository(s.mockCtrl)
+	s.mockCachingRepository = mockfeedback.NewMockCachingRepository(s.mockCtrl)
 	s.mockService = mockfeedback.NewMockService(s.mockCtrl)
-	s.handler = command.NewCreateFeedbackReplyHandler(s.mockFeedbackReplyRepository, s.mockFeedbackRepository, s.mockService)
+	s.handler = command.NewCreateFeedbackReplyHandler(s.mockFeedbackReplyRepository, s.mockFeedbackRepository, s.mockCachingRepository, s.mockService)
 }
 
 func (s *createFeedbackReplyTestSuite) TearDownTest() {
@@ -52,6 +54,10 @@ func (s *createFeedbackReplyTestSuite) Test_1_Success() {
 
 	s.mockFeedbackRepository.EXPECT().
 		Update(gomock.Any(), gomock.Any()).
+		Return(nil)
+
+	s.mockCachingRepository.EXPECT().
+		SetFeedbackByID(gomock.Any(), gomock.Any(), gomock.Any()).
 		Return(nil)
 
 	ctx := appcontext.NewRest(context.Background())

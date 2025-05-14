@@ -29,9 +29,9 @@ func (t *TimeResponse) FormatISODate() string {
 	if t == nil || t.Time.IsZero() {
 		return ""
 	}
-	return t.Time.Format(formatLayoutFull)
+	return t.Time.UTC().Format(formatLayoutFull)
 }
 
 func NewTimeResponse(t time.Time) *TimeResponse {
-	return &TimeResponse{Time: t}
+	return &TimeResponse{Time: t.UTC()}
 }
