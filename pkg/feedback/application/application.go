@@ -82,6 +82,7 @@ func New(
 			CreateFeedbackReplyHandler: command.NewCreateFeedbackReplyHandler(
 				feedbackReplyRepository,
 				feedbackRepository,
+				cachingRepository,
 				service,
 			),
 			UpdateFeedbackReplyHandler: command.NewUpdateFeedbackReplyHandler(
