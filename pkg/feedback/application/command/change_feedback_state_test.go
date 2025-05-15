@@ -17,19 +17,21 @@ import (
 
 type changeFeedbackStateTestSuite struct {
 	suite.Suite
-	handler                command.ChangeFeedbackStateHandler
-	mockCtrl               *gomock.Controller
-	mockFeedbackRepository *mockfeedback.MockFeedbackRepository
-	mockCachingRepository  *mockfeedback.MockCachingRepository
-	mockService            *mockfeedback.MockService
+	handler                            command.ChangeFeedbackStateHandler
+	mockCtrl                           *gomock.Controller
+	mockFeedbackRepository             *mockfeedback.MockFeedbackRepository
+	mockFeedbackStateHistoryRepository *mockfeedback.MockFeedbackStateHistoryRepository
+	mockCachingRepository              *mockfeedback.MockCachingRepository
+	mockService                        *mockfeedback.MockService
 }
 
 func (s *changeFeedbackStateTestSuite) SetupSuite() {
 	s.mockCtrl = gomock.NewController(s.T())
 	s.mockFeedbackRepository = mockfeedback.NewMockFeedbackRepository(s.mockCtrl)
+	s.mockFeedbackStateHistoryRepository = mockfeedback.NewMockFeedbackStateHistoryRepository(s.mockCtrl)
 	s.mockCachingRepository = mockfeedback.NewMockCachingRepository(s.mockCtrl)
 	s.mockService = mockfeedback.NewMockService(s.mockCtrl)
-	s.handler = command.NewChangeFeedbackStateHandler(s.mockFeedbackRepository, s.mockCachingRepository, s.mockService)
+	s.handler = command.NewChangeFeedbackStateHandler(s.mockFeedbackRepository, s.mockFeedbackStateHistoryRepository, s.mockCachingRepository, s.mockService)
 }
 
 func (s *changeFeedbackStateTestSuite) TearDownTest() {
@@ -51,6 +53,10 @@ func (s *changeFeedbackStateTestSuite) Test_1_Success() {
 
 	s.mockCachingRepository.EXPECT().
 		SetFeedbackByID(gomock.Any(), gomock.Any(), gomock.Any()).
+		Return(nil)
+
+	s.mockFeedbackStateHistoryRepository.EXPECT().
+		Create(gomock.Any(), gomock.Any()).
 		Return(nil)
 
 	ctx := appcontext.NewRest(context.Background())

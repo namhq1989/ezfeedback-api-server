@@ -24,6 +24,7 @@ type (
 		CountFeedbacks(ctx *appcontext.AppContext, performerID string, req dto.CountFeedbacksRequest) (*dto.CountFeedbacksResponse, error)
 
 		GetFeedbackReplies(ctx *appcontext.AppContext, performerID, feedbackID string, req dto.GetFeedbackRepliesRequest) (*dto.GetFeedbackRepliesResponse, error)
+		GetFeedbackStateHistories(ctx *appcontext.AppContext, performerID, feedbackID string, req dto.GetFeedbackStateHistoriesRequest) (*dto.GetFeedbackStateHistoriesResponse, error)
 	}
 	Instance interface {
 		Commands
@@ -45,6 +46,7 @@ type (
 		query.CountFeedbacksHandler
 
 		query.GetFeedbackRepliesHandler
+		query.GetFeedbackStateHistoriesHandler
 	}
 	Application struct {
 		commandHandlers
@@ -57,6 +59,7 @@ var _ Instance = (*Application)(nil)
 func New(
 	feedbackRepository domain.FeedbackRepository,
 	feedbackReplyRepository domain.FeedbackReplyRepository,
+	feedbackStateHistoryRepository domain.FeedbackStateHistoryRepository,
 	cachingRepository domain.CachingRepository,
 	queueRepository domain.QueueRepository,
 	billingHub domain.BillingHub,
@@ -75,6 +78,7 @@ func New(
 			),
 			ChangeFeedbackStateHandler: command.NewChangeFeedbackStateHandler(
 				feedbackRepository,
+				feedbackStateHistoryRepository,
 				cachingRepository,
 				service,
 			),
@@ -100,7 +104,8 @@ func New(
 			GetFeedbacksHandler:   query.NewGetFeedbacksHandler(feedbackRepository, projectHub),
 			CountFeedbacksHandler: query.NewCountFeedbacksHandler(feedbackRepository),
 
-			GetFeedbackRepliesHandler: query.NewGetFeedbackRepliesHandler(feedbackReplyRepository, iamHub),
+			GetFeedbackRepliesHandler:        query.NewGetFeedbackRepliesHandler(feedbackReplyRepository, iamHub),
+			GetFeedbackStateHistoriesHandler: query.NewGetFeedbackStateHistoriesHandler(feedbackStateHistoryRepository, iamHub),
 		},
 	}
 }

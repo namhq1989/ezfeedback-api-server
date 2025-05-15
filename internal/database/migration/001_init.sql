@@ -199,6 +199,18 @@ CREATE TRIGGER feedbacks_search_vector_update_trigger
                          FOR EACH ROW
                          EXECUTE FUNCTION feedbacks_search_vector_update();
 
+-- Create feedback state histories table
+CREATE TABLE feedback_state_histories (
+                                id TEXT PRIMARY KEY,
+                                feedback_id TEXT NOT NULL REFERENCES feedbacks(id) ON DELETE CASCADE,
+                                user_id TEXT NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+                                state feedback_state NOT NULL,
+                                created_at TIMESTAMPTZ DEFAULT NOW() NOT NULL,
+                                UNIQUE(feedback_id, user_id)
+);
+
+CREATE INDEX idx_feedback_state_histories_feedback_id ON feedback_state_histories(feedback_id);
+
 -- Create feedback replies table
 CREATE TABLE feedback_replies (
                                   id TEXT PRIMARY KEY,

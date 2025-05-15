@@ -8,20 +8,23 @@ import (
 )
 
 type ChangeFeedbackStateHandler struct {
-	feedbackRepository domain.FeedbackRepository
-	cachingRepository  domain.CachingRepository
-	service            domain.Service
+	feedbackRepository             domain.FeedbackRepository
+	feedbackStateHistoryRepository domain.FeedbackStateHistoryRepository
+	cachingRepository              domain.CachingRepository
+	service                        domain.Service
 }
 
 func NewChangeFeedbackStateHandler(
 	feedbackRepository domain.FeedbackRepository,
+	feedbackStateHistoryRepository domain.FeedbackStateHistoryRepository,
 	cachingRepository domain.CachingRepository,
 	service domain.Service,
 ) ChangeFeedbackStateHandler {
 	return ChangeFeedbackStateHandler{
-		feedbackRepository: feedbackRepository,
-		cachingRepository:  cachingRepository,
-		service:            service,
+		feedbackRepository:             feedbackRepository,
+		feedbackStateHistoryRepository: feedbackStateHistoryRepository,
+		cachingRepository:              cachingRepository,
+		service:                        service,
 	}
 }
 
@@ -72,6 +75,17 @@ func (h ChangeFeedbackStateHandler) ChangeFeedbackState(ctx *appcontext.AppConte
 	ctx.Logger().Text("update feedback data in caching")
 	if err = h.cachingRepository.SetFeedbackByID(ctx, feedbackID, *feedback); err != nil {
 		ctx.Logger().Error("failed to update feedback data in caching", err, appcontext.Fields{})
+	}
+
+	ctx.Logger().Text("create feedback state history")
+	history, err := domain.NewFeedbackStateHistory(feedbackID, performerID, req.State)
+	if err != nil {
+		ctx.Logger().Error("failed to create feedback state history", err, appcontext.Fields{})
+	} else {
+		ctx.Logger().Text("persist state history to db")
+		if err = h.feedbackStateHistoryRepository.Create(ctx, *history); err != nil {
+			ctx.Logger().Error("failed to persist state history to db", err, appcontext.Fields{})
+		}
 	}
 
 	ctx.Logger().Text("done change feedback state")
